@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    机器学习(11)——决策树 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",机器学习">
+<meta name="description" content="0x00 决策树决策树在机器学习中是一种经典的分类算法。决策树的结构是一个树结构(可以是二叉树或非二叉树)。其中每个非叶节点表示一个特征属性上的测试，每个分支代表这个特证属性在某个值域上的输出，而每个叶子节点存放一个类别。使用决策树进行决策的过程就是从根节点开始，测试待分类项中相应的特征属性，并按照其值选择输出分支，直到到达叶子节点，此时叶子节点上的类别就是决策结果。
+举个例子，假如我们要判断一只">
+<meta property="og:type" content="article">
+<meta property="og:title" content="机器学习(11)——决策树 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2018/12/24/机器学习-11-——决策树/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="0x00 决策树决策树在机器学习中是一种经典的分类算法。决策树的结构是一个树结构(可以是二叉树或非二叉树)。其中每个非叶节点表示一个特征属性上的测试，每个分支代表这个特证属性在某个值域上的输出，而每个叶子节点存放一个类别。使用决策树进行决策的过程就是从根节点开始，测试待分类项中相应的特征属性，并按照其值选择输出分支，直到到达叶子节点，此时叶子节点上的类别就是决策结果。
+举个例子，假如我们要判断一只">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_01.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_02.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_04.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_03.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_05.png?raw=true">
+<meta property="og:updated_time" content="2018-12-24T15:53:16.853Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="机器学习(11)——决策树 | Leticia‘s Blog">
+<meta name="twitter:description" content="0x00 决策树决策树在机器学习中是一种经典的分类算法。决策树的结构是一个树结构(可以是二叉树或非二叉树)。其中每个非叶节点表示一个特征属性上的测试，每个分支代表这个特证属性在某个值域上的输出，而每个叶子节点存放一个类别。使用决策树进行决策的过程就是从根节点开始，测试待分类项中相应的特征属性，并按照其值选择输出分支，直到到达叶子节点，此时叶子节点上的类别就是决策结果。
+举个例子，假如我们要判断一只">
+<meta name="twitter:image" content="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_01.png?raw=true">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 38</a><a href="/tags/笔记/" class="tagc2">笔记 : 14</a><a href="/tags/python/" class="tagc3">python : 13</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/ctf/" class="tagc5">ctf : 3</a><a href="/tags/文件上传/" class="tagc1">文件上传 : 3</a><a href="/tags/XSS/" class="tagc2">XSS : 2</a><a href="/tags/硬件安全/" class="tagc3">硬件安全 : 2</a><a href="/tags/shell/" class="tagc4">shell : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc5">逻辑处理漏洞 : 2</a><a href="/tags/内网渗透/" class="tagc1">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc2">密码学 : 2</a><a href="/tags/代码审计/" class="tagc3">代码审计 : 2</a><a href="/tags/防御策略/" class="tagc4">防御策略 : 1</a><a href="/tags/CSRF/" class="tagc5">CSRF : 1</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">机器学习(11)——决策树</h1>
+    
+    <div class="post-meta">
+      <time datetime="2018-12-24 23:52:53" class="post-meta__date date">2018-12-24 23:52:53</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/机器学习/">机器学习</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/机器学习/">机器学习</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="0x00-决策树"><a href="#0x00-决策树" class="headerlink" title="0x00 决策树"></a>0x00 决策树</h2><p>决策树在机器学习中是一种经典的分类算法。决策树的结构是一个树结构(可以是二叉树或非二叉树)。其中每个非叶节点表示一个特征属性上的测试，每个分支代表这个特证属性在某个值域上的输出，而每个叶子节点存放一个类别。使用决策树进行决策的过程就是从根节点开始，测试待分类项中相应的特征属性，并按照其值选择输出分支，直到到达叶子节点，此时叶子节点上的类别就是决策结果。</p>
+<p>举个例子，假如我们要判断一只动物是不是兔子，这是典型的二分类问题，结果只有是兔子和不是兔子两种。我们可以用来判断的特征有：四条腿走路、耳朵、体型、尾巴等很多信息，这些特征都位于非叶节点，我们输入一个新的动物，就可以通过这些特征来一步步走向分类的叶子节点。</p>
+<h2 id="0x01-决策树过程描述"><a href="#0x01-决策树过程描述" class="headerlink" title="0x01 决策树过程描述"></a>0x01 决策树过程描述</h2><p>具体过程如下图</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_01.png?raw=true" alt=""></p>
+<p>最重要的问题在于第八行中如何选择这个最优属性，什么是最优属性呢？就是说这个属性要做到尽量多的降低不确定性，为了找出算哪个属性才能降低最多不确定性，就需要引入信息熵的概念了。</p>
+<h2 id="0x02-信息熵与信息增益"><a href="#0x02-信息熵与信息增益" class="headerlink" title="0x02 信息熵与信息增益"></a>0x02 信息熵与信息增益</h2><h4 id="信息"><a href="#信息" class="headerlink" title="信息"></a>信息</h4><p>在看信息熵之前我们先看一下香农对信息的定义：信息是用来消除随机不确定性的东西。</p>
+<h4 id="信息的衡量-信息熵"><a href="#信息的衡量-信息熵" class="headerlink" title="信息的衡量-信息熵"></a>信息的衡量-信息熵</h4><p>信息熵指一个信息能够消除不确定性的大小</p>
+<p>信息熵的定义式：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_02.png?raw=true" alt=""></p>
+<p>条件熵计算：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_04.png?raw=true" alt=""></p>
+<h4 id="信息增益"><a href="#信息增益" class="headerlink" title="信息增益"></a>信息增益</h4><p>特征A对训练数据集D的信息增益g(D,A)，定义为集合D的信息熵H(D)与特征A给定条件下D的信息条件熵H(D|A)之差，公式为：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_03.png?raw=true" alt=""></p>
+<p>随着决策树的每层进行，我们希望决策树分支节点所包含的样本尽可能的属于同一类别，也就是说“纯度”越来越高，而信息增益越大，意味着使用这个属性对决策树的“纯度”提升越大。</p>
+<p>所以，我们根据这里计算出来的信息增益的大小，就可以解决选择最优属性的问题。</p>
+<h2 id="0x03-剪枝处理"><a href="#0x03-剪枝处理" class="headerlink" title="0x03 剪枝处理"></a>0x03 剪枝处理</h2><p>剪枝是决策树中应对过拟合的手段，在决策树学习中由于划分过程不断重复，有时会造成决策树分支过多，这种情况下一些训练集的特点会被当作所有数据都具有的一般性质而导致过拟合。需要进行剪枝处理。</p>
+<p>决策树的剪枝策略分为预剪枝和后剪枝。</p>
+<ul>
+<li>预剪枝是指在决策树的生成过程中，对每个节点在划分前先进行估计。若当前结点的划分不能带来决策树泛化性能提升，则停止划分并将当前结点标记为叶子结点。</li>
+<li>后剪枝是从训练集生成一颗完整的决策树，然后自底向上对非叶结点进行考察，如果将该结点替换成叶结点会提升泛化性能，则替换。</li>
+</ul>
+<h2 id="0x04-连续值处理"><a href="#0x04-连续值处理" class="headerlink" title="0x04 连续值处理"></a>0x04 连续值处理</h2><p>实际情况中，我们遇到的属性并不一定都是像“有无尾巴”等这样离散的，有一部分属性是连续的数值如“质量”、“密度”等等。这种情况下由于连续值是无限多的，不能分别作为结点，所以就要采取一定的策略对连续属性进行处理。</p>
+<p>最常用的策略是二分法，首先我们假设在样本D中有n个不同的取值，将他们从小到大进行排序，记为{a1、a2、···an}，然后取每两个相邻点的平均值</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml11_05.png?raw=true" alt=""></p>
+<p>共n-1个值作为候选划分点，然后用考察离散属性值的方法来选取最优划分点来进行集合的划分。</p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2018/12/24/机器学习-11-——决策树/" target="_blank">机器学习(11)——决策树</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2018-12-24 23:52:53<br />
+    <span>最后更新:</span>2018-12-24 23:53:16<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
