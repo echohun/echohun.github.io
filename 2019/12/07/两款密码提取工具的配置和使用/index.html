@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    两款密码提取工具的配置和使用 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",工具配置">
+<meta name="description" content="linux密码提取工具Mimipenguin配置及其使用MimipenguinMimipenguin从Linux内存中提取登录密码的工具。改编自流行的Windows工具mimikatz。
+安装Mimipenguin首先从github上克隆Mimipenguin1git clone https://github.com/huntergregal/mimipenguin
+然后安装Mimipenguin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="两款密码提取工具的配置和使用 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2019/12/07/两款密码提取工具的配置和使用/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="linux密码提取工具Mimipenguin配置及其使用MimipenguinMimipenguin从Linux内存中提取登录密码的工具。改编自流行的Windows工具mimikatz。
+安装Mimipenguin首先从github上克隆Mimipenguin1git clone https://github.com/huntergregal/mimipenguin
+然后安装Mimipenguin">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/password_get/password01.png">
+<meta property="og:updated_time" content="2019-12-07T04:00:49.660Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="两款密码提取工具的配置和使用 | Leticia‘s Blog">
+<meta name="twitter:description" content="linux密码提取工具Mimipenguin配置及其使用MimipenguinMimipenguin从Linux内存中提取登录密码的工具。改编自流行的Windows工具mimikatz。
+安装Mimipenguin首先从github上克隆Mimipenguin1git clone https://github.com/huntergregal/mimipenguin
+然后安装Mimipenguin">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/password_get/password01.png">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 39</a><a href="/tags/python/" class="tagc2">python : 14</a><a href="/tags/笔记/" class="tagc3">笔记 : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/ctf/" class="tagc5">ctf : 3</a><a href="/tags/文件上传/" class="tagc1">文件上传 : 3</a><a href="/tags/工具配置/" class="tagc2">工具配置 : 2</a><a href="/tags/XSS/" class="tagc3">XSS : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/内网渗透/" class="tagc1">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc2">密码学 : 2</a><a href="/tags/代码审计/" class="tagc3">代码审计 : 2</a><a href="/tags/硬件安全/" class="tagc4">硬件安全 : 2</a><a href="/tags/提权/" class="tagc5">提权 : 1</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">两款密码提取工具的配置和使用</h1>
+    
+    <div class="post-meta">
+      <time datetime="2019-12-07 11:59:46" class="post-meta__date date">2019-12-07 11:59:46</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/windows/">windows</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/工具配置/">工具配置</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="linux密码提取工具Mimipenguin配置及其使用"><a href="#linux密码提取工具Mimipenguin配置及其使用" class="headerlink" title="linux密码提取工具Mimipenguin配置及其使用"></a>linux密码提取工具Mimipenguin配置及其使用</h2><h3 id="Mimipenguin"><a href="#Mimipenguin" class="headerlink" title="Mimipenguin"></a>Mimipenguin</h3><p>Mimipenguin从Linux内存中提取登录密码的工具。改编自流行的Windows工具mimikatz。</p>
+<h3 id="安装Mimipenguin"><a href="#安装Mimipenguin" class="headerlink" title="安装Mimipenguin"></a>安装Mimipenguin</h3><p>首先从github上克隆Mimipenguin<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/huntergregal/mimipenguin</div></pre></td></tr></table></figure></p>
+<p>然后安装Mimipenguin的依赖GLIBC_2.14，而GLIBC_2.14我们需要源码编译安装，所以需要安装gcc</p>
+<p>根据不同系统选择不同的安装命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">apt install gcc</div><div class="line">yum install gcc</div></pre></td></tr></table></figure></p>
+<p>完成之后，我们先创建一个路径存放下载的源码，然后下载GLIBC_2.14的源码进行编译安装并链接<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">mkdir /home/tar</div><div class="line">cd /home/tar</div><div class="line">wget https://ftp.gnu.org/gnu/glibc/glibc-2.14.tar.gz</div><div class="line">tar -zxvf glibc-2.14.tar.gz</div><div class="line">cd glibc-2.14</div><div class="line">mkdir build</div><div class="line">cd build</div><div class="line">../configure --prefix=/usr/local/glibc-2.14</div><div class="line">make -j8</div><div class="line">make install</div><div class="line">export LD_LIBRARY_PATH=LD_LIBRARY_PATH:/home/tar/glibc-2.14/build/</div></pre></td></tr></table></figure></p>
+<p>然后进入mimipenguin目录，运行mimipenguin<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./mimipenguin</div></pre></td></tr></table></figure></p>
+<h2 id="密码提取工具LaZagne"><a href="#密码提取工具LaZagne" class="headerlink" title="密码提取工具LaZagne"></a>密码提取工具LaZagne</h2><h3 id="LaZagne"><a href="#LaZagne" class="headerlink" title="LaZagne"></a>LaZagne</h3><p>LaZagne是一款可以在windows、linux、mac中提取密码的工具，包括各类浏览器中保存的密码，本地保存的私钥文件，windows的登陆密码，记住的wifi密码等。每个环境中的安装使用操作都比较相似，本部分以windows为例介绍一下安装运行过程。</p>
+<h3 id="安装LaZagne"><a href="#安装LaZagne" class="headerlink" title="安装LaZagne"></a>安装LaZagne</h3><p>LaZagne需要python环境才可以运行，所以要提前准备python环境，并将pip更新到最新版本。</p>
+<p>在windows本地任意文件夹内下载LaZagne源码</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/AlessandroZ/LaZagne.git</div></pre></td></tr></table></figure>
+<p>requirements.txt中说明了运行LaZagne需要哪些依赖,requirements.txt:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">enum34; python_version &lt; &apos;3.4&apos; and sys_platform == &apos;win32&apos;</div><div class="line">psutil; sys_platform == &apos;linux&apos; or sys_platform == &apos;linux2&apos;</div><div class="line">pyasn1</div><div class="line">rsa; sys_platform == &apos;win32&apos;</div><div class="line">secretstorage; sys_platform == &apos;linux&apos; or sys_platform == &apos;linux2&apos;</div><div class="line">https://github.com/AlessandroZ/pypykatz/archive/master.zip; sys_platform == &apos;win32&apos;  # should point to pypykatz if my PR is approved</div></pre></td></tr></table></figure></p>
+<p>在命令行中运行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install r requirements.txt</div></pre></td></tr></table></figure></p>
+<p>接着进入Windows目录(如果是其他系统就使用对应目录脚本)，根据需要获取的密码范围运行laZagne.py来获取密码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#运行所有模块</div><div class="line">python laZagne.py all</div><div class="line">#仅从浏览器获取密码</div><div class="line">python laZange.py browsers</div><div class="line">#仅从火狐浏览器获取密码</div><div class="line">python laZagne.py browsers -firefox</div></pre></td></tr></table></figure></p>
+<p>如果运行laZagne.py中报错缺少依赖，就根据报错信息pip安装所需依赖直到可以运行。</p>
+<p>运行结果部分截图</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/password_get/password01.png" alt=""></p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2019/12/07/两款密码提取工具的配置和使用/" target="_blank">两款密码提取工具的配置和使用</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2019-12-07 11:59:46<br />
+    <span>最后更新:</span>2019-12-07 12:00:49<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
