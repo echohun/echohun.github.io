@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    ida远程调试linux程序 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",工具配置">
+<meta name="description" content="前言在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。
+ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ida远程调试linux程序 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/02/04/ida远程调试linux程序/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。
+ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida01.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida02.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida03.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida04.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida05.png">
+<meta property="og:updated_time" content="2020-02-03T16:27:12.487Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ida远程调试linux程序 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。
+ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida01.png">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/python/" class="tagc2">python : 14</a><a href="/tags/笔记/" class="tagc3">笔记 : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/工具配置/" class="tagc5">工具配置 : 3</a><a href="/tags/ctf/" class="tagc1">ctf : 3</a><a href="/tags/文件上传/" class="tagc2">文件上传 : 3</a><a href="/tags/XSS/" class="tagc3">XSS : 2</a><a href="/tags/代码审计/" class="tagc4">代码审计 : 2</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc1">逻辑处理漏洞 : 2</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc3">密码学 : 2</a><a href="/tags/硬件安全/" class="tagc4">硬件安全 : 2</a><a href="/tags/redis/" class="tagc5">redis : 1</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">ida远程调试linux程序</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-02-04 00:26:16" class="post-meta__date date">2020-02-04 00:26:16</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/ida/">ida</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/工具配置/">工具配置</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。</p>
+<h2 id="ida远程调试配置"><a href="#ida远程调试配置" class="headerlink" title="ida远程调试配置"></a>ida远程调试配置</h2><p>1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是32还是64位）拷贝至linux机器中。赋予其可执行权限，并运行对应版本的linux_server。</p>
+<p>2.将需要调试程序拷贝两份，一份放在linux中，赋予其others可执行权限（sudo chmod o+x xxx），另一份放在windows中，使用ida打开，并选择在上方菜单栏选择Debuger-&gt;Run-&gt;Remote Linux Debugger。</p>
+<p>3.在Debugger-&gt;process options中配置远程linux机器ip，端口，运行文件路径，以及运行参数等。点击ok，ida自动载入远程程序，ida远程调试的配置就完成了。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida01.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida02.png" alt=""></p>
+<h2 id="ida远程调试"><a href="#ida远程调试" class="headerlink" title="ida远程调试"></a>ida远程调试</h2><p>在本文中使用一道pwnable中的简单题目来讲解ida远程调试,先贴题目代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line"></div><div class="line">int main()&#123;</div><div class="line">        unsigned int random;</div><div class="line">        random = rand();        // random value!</div><div class="line"></div><div class="line">        unsigned int key=0;</div><div class="line">        scanf(&quot;%d&quot;, &amp;key);</div><div class="line"></div><div class="line">        if( (key ^ random) == 0xdeadbeef )&#123;</div><div class="line">                printf(&quot;Good!\n&quot;);</div><div class="line">                system(&quot;/bin/cat flag&quot;);</div><div class="line">                return 0;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        printf(&quot;Wrong, maybe you should try 2^32 cases.\n&quot;);</div><div class="line">        return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>本题原意是考察c语言中rand()函数在不使用随机数种子的情况下，默认使用1作为种子，导致每次产生的随机数均为同样的值，只需要将代码重新编译运行print出随机数即可，或者动态调试时候直接查看内存中随机数的值，此处为了介绍ida远程调试，就使用第二种办法。</p>
+<p>1.首先我们在刚才的程序中，找到主函数，F5反编译伪代码，F2设置断点，并启动远程调试。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida03.png" alt=""></p>
+<p>2.打开debugger-&gt;debugger windows-&gt;watch view监视窗口，添加新变量v5进行观察，或者直接在汇编中，添加eax查看调用rand函数之后的值。</p>
+<p>3.F8单步调试，F9单步进入函数，多次按下F8在rand()之后查看v5或rand之后eax的值，计算和0xdeadbeef的异或就是需要输入的key值。在这里得到，随机数为0x6B8B4567，则计算得到key为0xb526fb88，由于需要输入%d格式的key，所以转换成十进制为3039230856。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida04.png" alt=""></p>
+<p>4.linux中输入计算值，进入分支，获取flag。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida05.png" alt=""></p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/02/04/ida远程调试linux程序/" target="_blank">ida远程调试linux程序</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-02-04 00:26:16<br />
+    <span>最后更新:</span>2020-02-04 00:27:12<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
