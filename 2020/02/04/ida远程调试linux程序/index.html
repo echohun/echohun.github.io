@@ -22,17 +22,17 @@ ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录
 <meta property="og:site_name" content="Leticia‘s Blog">
 <meta property="og:description" content="前言在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。
 ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida01.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida02.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida03.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida04.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida05.png">
-<meta property="og:updated_time" content="2020-02-03T16:27:12.487Z">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida01.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida02.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida03.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida04.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida05.png">
+<meta property="og:updated_time" content="2020-02-03T16:34:23.547Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ida远程调试linux程序 | Leticia‘s Blog">
 <meta name="twitter:description" content="前言在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。
 ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida01.png">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida01.png">
 
   <!-- favicon icon files -->
 
@@ -76,7 +76,7 @@ ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录
         
 
   <div id="tagscloud">
-<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/python/" class="tagc2">python : 14</a><a href="/tags/笔记/" class="tagc3">笔记 : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/工具配置/" class="tagc5">工具配置 : 3</a><a href="/tags/ctf/" class="tagc1">ctf : 3</a><a href="/tags/文件上传/" class="tagc2">文件上传 : 3</a><a href="/tags/XSS/" class="tagc3">XSS : 2</a><a href="/tags/代码审计/" class="tagc4">代码审计 : 2</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc1">逻辑处理漏洞 : 2</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc3">密码学 : 2</a><a href="/tags/硬件安全/" class="tagc4">硬件安全 : 2</a><a href="/tags/redis/" class="tagc5">redis : 1</a>
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/笔记/" class="tagc2">笔记 : 14</a><a href="/tags/python/" class="tagc3">python : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/ctf/" class="tagc5">ctf : 3</a><a href="/tags/文件上传/" class="tagc1">文件上传 : 3</a><a href="/tags/工具配置/" class="tagc2">工具配置 : 3</a><a href="/tags/XSS/" class="tagc3">XSS : 2</a><a href="/tags/代码审计/" class="tagc4">代码审计 : 2</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc1">逻辑处理漏洞 : 2</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc3">密码学 : 2</a><a href="/tags/硬件安全/" class="tagc4">硬件安全 : 2</a><a href="/tags/redis/" class="tagc5">redis : 1</a>
 </div>
 
         <div class="navigation-wrapper">
@@ -149,24 +149,24 @@ ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录
 <h2 id="ida远程调试配置"><a href="#ida远程调试配置" class="headerlink" title="ida远程调试配置"></a>ida远程调试配置</h2><p>1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是32还是64位）拷贝至linux机器中。赋予其可执行权限，并运行对应版本的linux_server。</p>
 <p>2.将需要调试程序拷贝两份，一份放在linux中，赋予其others可执行权限（sudo chmod o+x xxx），另一份放在windows中，使用ida打开，并选择在上方菜单栏选择Debuger-&gt;Run-&gt;Remote Linux Debugger。</p>
 <p>3.在Debugger-&gt;process options中配置远程linux机器ip，端口，运行文件路径，以及运行参数等。点击ok，ida自动载入远程程序，ida远程调试的配置就完成了。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida01.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida02.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida01.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida02.png" alt=""></p>
 <h2 id="ida远程调试"><a href="#ida远程调试" class="headerlink" title="ida远程调试"></a>ida远程调试</h2><p>在本文中使用一道pwnable中的简单题目来讲解ida远程调试,先贴题目代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line"></div><div class="line">int main()&#123;</div><div class="line">        unsigned int random;</div><div class="line">        random = rand();        // random value!</div><div class="line"></div><div class="line">        unsigned int key=0;</div><div class="line">        scanf(&quot;%d&quot;, &amp;key);</div><div class="line"></div><div class="line">        if( (key ^ random) == 0xdeadbeef )&#123;</div><div class="line">                printf(&quot;Good!\n&quot;);</div><div class="line">                system(&quot;/bin/cat flag&quot;);</div><div class="line">                return 0;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        printf(&quot;Wrong, maybe you should try 2^32 cases.\n&quot;);</div><div class="line">        return 0;</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
 <p>本题原意是考察c语言中rand()函数在不使用随机数种子的情况下，默认使用1作为种子，导致每次产生的随机数均为同样的值，只需要将代码重新编译运行print出随机数即可，或者动态调试时候直接查看内存中随机数的值，此处为了介绍ida远程调试，就使用第二种办法。</p>
 <p>1.首先我们在刚才的程序中，找到主函数，F5反编译伪代码，F2设置断点，并启动远程调试。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida03.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida03.png" alt=""></p>
 <p>2.打开debugger-&gt;debugger windows-&gt;watch view监视窗口，添加新变量v5进行观察，或者直接在汇编中，添加eax查看调用rand函数之后的值。</p>
 <p>3.F8单步调试，F9单步进入函数，多次按下F8在rand()之后查看v5或rand之后eax的值，计算和0xdeadbeef的异或就是需要输入的key值。在这里得到，随机数为0x6B8B4567，则计算得到key为0xb526fb88，由于需要输入%d格式的key，所以转换成十进制为3039230856。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida04.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida04.png" alt=""></p>
 <p>4.linux中输入计算值，进入分支，获取flag。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_dubug/ida05.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ida_debug/ida05.png" alt=""></p>
 
   </section>
   <div class="copyright">
     <span>文本标题:</span><a href="/2020/02/04/ida远程调试linux程序/" target="_blank">ida远程调试linux程序</a><br />
     <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
     <span>发布时间:</span>2020-02-04 00:26:16<br />
-    <span>最后更新:</span>2020-02-04 00:27:12<br />
+    <span>最后更新:</span>2020-02-04 00:34:23<br />
     <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
     <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
   </div>
