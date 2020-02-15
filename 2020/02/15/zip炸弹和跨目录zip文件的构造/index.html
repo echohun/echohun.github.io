@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    zip炸弹和跨目录zip文件的构造 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",文件上传,zip">
+<meta name="description" content="前言在对可上传zip文件的上传点进行测试时，除了一般的上传漏洞，我们也要关注其后台代码对zip文件解压后的大小和跨目录解压问题的检查。博主在本文中将介绍测试上述两种问题所用到的zip文件如何构造。
+什么是zip炸弹zip炸弹就是一个高压缩比的zip文件，它本身可能只有几M或几十M的大小，但是解压缩之后会产生巨大的数据量，会解压到几十G的大小甚至更大，这种zip文件会对解压缩的系统造成严重的资源负担">
+<meta property="og:type" content="article">
+<meta property="og:title" content="zip炸弹和跨目录zip文件的构造 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/02/15/zip炸弹和跨目录zip文件的构造/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言在对可上传zip文件的上传点进行测试时，除了一般的上传漏洞，我们也要关注其后台代码对zip文件解压后的大小和跨目录解压问题的检查。博主在本文中将介绍测试上述两种问题所用到的zip文件如何构造。
+什么是zip炸弹zip炸弹就是一个高压缩比的zip文件，它本身可能只有几M或几十M的大小，但是解压缩之后会产生巨大的数据量，会解压到几十G的大小甚至更大，这种zip文件会对解压缩的系统造成严重的资源负担">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip01.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip02.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip03.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip04.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip05.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip06.png">
+<meta property="og:updated_time" content="2020-02-15T08:46:30.764Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="zip炸弹和跨目录zip文件的构造 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言在对可上传zip文件的上传点进行测试时，除了一般的上传漏洞，我们也要关注其后台代码对zip文件解压后的大小和跨目录解压问题的检查。博主在本文中将介绍测试上述两种问题所用到的zip文件如何构造。
+什么是zip炸弹zip炸弹就是一个高压缩比的zip文件，它本身可能只有几M或几十M的大小，但是解压缩之后会产生巨大的数据量，会解压到几十G的大小甚至更大，这种zip文件会对解压缩的系统造成严重的资源负担">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip01.png">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/python/" class="tagc2">python : 14</a><a href="/tags/笔记/" class="tagc3">笔记 : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/工具配置/" class="tagc5">工具配置 : 3</a><a href="/tags/ctf/" class="tagc1">ctf : 3</a><a href="/tags/文件上传/" class="tagc2">文件上传 : 3</a><a href="/tags/代码审计/" class="tagc3">代码审计 : 2</a><a href="/tags/硬件安全/" class="tagc4">硬件安全 : 2</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc1">逻辑处理漏洞 : 2</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc3">密码学 : 2</a><a href="/tags/XSS/" class="tagc4">XSS : 2</a><a href="/tags/snort/" class="tagc5">snort : 1</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">zip炸弹和跨目录zip文件的构造</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-02-15 16:45:05" class="post-meta__date date">2020-02-15 16:45:05</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/渗透测试/">渗透测试</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/文件上传-zip/">文件上传,zip</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在对可上传zip文件的上传点进行测试时，除了一般的上传漏洞，我们也要关注其后台代码对zip文件解压后的大小和跨目录解压问题的检查。博主在本文中将介绍测试上述两种问题所用到的zip文件如何构造。</p>
+<h2 id="什么是zip炸弹"><a href="#什么是zip炸弹" class="headerlink" title="什么是zip炸弹"></a>什么是zip炸弹</h2><p>zip炸弹就是一个高压缩比的zip文件，它本身可能只有几M或几十M的大小，但是解压缩之后会产生巨大的数据量，会解压到几十G的大小甚至更大，这种zip文件会对解压缩的系统造成严重的资源负担，影响目标系统业务甚至达到使系统崩溃的结果。</p>
+<h2 id="可用于攻击何种系统"><a href="#可用于攻击何种系统" class="headerlink" title="可用于攻击何种系统"></a>可用于攻击何种系统</h2><p>zip炸弹的危害主要在于它解压时消耗的资源和解压后占用的资源，所以主要会对未进行压缩文件解压后大小校验就直接解压的系统造成危害。</p>
+<h2 id="如何制作zip炸弹"><a href="#如何制作zip炸弹" class="headerlink" title="如何制作zip炸弹"></a>如何制作zip炸弹</h2><p>制作zip炸弹的方法非常简单，我们可以使用linux自带的命令制作。</p>
+<h3 id="1-制造一个较大的csv数据文件"><a href="#1-制造一个较大的csv数据文件" class="headerlink" title="1.制造一个较大的csv数据文件"></a>1.制造一个较大的csv数据文件</h3><p>如创建一个1G的csv数据文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dd if=/dev/zero count=$((1024*1024)) bs=1024 of=bigFile.csv</div></pre></td></tr></table></figure></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip01.png" alt=""></p>
+<p>我们也可以通过更改count的值和bs的值创建更大的csv数据文件<br>如10G的csv数据文件<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">dd if=/dev/zero count=$((1024*1024)) bs=10240 of=bigFile.csv</div></pre></td></tr></table></figure></p>
+<h3 id="2-使用zip-9命令压缩"><a href="#2-使用zip-9命令压缩" class="headerlink" title="2.使用zip -9命令压缩"></a>2.使用zip -9命令压缩</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">zip -9 bigFile.zip bigFile.csv</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip02.png" alt=""></p>
+<p>可以从图中看到，1G的csv文件被压缩到了1018K，我们将这个不到1M的zip文件上传，一般都能通过网站的上传文件大小限制，对自身上传时资源耗费很低，但是服务器解压过程中和解压之后占用的资源就比较多了。</p>
+<p>本文中用到的只是一个简单的例子，实际进攻时我们使用的zip文件解压后大小会更大，多达几十或上百TB级别，而且压缩比也会更高，压缩文件实际大小可能只有十几MB。会对服务器造成很严重的资源占用。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip03.png" alt=""></p>
+<p>我们使用这些超高压缩比的zip文件时也不需要自己构造，github中可以找到很多已经打包好的zip炸弹。</p>
+<h2 id="什么是zip跨目录"><a href="#什么是zip跨目录" class="headerlink" title="什么是zip跨目录"></a>什么是zip跨目录</h2><p>zip跨目录与我们常见的跨目录问题类似，都是使用../来进行相对路径的目录跨越，zip文件中携带含有../的文件，在解压过程中这些文件名被解析成相对路径，解压后就会将这些文件传递到其他目录。</p>
+<h2 id="可用于攻击何种系统-1"><a href="#可用于攻击何种系统-1" class="headerlink" title="可用于攻击何种系统"></a>可用于攻击何种系统</h2><p>存在对zip文件解压的系统，程序实现代码未对携带的../等进行过滤，且解压时使用的解压程序没有跨目录的保护机制，这些文件才会被跨目录。</p>
+<p>linux中默认的unzip，即使正常使用解压了含有../的zip文件，也是不会被跨目录的，但是加入-:参数就会产生这种问题。所以这类问题大多数出现在程序的实现中，程序中调用了某些方法来进行文件解压，但是没有严格判断造成的。</p>
+<p>zip跨目录最典型的攻击手段用于存在上传后缀限制的web系统中，如某些接口仅允许上传压缩文件，上传后会自动解压，但是上传路径我们无法访问。这时候攻击者就会构造一个webshell文件并添加为携带目录信息的zip文件，被自动解压后就会将webshell解压到可访问目录，就会造成getshell。</p>
+<h2 id="如何制作跨目录zip文件"><a href="#如何制作跨目录zip文件" class="headerlink" title="如何制作跨目录zip文件"></a>如何制作跨目录zip文件</h2><p>制作跨目录zip文件的方式很方便，我们可以先制作好再上传，也可以在上传的过程中使用burpsuite改zip文件信息来构造。需要改的信息都是相同的。</p>
+<h3 id="1-使用notepad-修改"><a href="#1-使用notepad-修改" class="headerlink" title="1.使用notepad++修改"></a>1.使用notepad++修改</h3><p>首先我们需要创建一个文件名较长的文件，如1234567890.txt。</p>
+<p>然后将其压缩为zip格式。</p>
+<p>使用notepad++打开zip格式的文件，寻找两处很明显的1234567890.txt字段，修改成../../7890.txt，保存后重新打开zip文件就成功了。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip04.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip05.png" alt=""></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/zip_upload/zip06.png" alt=""></p>
+<p>在修改的过程中要确保修改前的文件名和修改后的文件名长度一致，由于一个../就占了三个长度，所以在前面才需要文件名较长，文件名越长，可以跨越的目录层数越多。</p>
+<h3 id="2-使用burpsuite修改"><a href="#2-使用burpsuite修改" class="headerlink" title="2.使用burpsuite修改"></a>2.使用burpsuite修改</h3><p>上传过程中，使用burpsuite抓包，直接修改和notepad++中要修改的同样的两处字段提交即可。</p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/02/15/zip炸弹和跨目录zip文件的构造/" target="_blank">zip炸弹和跨目录zip文件的构造</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-02-15 16:45:05<br />
+    <span>最后更新:</span>2020-02-15 16:46:30<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
