@@ -24,7 +24,7 @@
 <meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2text02.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2text03.png">
 <meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2text04.png">
-<meta property="og:updated_time" content="2020-02-22T12:26:26.869Z">
+<meta property="og:updated_time" content="2020-02-23T14:00:03.751Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="栈溢出之ret2text | Leticia‘s Blog">
 <meta name="twitter:description" content="前言目前栈溢出漏洞主要的利用方式是ROP(Return Oriented Programming)，即返回导向编程，通过栈溢出内容覆盖返回地址，使其跳转到我们想要执行恶意代码的位置中。而跳转的目标有可能是一段本就已经写好的可以执行恶意命令的函数，也有可能是某个全局变量空间，甚至构造一个系统调用的cpu指令，跳转到一个libc中的函数等。最终目的都是执行恶意命令，而未来几篇文章分别介绍采取上述不同的">
@@ -72,7 +72,7 @@
         
 
   <div id="tagscloud">
-<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/笔记/" class="tagc2">笔记 : 14</a><a href="/tags/python/" class="tagc3">python : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/ctf/" class="tagc5">ctf : 3</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/文件上传/" class="tagc2">文件上传 : 3</a><a href="/tags/硬件安全/" class="tagc3">硬件安全 : 2</a><a href="/tags/XSS/" class="tagc4">XSS : 2</a><a href="/tags/代码审计/" class="tagc5">代码审计 : 2</a><a href="/tags/shell/" class="tagc1">shell : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc2">逻辑处理漏洞 : 2</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc4">密码学 : 2</a><a href="/tags/linux/" class="tagc5">linux : 2</a>
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/python/" class="tagc2">python : 14</a><a href="/tags/笔记/" class="tagc3">笔记 : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/工具配置/" class="tagc5">工具配置 : 3</a><a href="/tags/ctf/" class="tagc1">ctf : 3</a><a href="/tags/文件上传/" class="tagc2">文件上传 : 3</a><a href="/tags/rop/" class="tagc3">rop : 2</a><a href="/tags/linux/" class="tagc4">linux : 2</a><a href="/tags/XSS/" class="tagc5">XSS : 2</a><a href="/tags/shell/" class="tagc1">shell : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc2">逻辑处理漏洞 : 2</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc4">密码学 : 2</a><a href="/tags/代码审计/" class="tagc5">代码审计 : 2</a>
 </div>
 
         <div class="navigation-wrapper">
@@ -151,7 +151,7 @@
 <p>所以我们需要的信息有以下几点：<br>1.局部变量a的地址<br>2.func函数的返回地址<br>3.sys函数的地址</p>
 <h3 id="寻找信息"><a href="#寻找信息" class="headerlink" title="寻找信息"></a>寻找信息</h3><p>接下来就按照整理好的思路一步步获取信息<br>1.先查看代码，在第6行下个断点调试。</p>
 <p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2text02.png" alt=""></p>
-<p>2.运行程序搭配func内，并打印局部变量a的地址，sys函数的地址，以及此时rbp的地址。</p>
+<p>2.运行程序到func内，并打印局部变量a的地址，sys函数的地址，以及此时rbp的地址。</p>
 <p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2text03.png" alt=""></p>
 <p>此时找到变量a的地址是0xffe2b6，rbp的地址是0xffe2c0，sys函数的地址是0x401142。</p>
 <p>我们需要的三个信息已经得到两个，最后剩下的func函数返回地址，在64位程序中，在rbp之后8个字节，所以返回地址是rbp+8=0xffe2c8。</p>
@@ -169,7 +169,7 @@
     <span>文本标题:</span><a href="/2020/02/22/栈溢出之ret2text/" target="_blank">栈溢出之ret2text</a><br />
     <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
     <span>发布时间:</span>2020-02-22 20:25:02<br />
-    <span>最后更新:</span>2020-02-22 20:26:26<br />
+    <span>最后更新:</span>2020-02-23 22:00:03<br />
     <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
     <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
   </div>
