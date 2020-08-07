@@ -13,7 +13,7 @@
 
 
 
-  <meta name="keywords" content=",笔记,python">
+  <meta name="keywords" content=",python">
 <meta name="description" content="0x00 前言上次总结了python flask模板，flask模板是一个包含响应文本的文件，其中包含用占位变量表示的动态部分，其具体指只在请求的上下文中才能知道。使用真是只替换变量，再返回最终得到的响应字符串，这一过程称为渲染。为了渲染模板，Flask使用了一个名为Jinja2的强大模板引擎。这次记录一下jinja2模块的学习，用作笔记。
 0x01 jinja2Jinja2是基于python的模">
 <meta property="og:type" content="article">
@@ -22,7 +22,7 @@
 <meta property="og:site_name" content="Leticia‘s Blog">
 <meta property="og:description" content="0x00 前言上次总结了python flask模板，flask模板是一个包含响应文本的文件，其中包含用占位变量表示的动态部分，其具体指只在请求的上下文中才能知道。使用真是只替换变量，再返回最终得到的响应字符串，这一过程称为渲染。为了渲染模板，Flask使用了一个名为Jinja2的强大模板引擎。这次记录一下jinja2模块的学习，用作笔记。
 0x01 jinja2Jinja2是基于python的模">
-<meta property="og:updated_time" content="2018-05-28T03:25:13.948Z">
+<meta property="og:updated_time" content="2020-08-07T13:42:12.819Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="python-jinja2模块学习 | Leticia‘s Blog">
 <meta name="twitter:description" content="0x00 前言上次总结了python flask模板，flask模板是一个包含响应文本的文件，其中包含用占位变量表示的动态部分，其具体指只在请求的上下文中才能知道。使用真是只替换变量，再返回最终得到的响应字符串，这一过程称为渲染。为了渲染模板，Flask使用了一个名为Jinja2的强大模板引擎。这次记录一下jinja2模块的学习，用作笔记。
@@ -70,7 +70,7 @@
         
 
   <div id="tagscloud">
-<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/笔记/" class="tagc2">笔记 : 16</a><a href="/tags/python/" class="tagc3">python : 14</a><a href="/tags/机器学习/" class="tagc4">机器学习 : 13</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/sql注入/" class="tagc2">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc3">暴力破解 : 5</a><a href="/tags/网络安全/" class="tagc4">网络安全 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/文件上传/" class="tagc3">文件上传 : 3</a><a href="/tags/内网渗透/" class="tagc4">内网渗透 : 3</a><a href="/tags/linux/" class="tagc5">linux : 2</a><a href="/tags/代码审计/" class="tagc1">代码审计 : 2</a><a href="/tags/metasploit/" class="tagc2">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc3">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc4">密码学 : 2</a><a href="/tags/硬件安全/" class="tagc5">硬件安全 : 2</a>
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/笔记/" class="tagc2">笔记 : 13</a><a href="/tags/机器学习/" class="tagc3">机器学习 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/代码审计/" class="tagc2">代码审计 : 2</a><a href="/tags/metasploit/" class="tagc3">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
 </div>
 
         <div class="navigation-wrapper">
@@ -125,13 +125,13 @@
       <span class="post-meta__tags tags">
       
         <font class="categories">&#8226; 分类:
-        <a class="categories-link" href="/categories/python/">python</a>, <a class="categories-link" href="/categories/python/笔记/">笔记</a>
+        <a class="categories-link" href="/categories/python/">python</a>
         </font>
       
       
         &#8226; 标签:
         <font class="tags">
-        <a class="tags-link" href="/tags/python/">python</a>, <a class="tags-link" href="/tags/笔记/">笔记</a>
+        <a class="tags-link" href="/tags/python/">python</a>
         </font>
       
       </span>
@@ -265,7 +265,7 @@
     <span>文本标题:</span><a href="/2018/05/28/python-jinja2模块学习/" target="_blank">python-jinja2模块学习</a><br />
     <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
     <span>发布时间:</span>2018-05-28 11:17:25<br />
-    <span>最后更新:</span>2018-05-28 11:25:13<br />
+    <span>最后更新:</span>2020-08-07 21:42:12<br />
     <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
     <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
   </div>
