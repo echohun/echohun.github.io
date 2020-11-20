@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    攻击溯源的排查范围 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",攻击溯源">
+<meta name="description" content="前言在系统被入侵后，需要迅速梳理出黑客的攻击路径，本文总结windows系统攻击溯源过程中必要的排查范围。
+排查项目用户查看当前登录用户1query user
+查看系统中所有用户1231. net user2. 开始-运行-lusrmgr.msc3.查看C:\Users目录排查是否新建用户目录，如果存在则排查对应用户的download和desktop目录是否有可疑文件
+查看是否存在隐藏账号，克隆账">
+<meta property="og:type" content="article">
+<meta property="og:title" content="攻击溯源的排查范围 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/09/15/攻击溯源的排查范围/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言在系统被入侵后，需要迅速梳理出黑客的攻击路径，本文总结windows系统攻击溯源过程中必要的排查范围。
+排查项目用户查看当前登录用户1query user
+查看系统中所有用户1231. net user2. 开始-运行-lusrmgr.msc3.查看C:\Users目录排查是否新建用户目录，如果存在则排查对应用户的download和desktop目录是否有可疑文件
+查看是否存在隐藏账号，克隆账">
+<meta property="og:updated_time" content="2020-11-20T12:57:04.934Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="攻击溯源的排查范围 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言在系统被入侵后，需要迅速梳理出黑客的攻击路径，本文总结windows系统攻击溯源过程中必要的排查范围。
+排查项目用户查看当前登录用户1query user
+查看系统中所有用户1231. net user2. 开始-运行-lusrmgr.msc3.查看C:\Users目录排查是否新建用户目录，如果存在则排查对应用户的download和desktop目录是否有可疑文件
+查看是否存在隐藏账号，克隆账">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/代码审计/" class="tagc2">代码审计 : 2</a><a href="/tags/linux/" class="tagc3">linux : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">攻击溯源的排查范围</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-09-15 20:24:28" class="post-meta__date date">2020-09-15 20:24:28</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/攻击溯源/">攻击溯源</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/攻击溯源/">攻击溯源</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在系统被入侵后，需要迅速梳理出黑客的攻击路径，本文总结windows系统攻击溯源过程中必要的排查范围。</p>
+<h2 id="排查项目"><a href="#排查项目" class="headerlink" title="排查项目"></a>排查项目</h2><h3 id="用户"><a href="#用户" class="headerlink" title="用户"></a>用户</h3><h4 id="查看当前登录用户"><a href="#查看当前登录用户" class="headerlink" title="查看当前登录用户"></a>查看当前登录用户</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">query user</div></pre></td></tr></table></figure>
+<h4 id="查看系统中所有用户"><a href="#查看系统中所有用户" class="headerlink" title="查看系统中所有用户"></a>查看系统中所有用户</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">1. net user</div><div class="line">2. 开始-运行-lusrmgr.msc</div><div class="line">3.查看C:\Users目录排查是否新建用户目录，如果存在则排查对应用户的download和desktop目录是否有可疑文件</div></pre></td></tr></table></figure>
+<h4 id="查看是否存在隐藏账号，克隆账号"><a href="#查看是否存在隐藏账号，克隆账号" class="headerlink" title="查看是否存在隐藏账号，克隆账号"></a>查看是否存在隐藏账号，克隆账号</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">开始-运行-regedit</div><div class="line">查看HKEY_LOCAL_MACHINE\SAM\SAM\Domains\Account\Users中是否有异常</div></pre></td></tr></table></figure>
+<h3 id="启动项"><a href="#启动项" class="headerlink" title="启动项"></a>启动项</h3><p>注册表查看启动项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run</div><div class="line"></div><div class="line">\HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run</div></pre></td></tr></table></figure></p>
+<p>命令行查看启动项<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">wmic startup list full</div></pre></td></tr></table></figure></p>
+<p>组策略中查看启动<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">运行-gpedit.msc</div></pre></td></tr></table></figure></p>
+<h3 id="Recent目录"><a href="#Recent目录" class="headerlink" title="Recent目录"></a>Recent目录</h3><p>此目录可以看到程序或文件最后被打开和使用的日期时间。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">C:\Users\Administrator\Recent</div></pre></td></tr></table></figure></p>
+<h3 id="windows日志"><a href="#windows日志" class="headerlink" title="windows日志"></a>windows日志</h3><h4 id="安全日志"><a href="#安全日志" class="headerlink" title="安全日志"></a>安全日志</h4><p>计算机-管理-事件查看器-windows日志-安全(或eventvwr.msc)</p>
+<p>根据时间排查安全日志里的登录事件，用户创建等事件情况</p>
+<p>着重寻找登录事件(ID4624)且登录类型为3和10等远程登录方式</p>
+<p>windows安全日志文件：C:\Windows\System32\winevt\Logs\Security.evtx 查看其大小是否为20M左右，若远远小于20M则有可能被清理过</p>
+<h4 id="系统日志"><a href="#系统日志" class="headerlink" title="系统日志"></a>系统日志</h4><p>计算机-管理-事件查看器-windows日志-系统</p>
+<p>查看恶意进程的运行状态时间等</p>
+<h3 id="排查可疑进程"><a href="#排查可疑进程" class="headerlink" title="排查可疑进程"></a>排查可疑进程</h3><p>查看可疑网络连接</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">netstat -b -n</div></pre></td></tr></table></figure>
+<p>根据网络连接寻找pid</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">netstat -ano | findstr xxx</div></pre></td></tr></table></figure>
+<p>根据pid寻找进程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">tasklist | findstr xxx</div></pre></td></tr></table></figure>
+<p>杀死可疑进程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">taskkill /T /F /PID xxxx</div></pre></td></tr></table></figure>
+<h3 id="排查计划任务"><a href="#排查计划任务" class="headerlink" title="排查计划任务"></a>排查计划任务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">schtasks /query /fo table /v</div><div class="line"></div><div class="line">运行-taskschd.msc</div></pre></td></tr></table></figure>
+<h3 id="排查系统服务"><a href="#排查系统服务" class="headerlink" title="排查系统服务"></a>排查系统服务</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">运行-service.msc</div></pre></td></tr></table></figure>
+<h2 id="工具使用"><a href="#工具使用" class="headerlink" title="工具使用"></a>工具使用</h2><h3 id="PECmd"><a href="#PECmd" class="headerlink" title="PECmd"></a>PECmd</h3><p>使用PECmd导出最近活动项目</p>
+<h3 id="LastActivityView"><a href="#LastActivityView" class="headerlink" title="LastActivityView"></a>LastActivityView</h3><p>使用LastActivityView图形化工具查看最近活动项目</p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/09/15/攻击溯源的排查范围/" target="_blank">攻击溯源的排查范围</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-09-15 20:24:28<br />
+    <span>最后更新:</span>2020-11-20 20:57:04<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>

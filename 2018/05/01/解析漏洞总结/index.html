@@ -24,7 +24,7 @@
 <meta property="og:description" content="0x00 服务器解析漏洞服务器解析漏洞一般是服务器自身或扩展组件带来的漏洞，配合文件上传等漏洞就会产生很大的危害。
 我们这里整理常见的服务器apache、IIS、nginx的解析漏洞。
 0x01 apache一、不可识别解析apache解析文件的规则是从右到左开始判断解析,如果后缀名为不可识别文件解析,就再往左判断。比如 test.php.owf.rar “.owf”和”.rar” 这两种后缀是a">
-<meta property="og:updated_time" content="2018-05-01T13:48:51.058Z">
+<meta property="og:updated_time" content="2020-11-20T12:39:45.569Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="解析漏洞总结 | Leticia‘s Blog">
 <meta name="twitter:description" content="0x00 服务器解析漏洞服务器解析漏洞一般是服务器自身或扩展组件带来的漏洞，配合文件上传等漏洞就会产生很大的危害。
@@ -73,7 +73,7 @@
         
 
   <div id="tagscloud">
-<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/笔记/" class="tagc2">笔记 : 13</a><a href="/tags/机器学习/" class="tagc3">机器学习 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/代码审计/" class="tagc2">代码审计 : 2</a><a href="/tags/metasploit/" class="tagc3">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/代码审计/" class="tagc2">代码审计 : 2</a><a href="/tags/linux/" class="tagc3">linux : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
 </div>
 
         <div class="navigation-wrapper">
@@ -156,7 +156,10 @@
 <li>1.如果在 Apache 的 conf 里有这样一行配置 AddHandler php5-script .php 这时只要文件名里包含.php 即使文件名是 test2.php.jpg 也会以 php 来执行。</li>
 <li>2.如果在 Apache 的 conf 里有这样一行配置 AddType application/x-httpd-php .jpg 即使扩展名是 jpg，一样能以 php 方式执行。</li>
 </ul>
+<h4 id="三、罕见后缀"><a href="#三、罕见后缀" class="headerlink" title="三、罕见后缀"></a>三、罕见后缀</h4><p>Apache配置文件中会有.+.ph(p[345]?|t|tml)此类的正则表达式，被当php程序执行的文件名要符合正则表达式。也就是说php3，php4，php5，pht，phtml等文件后缀也是可以被当作php文件进行解析的。</p>
+<h4 id="四、后缀包含换行符-x0A"><a href="#四、后缀包含换行符-x0A" class="headerlink" title="四、后缀包含换行符\x0A"></a>四、后缀包含换行符\x0A</h4><p>CVE-2017-15715：Apache 2.4.0-2.4.29中，上传一个后缀末尾包含换行符的文件，来绕过FilesMatch。绕过FilesMatch不一定能被PHP解析。</p>
 <h2 id="0x02-IIS"><a href="#0x02-IIS" class="headerlink" title="0x02 IIS"></a>0x02 IIS</h2><h4 id="一、目录解析"><a href="#一、目录解析" class="headerlink" title="一、目录解析"></a>一、目录解析</h4><p>在IIS-6.0的版本，在.asp或.asa文件夹下的所有类型后缀文件全部解析为.asp文件。</p>
+<p>存在数据库备份功能的系统并且备份路径可控的话经常会出现这个问题。</p>
 <h4 id="二、文件解析"><a href="#二、文件解析" class="headerlink" title="二、文件解析"></a>二、文件解析</h4><p>在IIS-6.0的版本，服务器默认不解析;后面的内容，所以xxx.asp;.jpg会被解析成xxx.asp。</p>
 <h4 id="三、其他解析类型"><a href="#三、其他解析类型" class="headerlink" title="三、其他解析类型"></a>三、其他解析类型</h4><p>在IIS6.0的版本，如下几种文件类型也会被执行。</p>
 <ul>
@@ -165,12 +168,14 @@
 <li>xxx.cdx</li>
 </ul>
 <h4 id="四、php-cgi漏洞"><a href="#四、php-cgi漏洞" class="headerlink" title="四、php-cgi漏洞"></a>四、php-cgi漏洞</h4><p>在IIS-7.0和IIS-7.5的版本，在php配置文件中，开启cgi.fix_pathinfo，然后上传一个1.jpg的一句话木马文件。然后用菜刀访问1.jpg/.php即可连接一句话木马。</p>
-<h2 id="0x03-nginx"><a href="#0x03-nginx" class="headerlink" title="0x03 nginx"></a>0x03 nginx</h2><h4 id="一、低版本nginx"><a href="#一、低版本nginx" class="headerlink" title="一、低版本nginx"></a>一、低版本nginx</h4><p>nginx 0.5.x、nginx 0.6.x中可以通过在任意文件名后面增加%00.php解析为php</p>
-<h4 id="二、php-cgi漏洞"><a href="#二、php-cgi漏洞" class="headerlink" title="二、php-cgi漏洞"></a>二、php-cgi漏洞</h4><p>和IIS的第四点相同，在php配置文件中，开启了cgi.fix_pathinfo，导致图片马1.jpg可以通过访问1.jpg/.php解析成php</p>
-<h2 id="0x04-应对"><a href="#0x04-应对" class="headerlink" title="0x04 应对"></a>0x04 应对</h2><ul>
+<h2 id="0x03-nginx"><a href="#0x03-nginx" class="headerlink" title="0x03 nginx"></a>0x03 nginx</h2><h4 id="一、低版本nginx"><a href="#一、低版本nginx" class="headerlink" title="一、低版本nginx"></a>一、低版本nginx</h4><p>空字节代码执行漏洞：nginx 0.5.x、nginx 0.6.x、Nginx 0.7-0.7.65、Nginx 0.8-0.8.37中可以通过在任意文件名后面增加%00.php解析为php，如1.jpg%00.php</p>
+<h4 id="二、php-cgi漏洞"><a href="#二、php-cgi漏洞" class="headerlink" title="二、php-cgi漏洞"></a>二、php-cgi漏洞</h4><p>和IIS的第四点相同，在php配置文件中，开启了cgi.fix_pathinfo，导致图片马1.jpg可以通过访问1.jpg/.php、1.jpg%00.php解析成php文件</p>
+<p>0x04 windows解析漏洞</p>
+<p>Windows操作系统中，文件名不能以空格或.开头，也不能以空格或.结尾。当把一个文件命名为以空格或.开头或结尾时，会自动地去掉开头和结尾处的空格和.。利用此特性，也可能造成文件解析漏洞</p>
+<h2 id="0x05-应对"><a href="#0x05-应对" class="headerlink" title="0x05 应对"></a>0x05 应对</h2><ul>
 <li>1.对于php-cgi漏洞，可以修改php.ini文件，将cgi.fix_pathinfo的值设置为0</li>
 <li>2.使用白名单匹配文件后缀名</li>
-<li>3.可以对上传后的文件固定后缀之前的所有字符进行重命名</li>
+<li>3.可以对上传后的文件固定后缀，并对之前的所有字符进行重命名</li>
 </ul>
 
   </section>
@@ -178,7 +183,7 @@
     <span>文本标题:</span><a href="/2018/05/01/解析漏洞总结/" target="_blank">解析漏洞总结</a><br />
     <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
     <span>发布时间:</span>2018-05-01 21:47:29<br />
-    <span>最后更新:</span>2018-05-01 21:48:51<br />
+    <span>最后更新:</span>2020-11-20 20:39:45<br />
     <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
     <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
   </div>
