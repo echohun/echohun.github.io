@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    后渗透阶段清理痕迹方式总结 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",痕迹清理">
+<meta name="description" content="前言在渗透完成之后，为了减少被发现和追溯的概率，攻击者有必要清除自己的攻击痕迹，本文分别对windows和linux上清理痕迹的方式做一个总结。
+windows有远程桌面权限时手动删除日志：1开始-程序-管理工具-计算机管理-系统工具-事件查看器-清除日志
+wevtutil1234wevtutil el             列出系统中所有日志名称wevtutil cl system">
+<meta property="og:type" content="article">
+<meta property="og:title" content="后渗透阶段清理痕迹方式总结 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2020/11/11/后渗透阶段清理痕迹方式总结/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言在渗透完成之后，为了减少被发现和追溯的概率，攻击者有必要清除自己的攻击痕迹，本文分别对windows和linux上清理痕迹的方式做一个总结。
+windows有远程桌面权限时手动删除日志：1开始-程序-管理工具-计算机管理-系统工具-事件查看器-清除日志
+wevtutil1234wevtutil el             列出系统中所有日志名称wevtutil cl system">
+<meta property="og:updated_time" content="2021-01-10T10:22:08.795Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="后渗透阶段清理痕迹方式总结 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言在渗透完成之后，为了减少被发现和追溯的概率，攻击者有必要清除自己的攻击痕迹，本文分别对windows和linux上清理痕迹的方式做一个总结。
+windows有远程桌面权限时手动删除日志：1开始-程序-管理工具-计算机管理-系统工具-事件查看器-清除日志
+wevtutil1234wevtutil el             列出系统中所有日志名称wevtutil cl system">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 3</a><a href="/tags/ctf/" class="tagc3">ctf : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/linux/" class="tagc5">linux : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/redis/" class="tagc2">redis : 2</a><a href="/tags/metasploit/" class="tagc3">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">后渗透阶段清理痕迹方式总结</h1>
+    
+    <div class="post-meta">
+      <time datetime="2020-11-11 23:19:34" class="post-meta__date date">2020-11-11 23:19:34</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/渗透测试/">渗透测试</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/痕迹清理/">痕迹清理</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在渗透完成之后，为了减少被发现和追溯的概率，攻击者有必要清除自己的攻击痕迹，本文分别对windows和linux上清理痕迹的方式做一个总结。</p>
+<h2 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h2><p>有远程桌面权限时手动删除日志：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">开始-程序-管理工具-计算机管理-系统工具-事件查看器-清除日志</div></pre></td></tr></table></figure></p>
+<p>wevtutil<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">wevtutil el             列出系统中所有日志名称</div><div class="line">wevtutil cl system      清理系统日志</div><div class="line">wevtutil cl application 清理应用程序日志</div><div class="line">wevtutil cl security    清理安全日志</div></pre></td></tr></table></figure></p>
+<p>meterperter自带清除日志功能<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">clearev     清除windows中的应用程序日志、系统日志、安全日志</div></pre></td></tr></table></figure></p>
+<p>清除recent</p>
+<p>在文件资源管理器中点击“查看”-&gt;“选项”-&gt;在常规-&gt;隐私中点击”清除”按钮</p>
+<p>或直接打开C:\Users\Administrator\Recent并删除所有内容</p>
+<p>或在命令行中输入del /f /s /q “%userprofile%\Recent*.*</p>
+<h2 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h2><h3 id="清除命令历史记录"><a href="#清除命令历史记录" class="headerlink" title="清除命令历史记录"></a>清除命令历史记录</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">histroy -r          #删除当前会话历史记录</div><div class="line">history -c          #删除内存中的所有命令历史</div><div class="line">rm .bash_history   #删除历史文件中的内容</div><div class="line">HISTZISE=0          #通过设置历史命令条数来清除所有历史记录</div></pre></td></tr></table></figure>
+<h3 id="在隐蔽的位置执行命令"><a href="#在隐蔽的位置执行命令" class="headerlink" title="在隐蔽的位置执行命令"></a>在隐蔽的位置执行命令</h3><p>使用vim打开文件执行命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">:set history=0</div><div class="line">:!command</div></pre></td></tr></table></figure></p>
+<h3 id="linux日志文件"><a href="#linux日志文件" class="headerlink" title="linux日志文件"></a>linux日志文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">/var/run/utmp 记录现在登入的用户</div><div class="line">/var/log/wtmp 记录用户所有的登入和登出</div><div class="line">/var/log/lastlog 记录每一个用户最后登入时间</div><div class="line">/var/log/btmp 记录错误的登入尝试</div><div class="line">/var/log/auth.log 需要身份确认的操作</div><div class="line">/var/log/secure 记录安全相关的日志信息</div><div class="line">/var/log/maillog 记录邮件相关的日志信息</div><div class="line">/var/log/message 记录系统启动后的信息和错误日志</div><div class="line">/var/log/cron 记录定时任务相关的日志信息</div><div class="line">/var/log/spooler 记录UUCP和news设备相关的日志信息</div><div class="line">/var/log/boot.log 记录守护进程启动和停止相关的日志消息</div></pre></td></tr></table></figure>
+<p>完全删除日志文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">cat /dev/null &gt; filename</div><div class="line">: &gt; filename</div><div class="line">&gt; filename</div><div class="line">echo &quot;&quot; &gt; filename</div><div class="line">echo &gt; filename</div></pre></td></tr></table></figure></p>
+<p>针对性删除日志文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">删除当天日志</div><div class="line">sed  -i &apos;/当天日期/&apos;d  filename</div></pre></td></tr></table></figure></p>
+<p>篡改日志文件：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">将所有170.170.64.17ip替换为127.0.0.1</div><div class="line">sed -i &apos;s/170.170.64.17/127.0.0.1/g&apos;</div></pre></td></tr></table></figure></p>
+<p>一键清除脚本：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">#!/usr/bin/bash</div><div class="line">echo &gt; /var/log/syslog</div><div class="line">echo &gt; /var/log/messages</div><div class="line">echo &gt; /var/log/httpd/access_log</div><div class="line">echo &gt; /var/log/httpd/error_log</div><div class="line">echo &gt; /var/log/xferlog</div><div class="line">echo &gt; /var/log/secure</div><div class="line">echo &gt; /var/log/auth.log</div><div class="line">echo &gt; /var/log/user.log</div><div class="line">echo &gt; /var/log/wtmp</div><div class="line">echo &gt; /var/log/lastlog</div><div class="line">echo &gt; /var/log/btmp</div><div class="line">echo &gt; /var/run/utmp</div><div class="line">rm ~/./bash_history</div><div class="line">history -c</div></pre></td></tr></table></figure></p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2020/11/11/后渗透阶段清理痕迹方式总结/" target="_blank">后渗透阶段清理痕迹方式总结</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2020-11-11 23:19:34<br />
+    <span>最后更新:</span>2021-01-10 18:22:08<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>

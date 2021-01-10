@@ -22,22 +22,22 @@
 <meta property="og:site_name" content="Leticia‘s Blog">
 <meta property="og:description" content="0x00 SSRF服务端请求伪造SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。与CSRF跨站请求伪造不同,它是利用服务端向其他内外网服务器发送请求。
 0x01 原理很多web应用都提供了从其他的服务器上获取数据的功能。使用用户指定的URL，web应用可以获取图片，下载文件，读取文件内容等。如果应用程序对用">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf01.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf02.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf03.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf04.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf05.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf06.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf07.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf08.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf09.png">
-<meta property="og:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf10.png">
-<meta property="og:updated_time" content="2018-10-26T03:37:02.755Z">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf01.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf02.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf03.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf04.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf05.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf06.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf07.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf08.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf09.png">
+<meta property="og:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf10.png">
+<meta property="og:updated_time" content="2021-01-10T10:23:27.920Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SSRF服务端请求伪造 | Leticia‘s Blog">
 <meta name="twitter:description" content="0x00 SSRF服务端请求伪造SSRF(Server-Side Request Forgery:服务器端请求伪造) 是一种由攻击者构造形成由服务端发起请求的一个安全漏洞。与CSRF跨站请求伪造不同,它是利用服务端向其他内外网服务器发送请求。
 0x01 原理很多web应用都提供了从其他的服务器上获取数据的功能。使用用户指定的URL，web应用可以获取图片，下载文件，读取文件内容等。如果应用程序对用">
-<meta name="twitter:image" content="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf01.png">
+<meta name="twitter:image" content="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf01.png">
 
   <!-- favicon icon files -->
 
@@ -81,7 +81,7 @@
         
 
   <div id="tagscloud">
-<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/代码审计/" class="tagc2">代码审计 : 2</a><a href="/tags/linux/" class="tagc3">linux : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 3</a><a href="/tags/ctf/" class="tagc3">ctf : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/linux/" class="tagc5">linux : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/redis/" class="tagc2">redis : 2</a><a href="/tags/metasploit/" class="tagc3">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
 </div>
 
         <div class="navigation-wrapper">
@@ -176,27 +176,27 @@
 <li>curl_exec — 执行一个cURL会话（在初始和设置选项完成后使用）</li>
 </ul>
 <p>然后我们通过输入框输入想要访问的url，就会加载对应的url过来，比如我们输入百度主页：</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf01.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf01.png" alt=""></p>
 <p>就会返回：</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf02.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf02.png" alt=""></p>
 <p>至此我们环境搭建完成。</p>
 <h2 id="0x04-漏洞利用"><a href="#0x04-漏洞利用" class="headerlink" title="0x04 漏洞利用"></a>0x04 漏洞利用</h2><p>我们上面提到了五种利用方式，我们拿其中的几种做一次实验。</p>
 <p>首先是端口扫描，如果我们要对内网端口进行扫描，就可以在这里输入127.0.0.1和对应端口进行尝试。</p>
 <p>如我们想查看mysql的banner信息，我们就可以输入127.0.0.1:3306</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf03.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf03.png" alt=""></p>
 <p>就可以看到一部分信息。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf04.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf04.png" alt=""></p>
 <p>然后是访问web应用默认文件，比如我们尝试wamp默认界面。直接输入127.0.0.1，访问wamp的默认信息，可以搜集到很多有用的信息。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf05.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf06.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf05.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf06.png" alt=""></p>
 <p>最后再来尝试一下利用file协议访问本地文件，file协议具体用法是<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">file///c:/abc/filename.txt</div></pre></td></tr></table></figure></p>
 <p>file后面与http不同，有三个斜杠，然后跟本地路径和文件，这里可以是任何格式的文件，虽然在网页上显示的时候会有部分无法显示。</p>
 <p>我们尝试一个txt文件，发现可以读取。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf07.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf08.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf07.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf08.png" alt=""></p>
 <p>再尝试一个存放ssh密钥的敏感目录，发现，配置文件和密钥内容其实都可以访问。</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf09.png" alt=""></p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/ssrf/ssrf10.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf09.png" alt=""></p>
+<p><img src="http://oo3iot5oz.bkt.clouddn.com/ssrf/ssrf10.png" alt=""></p>
 <h2 id="0x05-应对"><a href="#0x05-应对" class="headerlink" title="0x05 应对"></a>0x05 应对</h2><ul>
 <li><p>1.过滤返回信息，验证远程服务器对请求的响应是比较容易的方法。如果web应用是去获取某一种类型的文件,那么在把返回结果展示给用户之前先验证返回的信息是否符合标准。</p>
 </li>
@@ -210,13 +210,19 @@
 </li>
 </ul>
 <h2 id="0x06-总结"><a href="#0x06-总结" class="headerlink" title="0x06 总结"></a>0x06 总结</h2><p>SSRF漏洞不如sql注入，xss，文件上传等漏洞有名，所以在很多地方疏于防范，其造成的危害不可小觑。</p>
+<h2 id="0x07-补充"><a href="#0x07-补充" class="headerlink" title="0x07 补充"></a>0x07 补充</h2><p>php ssrf中的伪协议：</p>
+<p>file;dict;sftp;ldap;tftp;gopher;http</p>
+<p>Java ssrf 中的伪协议：</p>
+<p>file;ftp;mailto;http;https;jar;netdoc;gopher</p>
+<p>ssrf攻击负载生成工具：</p>
+<p><a href="https://github.com/tarunkant/Gopherus" target="_blank" rel="external">https://github.com/tarunkant/Gopherus</a></p>
 
   </section>
   <div class="copyright">
     <span>文本标题:</span><a href="/2018/04/23/SSRF服务端请求伪造/" target="_blank">SSRF服务端请求伪造</a><br />
     <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
     <span>发布时间:</span>2018-04-23 23:06:44<br />
-    <span>最后更新:</span>2018-10-26 11:37:02<br />
+    <span>最后更新:</span>2021-01-10 18:23:27<br />
     <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
     <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
   </div>

