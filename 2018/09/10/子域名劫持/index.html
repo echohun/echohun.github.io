@@ -1,0 +1,497 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>子域名劫持 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="子域名劫持">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-09-10 15:22" pubdate>
+        2018年9月10日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">子域名劫持</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>前几个月，关于子域名劫持的安全报告数量激增，去看了几篇报告，感觉这也是一个现在较为广泛存在的问题，就写出来共享一下。</p>
+<h2 id="0x01-子域名与域名解析"><a href="#0x01-子域名与域名解析" class="headerlink" title="0x01 子域名与域名解析"></a>0x01 子域名与域名解析</h2><p>先来介绍一下子域名和域名解析的一些相关知识。</p>
+<h3 id="子域名"><a href="#子域名" class="headerlink" title="子域名"></a>子域名</h3><p>我们通常在域名提供商购买的域名如 baidu.com，并不是只能解析一个服务器，我们可以在它的基础上增加很多的子域名，比如 test.baidu.com，smtp.baidu.com，image.baidu.com，talent.baidu.com 等等，它们可以分别解析到不同的服务器。</p>
+<h3 id="域名解析"><a href="#域名解析" class="headerlink" title="域名解析"></a>域名解析</h3><p>域名解析的记录类型很多：</p>
+<ul>
+<li><p>A记录：地址记录，用来指定域名的IPv4地址，如果需要将域名指向一个IP地址，就需要添加A记录。</p>
+</li>
+<li><p>CNAME： 如果需要将域名指向另一个域名，再由另一个域名提供ip地址，就需要添加CNAME记录。</p>
+</li>
+<li><p>TXT：在这里可以填写任何东西，长度限制255。绝大多数的TXT记录是用来做SPF记录（反垃圾邮件）。</p>
+</li>
+<li><p>NS：域名服务器记录，如果需要把子域名交给其他DNS服务商解析，就需要添加NS记录。</p>
+</li>
+<li><p>AAAA：用来指定主机名（或域名）对应的IPv6地址（例如：ff06:0:0:0:0:0:0:c3）记录。</p>
+</li>
+<li><p>MX：如果需要设置邮箱，让邮箱能收到邮件，就需要添加MX记录。</p>
+</li>
+<li><p>显性URL：从一个地址301重定向到另一个地址的时候，就需要添加显性URL记录（注：DNSPod目前只支持301重定向）。</p>
+</li>
+<li><p>隐性URL：类似于显性URL，区别在于隐性URL不会改变地址栏中的域名。</p>
+</li>
+<li><p>SRV：记录了哪台计算机提供了哪个服务。格式为：服务的名字、点、协议的类型</p>
+</li>
+</ul>
+<p>我们最常用的是A记录与CNMAE记录，分别是将域名指向ipv4地址或另一个域名。</p>
+<h2 id="0x02-漏洞原理"><a href="#0x02-漏洞原理" class="headerlink" title="0x02 漏洞原理"></a>0x02 漏洞原理</h2><p>子域名劫持产生的原因一般都是网站开启了很多子域名，这些子域名其中又有很多cname解析来解析到其他的网站，然后在某一天，这些被指向的网站废弃了，然后又没有去删除解析记录。</p>
+<p>这些被废弃的网站原本的域名被攻击者注册或通过其他手段获得，然后定向到攻击者的服务器并在上面部署钓鱼网站，或者劫持cookie的代码，当用户再次访问这些子域名就会解析向钓鱼网站，或者被盗取cookie而丢失账号。</p>
+<h2 id="0x03-漏洞利用"><a href="#0x03-漏洞利用" class="headerlink" title="0x03 漏洞利用"></a>0x03 漏洞利用</h2><p>我们可以用实例来证明一下，假设现在我们有一个域名 uuzdaisuki.com ,其中有一个解析记录 test.uuzdaisuki.com 原本指向我们另外一个域名 <a target="_blank" rel="noopener" href="http://www.sbwyfdsmjb.tk/">www.sbwyfdsmjb.tk</a> ，但是有一天，我们废弃了这个功能，将第二个域名注销了，却忘记删掉这条解析记录。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/subdomain_takeover/subdomain01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>如果这个解析被攻击者发现了(通过扫描之后的报错界面)，然后攻击者抢注了这个已经被废弃的域名 sbwyfdsmjb.tk，这个时候攻击者就可以将域名解析向自己的服务器，我这里以github页面证明一下。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/subdomain_takeover/subdomain02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，test.uuzdaisuki.com解析到了最终由攻击者可控的github页面。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/subdomain_takeover/subdomain03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这个时候从包括第二个域名及其之后的东西全部都是我们可控了，这个时候可以用来做些什么，相信大家心里都有数了。</p>
+<p>我来举两个常见的例子：</p>
+<h3 id="钓鱼网站"><a href="#钓鱼网站" class="headerlink" title="钓鱼网站"></a>钓鱼网站</h3><p>我们在第二个域名中，使用A记录解析到一台自己的匿名服务器，然后在服务器上部署web服务，根据第一个域名所在公司的业务类型，写一个相似的前端登陆界面然后发送链接出去，就可以实施钓鱼，被攻击者一般看到这个域名的确是所登陆业务的域名，也就不会有疑心了，钓鱼成功率大大增加。</p>
+<p>提供一个qq邮箱的完整前后端钓鱼代码: <a target="_blank" rel="noopener" href="https://github.com/echohun/tools/tree/master/%E9%92%93%E9%B1%BC/qq%E9%82%AE%E7%AE%B1%E9%92%93%E9%B1%BC%E5%89%8D%E7%AB%AF%2B%E5%90%8E%E7%AB%AF%E5%85%A8%E4%BB%A3%E7%A0%81/mailqq">https://github.com/echohun/tools/tree/master/%E9%92%93%E9%B1%BC/qq%E9%82%AE%E7%AE%B1%E9%92%93%E9%B1%BC%E5%89%8D%E7%AB%AF%2B%E5%90%8E%E7%AB%AF%E5%85%A8%E4%BB%A3%E7%A0%81/mailqq</a></p>
+<p>效果如下，可以达到以假乱真：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/subdomain_takeover/subdomain04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h3 id="csrf"><a href="#csrf" class="headerlink" title="csrf"></a>csrf</h3><p>我们目前可以控制的子域名和对方业务属于同一个顶级域名，那同源策略就限制不了我们了，只需要在这个子域构造一个恶意的页面，跳转对这个顶级域名下其他业务发起请求，很容易造成跨站请求伪造。</p>
+<p>详细可以参考这个案例： <a target="_blank" rel="noopener" href="https://hackerone.com/reports/172137">https://hackerone.com/reports/172137</a></p>
+<h3 id="cookie盗取"><a href="#cookie盗取" class="headerlink" title="cookie盗取"></a>cookie盗取</h3><p>同样的，既然我们控制的子域和对方业务属于同一个顶级域名，那么cookie的作用域，我们也是共享的，只需要在这个子域名增加代码将cookie保存起来，之后就可以利用cookie登陆这些被攻击用户的账号，造成cookie劫持。</p>
+<p>具体方法和xss进行cookie盗取一样。</p>
+<h2 id="0x04-应对"><a href="#0x04-应对" class="headerlink" title="0x04 应对"></a>0x04 应对</h2><p>造成子域名劫持根本的原因是运维人员的粗心大意，没有及时关闭掉废弃的dns解析，只需要及时关闭，就可以避免这个问题。但是不幸的是这个问题现在广泛的存在于各个企业之中，每周都能看到非常多关于子域名劫持的安全报告。</p>
+<p>其他案例：</p>
+<p><a target="_blank" rel="noopener" href="https://hackerone.com/reports/32825">https://hackerone.com/reports/32825</a></p>
+<p><a target="_blank" rel="noopener" href="https://hackerone.com/reports/38007">https://hackerone.com/reports/38007</a></p>
+<p><a target="_blank" rel="noopener" href="https://hackerone.com/reports/175070">https://hackerone.com/reports/175070</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/09/14/%E7%82%B9%E5%87%BB%E5%8A%AB%E6%8C%81/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">点击劫持</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/09/06/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-9-%E2%80%94%E2%80%94%E9%9B%86%E6%88%90%E5%AD%A6%E4%B9%A0/">
+                        <span class="hidden-mobile">机器学习(9)——集成学习</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

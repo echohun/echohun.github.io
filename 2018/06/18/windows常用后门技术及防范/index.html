@@ -1,0 +1,538 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>windows常用后门技术及防范 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="windows常用后门技术及防范">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-06-18 22:47" pubdate>
+        2018年6月18日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">windows常用后门技术及防范</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>维持权限同样是渗透测试非常重要的一环，他可以让我们方便的再次进入系统并且降低被发现的概率，而维持权限的方式也就是留后门，了解一些常见的后门技术，不仅可以在进攻时提供维持权限的思路，同时，在防守时也可以更准确的发现隐患。</p>
+<h2 id="0x01-隐藏账户"><a href="#0x01-隐藏账户" class="headerlink" title="0x01 隐藏账户"></a>0x01 隐藏账户</h2><p>隐藏账户应该是最常见的后门方式，其设置方式如下：</p>
+<p>首先我们在命令行输入，如下命令创建一个隐藏账号</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">net <span class="hljs-keyword">user</span> <span class="hljs-title">leticia</span>$ <span class="hljs-number">123456</span> /add<br></code></pre></td></tr></table></figure>
+<p>这个时候，通过net user并不能看到这个账户。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>然后我们将它添加到管理员权限。</p>
+<figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs avrasm">net localgroup administrators leticia$ /<span class="hljs-keyword">add</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>但是这个“隐藏账户”在用户账户中可以看到，并不能骗过细心的管理员。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这个时候我们可以通过操作注册表，使这个账户在用户账户中也不显示。首先我们输入regedit打开注册表编辑器，找到HKEY_LOCAL_MACHINE\SAM\SAM，我们发现这个时候它是空白的，没有权限进行操作，所以我们要右键权限，将读写权限赋予administrator。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>然后我们重启注册表编辑器，发现这个时候已经可以访问了，我们在里面找到刚才创建的leticia$账号和administrator账号对应的键值类型。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor05.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor06.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>然后在上一级文件中找键值类型对应的目录，将administrator对应目录中的F值复制到leticia$对应目录中的F值。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor07.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>复制完成后，把leticia$和其对应的0000003EA目录先导出并保存。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor08.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>然后在命令行中删除刚才的账号</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">net <span class="hljs-keyword">user</span> <span class="hljs-title">leticia</span>$ /del<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor09.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>最后将刚才导出的注册表文件重新导入，隐藏账户就添加成功了。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor10.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>此时在用户账户中看不到这个隐藏账户。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor11.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这个时候其实已经完成了，但是我们还可以再走一步操作，那就是把注册表刚才赋予administrator的权限禁止掉，这样这个账户就很难被发现了。</p>
+<p>防范：</p>
+<ul>
+<li>经常检查用户账户、注册表关键位置。</li>
+<li>将计算机对用户登陆事件的审核策略打开。</li>
+</ul>
+<h2 id="0x02-shift后门"><a href="#0x02-shift后门" class="headerlink" title="0x02 shift后门"></a>0x02 shift后门</h2><p>shift后门是很常见的留后门手法，其原理是用cmd.exe替换原先粘滞键，粘滞键的程序sethc.exe可以通过五次shift键调用，这样我们就可以直接通过按五次shift来调用一个system权限的命令行来执行命令、创建用户等。</p>
+<p>shift后门有着非常丰富的骚操作，我们先来通过一个最基础的shift后门来学习原理。</p>
+<p>制作方法如下：</p>
+<p>我们先进入C:\WINDOWS\system32目录,在这里右键打开命令行，依次输入</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">move</span> sethc.<span class="hljs-keyword">exe</span> sethc.<span class="hljs-keyword">exe</span>.bak<br><span class="hljs-keyword">copy</span> cmd.<span class="hljs-keyword">exe</span> sethc.<span class="hljs-keyword">exe</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor12.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这两句命令分别是将粘滞键程序备份，然后用cmd.exe覆盖原本的粘滞键程序。</p>
+<p>然后我们每次要使用时按5次shift键弹出cmd窗口，可直接以system权限执行系统命令，创建管理员用户，登录服务器等。最后每次删除掉新建的账户，减少被发现的概率。</p>
+<p>如图，我们可以在登陆界面就直接调用cmd：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor13.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>防范：</p>
+<ul>
+<li>自行呼出粘滞键检查问题。</li>
+<li>禁用粘滞键。</li>
+</ul>
+<h2 id="0x03-启动项后门"><a href="#0x03-启动项后门" class="headerlink" title="0x03 启动项后门"></a>0x03 启动项后门</h2><p>我们可以让目标机器在每次启动的时候创建一个账户，在这个思路下有很多可以采取的措施，第一种是启动项：</p>
+<p>在C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup目录中，放入我们启动时要运行的批处理代码或其他可运行文件，一般是创建一个管理员账户：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">@echo <span class="hljs-keyword">off</span><br>net <span class="hljs-keyword">user</span> leticia$ <span class="hljs-number">123456</span> /<span class="hljs-keyword">add</span> <br>net localgroup administrators leticia$ /<span class="hljs-keyword">add</span><br></code></pre></td></tr></table></figure>
+
+<p>防范：</p>
+<ul>
+<li>定期检查启动文件夹内容。</li>
+</ul>
+<h2 id="0x04-组策略"><a href="#0x04-组策略" class="headerlink" title="0x04 组策略"></a>0x04 组策略</h2><p>第二种方法是组策略，可以在gpedit.msc中的windows设置-脚本(启动/关机)中添加新的启动脚本，在开机时就会自动运行。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/windows_backdoor/backdoor14.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>相比于第一种放在启动目录中，放在组策略中更加隐蔽，一般不容易引起管理员察觉，从而降低被删除的概率。</p>
+<p>防范：</p>
+<ul>
+<li>定期检查组策略。</li>
+</ul>
+<h2 id="0x05-放大镜后门"><a href="#0x05-放大镜后门" class="headerlink" title="0x05 放大镜后门"></a>0x05 放大镜后门</h2><p>放大镜后门其实和shift后门很相似，我们可以先备份放大镜程序magnify.exe为magnify2.exe，然后写一个创建新用户并打开真正的放大镜的程序(防止被管理员发现放大镜程序失效),再将其转换为exe文件，并重命名成magnify.exe，然后通过调用放大镜程序来创建新用户供我们登陆。</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">@echo off<br>net user leticia$ <span class="hljs-number">123456</span> /add <br>net localgroup administrators leticia$ /add<br>c:\windows\system32\magnify2.exe<br><span class="hljs-keyword">exit</span><br></code></pre></td></tr></table></figure>
+
+<p>防范：</p>
+<ul>
+<li>调用放大镜检查。</li>
+<li>定期检查用户组。</li>
+</ul>
+<h2 id="0x06-telnet后门"><a href="#0x06-telnet后门" class="headerlink" title="0x06 telnet后门"></a>0x06 telnet后门</h2><p>如果我们直接打开远程桌面的3389很容易就会被发现，但是我们打开telnet服务并改变默认端口(23)，就可以做一定程度的隐藏，我们在服务中打开telnet服务，然后将windows服务中的telnet客户端打开，然后在我们本机打开telnet服务端，访问目标主机ip和端口并登陆我们的用户名密码即可。</p>
+<p>防范：</p>
+<ul>
+<li>定期检查服务器的进程端口有没有存在后门程序。</li>
+</ul>
+<h2 id="0x07-启用Guest用户"><a href="#0x07-启用Guest用户" class="headerlink" title="0x07 启用Guest用户"></a>0x07 启用Guest用户</h2><p>Guest用户本身就存在于计算机中，但是一般默认禁止，且不可登录，我们可以通过命令激活Guest用户并赋予管理员权限，并允许远程桌面登录。</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs crmsh">net <span class="hljs-keyword">user</span> <span class="hljs-title">Guest</span> /active:yes<br>net <span class="hljs-keyword">user</span> <span class="hljs-title">Guest</span> www.baidu.com<br>net localgroup Administrators Guest /ADD<br></code></pre></td></tr></table></figure>
+<p>gpedit.msc-&gt;计算机配置-&gt;windows设置-&gt;安全设置-&gt;本地策略-&gt;用户权限分配-&gt;允许通过远程桌面服务登录 添加Guest</p>
+<p>防范：</p>
+<ul>
+<li>定期检查gpedit.msc-&gt;计算机配置-&gt;windows设置-&gt;安全设置-&gt;本地策略-&gt;用户权限分配中关于Guest用户的权限配置</li>
+</ul>
+<h2 id="0x08-总结"><a href="#0x08-总结" class="headerlink" title="0x08 总结"></a>0x08 总结</h2><p>留后门的方法有很多很多，但是大部分人会首先从这些方面入手，所以在检查系统有没有被留后门，也可以换位思考，在自己可能留后门的点上多注意一下，或许就会有收获。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/shell/">shell</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/06/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-1-%E2%80%94%E2%80%94%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%88%86%E7%B1%BB/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机器学习(1)——定义与分类</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/06/17/%E5%9F%BA%E4%BA%8Epython%E7%9A%84%E7%9B%B4%E8%BF%9Eshell%E5%92%8C%E5%8F%8D%E5%B0%84shell/">
+                        <span class="hidden-mobile">基于python的直连shell和反射shell</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

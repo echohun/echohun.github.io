@@ -1,0 +1,531 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>机器学习(3)——逻辑回归 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="机器学习(3)——逻辑回归">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-06-25 23:39" pubdate>
+        2018年6月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.6k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">机器学习(3)——逻辑回归</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-逻辑回归-Logistic-Regression"><a href="#0x00-逻辑回归-Logistic-Regression" class="headerlink" title="0x00 逻辑回归(Logistic Regression)"></a>0x00 逻辑回归(Logistic Regression)</h2><p>逻辑回归就是这样的一个过程：面对一个回归或者分类问题，建立代价函数，然后通过优化方法迭代求解出最优的模型参数，然后测试验证我们这个求解的模型的好坏。</p>
+<p>Logistic回归虽然名字里带“回归”，但是它实际上是一种分类方法，主要用于两分类问题（即输出只有两种，分别代表两个类别）</p>
+<p>回归模型中，y是一个定性变量，比如y=0或1，logistic方法主要应用于研究某些事件发生的概率。</p>
+<h2 id="0x01-逻辑回归模型"><a href="#0x01-逻辑回归模型" class="headerlink" title="0x01 逻辑回归模型"></a>0x01 逻辑回归模型</h2><p>它的核心思想是，如果线性回归的结果输出是一个连续值，而值的范围是无法限定的，那我们有没有办法把这个结果值映射为可以帮助我们判断的结果呢。而如果输出结果是 (0,1) 的一个概率值，这个问题就很清楚了。</p>
+<p>在数学上有sigmoid函数可以帮助我们实现这一思想。</p>
+<p>sigmoid函数表达式：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>二元逻辑回归时，将t换成ax+b，可以得到二元逻辑回归模型的参数形式：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>sigmoid函数图形：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>其中，如果是二元回归时，我们P(x)的值可以理解为某一分类概率的大小，如果P(x)值为0.6，代表输出为1的概率是60%，补集部分是输出为0的概率40%。</p>
+<p>此时P(x)的值越小，而分类为0的的概率越高，反之，值越大的话分类为1的的概率越高。如果靠近临界点即靠近0.6时，分类准确率会下降。</p>
+<h2 id="0x02-决策边界-decision-boundary"><a href="#0x02-决策边界-decision-boundary" class="headerlink" title="0x02 决策边界(decision boundary)"></a>0x02 决策边界(decision boundary)</h2><p>决策边界就是能够把样本正确分类的一条边界，从图像上可以直观的看到</p>
+<p>如线性决策边界：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>非线性决策边界：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_05.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>在上面二元逻辑回归的例子中，我们用y表示输出的离散值0或1，写为函数形式为：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_06.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>然后我们逻辑函数g要做到，在输入大于等于零时，输出大于等于0.6；在输入小于零时，输出小于等于0.6。即：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_07.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>决策边界是假设函数的属性，由参数决定，而不是由数据集的特征决定。</p>
+<h2 id="0x03-成本函数-Cost-Function"><a href="#0x03-成本函数-Cost-Function" class="headerlink" title="0x03 成本函数(Cost Function)"></a>0x03 成本函数(Cost Function)</h2><p>线性回归中也说过成本函数，也叫代价函数,在逻辑回归中，我们也需要定义成本函数对其取值的好坏进行评估。</p>
+<p>而逻辑回归如果取用和线性回归一样的方式计算成本函数，那么图形是“非凸”的。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_08.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这样就会产生很多个局部最小值，无法使用梯度下降算法。所以我们需要一个新的成本函数。</p>
+<p>在逻辑回归中，损失函数是用来估计预测值（y^(i)）与期望输出值（y(i)）之间的差异。</p>
+<p>统计学习中常用的损失函数有以下几种：</p>
+<p>(1) 0-1损失函数(0-1 loss function):</p>
+<p>(2) 平方损失函数(quadratic loss function)</p>
+<p>(3) 绝对损失函数(absolute loss function)</p>
+<p>(4) 对数损失函数(logarithmic loss function) 或对数似然损失函数(log-likelihood loss function)</p>
+<p>损失函数越小，模型就越好。</p>
+<p>所以在逻辑回归中，为了保证全局收敛，我们采用对数似然损失函数。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_09.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>也就是说，如下两个情况：</p>
+<p>如果是正确答案为y=1的情况：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_10.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>当y=1, 则Cost=0，也就是预测的值和真实的值完全相等的时候成本为0;但是如果y=0，Cost接近无穷大，也就是说此时成本会非常大。</p>
+<p>如果是正确答案为y=0的情况：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_11.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>当y=0, 则Cost=0，也就是预测的值和真实的值完全相等的时候成本为0;但是如果y=1，Cost接近无穷大，也就是说此时成本会非常大。</p>
+<h2 id="0x04-简化成本函数"><a href="#0x04-简化成本函数" class="headerlink" title="0x04 简化成本函数"></a>0x04 简化成本函数</h2><p>在上面式子中，由于y 只能等于0或1，所以可以将逻辑回归中的Cost function的两个公式合并可以将我们的成本函数的两个条件案例压缩成一个案例：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_12.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>当y等于1时，第二项（1-y）log（1- hθ（x））将为零，并且不会影响结果。如果y等于0，则所述第一术语-ylog（1-hθ（X））将为零，且不会影响结果。</p>
+<p>所以最终整个逻辑回归的成本函数如下：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_13.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x05-梯度下降"><a href="#0x05-梯度下降" class="headerlink" title="0x05 梯度下降"></a>0x05 梯度下降</h2><p>与线性回归相似，这里我们同样采用梯度下降算法来学习参数</p>
+<p>迭代函数</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_14.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>算法就是迭代这个公式每次更新参数值，上篇已经详细说过</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_15.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x06-优化-Advanced-Optimization"><a href="#0x06-优化-Advanced-Optimization" class="headerlink" title="0x06 优化(Advanced Optimization)"></a>0x06 优化(Advanced Optimization)</h2><p>优化算法除了梯度下降算法外，还包括：</p>
+<ul>
+<li>Conjugate gradient method(共轭梯度法)</li>
+<li>Quasi-Newton method(拟牛顿法)</li>
+<li>BFGS method</li>
+<li>L-BFGS(Limited-memory BFGS)</li>
+</ul>
+<p>后二者由拟牛顿法引申出来，与梯度下降算法相比，这些算法的优点是：</p>
+<ul>
+<li>1.不需要手动的选择步长</li>
+<li>2.通常比梯度下降算法快</li>
+</ul>
+<p>因为算法太过复杂，我们不需要手动编写代码，只需要在库中调用相关的函数即可。</p>
+<h2 id="0x07-多分类问题-Multiclass-Classification-One-vs-all"><a href="#0x07-多分类问题-Multiclass-Classification-One-vs-all" class="headerlink" title="0x07 多分类问题(Multiclass Classification: One-vs-all)"></a>0x07 多分类问题(Multiclass Classification: One-vs-all)</h2><p>我们大多时候遇到的分类并不止两类，这个时候就产生了多分类问题。</p>
+<p>首先，二分类问题时候图形如下：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_16.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>那么多分类问题的图形就如下：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_17.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>对于多分类问题，我们可以将其先看成二分类问题，保留一类之后剩余的划作另一类。</p>
+<p>对上面的三类问题，我们需要三次划分，如图：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml3_18.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>最终的One-vs-all方法：</p>
+<ul>
+<li><p>对于每一个类i训练一个逻辑回归模型的分类器，并且预测 y = i时的概率。</p>
+</li>
+<li><p>对于一个新的输入变量x,分别对每一个类进行预测，取概率最大的那个类作为分类结果。</p>
+</li>
+</ul>
+<p>也就是说，如果输入一个x，此时分类器A概率为0.3，分类器B概率为0.4，分类器C概率为0.5，那么他就属于C这个分类。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/06/27/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-4-%E2%80%94%E2%80%94%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机器学习(4)——神经网络</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/06/22/phpmyadmin%E6%B3%A8%E5%85%A5webshell%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">phpmyadmin注入webshell总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

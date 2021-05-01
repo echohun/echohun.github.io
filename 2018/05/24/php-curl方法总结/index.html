@@ -1,0 +1,530 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>php curl方法总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="php curl方法总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-05-24 21:57" pubdate>
+        2018年5月24日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">php curl方法总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>做web安全的同时也需要优秀的开发能力，所以最近想提升一下自己python和php的开发能力，对一些经常用的方法做一个总结，当作笔记。</p>
+<p>curl方法在总结ssrf漏洞时用过，但是我当时没有做详细的说明，就放在这里总结一下。</p>
+<h2 id="0x00-curl"><a href="#0x00-curl" class="headerlink" title="0x00 curl"></a>0x00 curl</h2><p>PHP的libcurl库用来与各种的服务器使用各种类型的协议进行连接和通讯。</p>
+<p>libcurl目前支持http、https、ftp、gopher、telnet、dict、file和ldap协议。libcurl同时也支持HTTPS认证、HTTP POST、HTTP PUT、 FTP 上传(这个也能通过PHP的FTP扩展完成)、HTTP 基于表单的上传、代理、cookies和用户名+密码的认证。</p>
+<p>PHP中使用cURL实现Get和Post请求的方法。</p>
+<p>百度百科用一句话总结了curl的能力： </p>
+<ul>
+<li>php curl就是php中的数据传输神器。</li>
+</ul>
+<h2 id="0x01-基本方法"><a href="#0x01-基本方法" class="headerlink" title="0x01 基本方法"></a>0x01 基本方法</h2><p>可以看到php curl库中封装的方法特别多，但我们平时用curl请求，大多数情况要做的的基本步骤有如下四步：</p>
+<h4 id="①：初始化"><a href="#①：初始化" class="headerlink" title="①：初始化"></a>①：初始化</h4><p>curl_init()</p>
+<p>初始化一个新的会话，返回一个cURL句柄，供curl_setopt(), curl_exec()和curl_close() 函数使用。</p>
+<p>用法：</p>
+<ul>
+<li>curl_init(url)</li>
+</ul>
+<p>参数：</p>
+<ul>
+<li>url：如果提供了该参数，CURLOPT_URL 选项将会被设置成这个值。</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>如果成功，返回一个cURL句柄，出错返回 FALSE。</li>
+</ul>
+<h4 id="②：设置属性"><a href="#②：设置属性" class="headerlink" title="②：设置属性"></a>②：设置属性</h4><p>curl_setopt()</p>
+<p>为给定的cURL会话句柄设置一个选项。</p>
+<p>用法：</p>
+<ul>
+<li>curl_setopt ( resource $ch , int $option , mixed $value )</li>
+</ul>
+<p>参数：</p>
+<ul>
+<li>ch： 由 curl_init() 返回的 cURL 句柄。</li>
+<li>option： 需要设置的CURLOPT_XXX选项。</li>
+<li>value：将设置在option选项上的值。</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>成功时返回 TRUE， 或者在失败时返回 FALSE。</li>
+</ul>
+<h4 id="③：执行并获取结果"><a href="#③：执行并获取结果" class="headerlink" title="③：执行并获取结果"></a>③：执行并获取结果</h4><p>curl_exec()</p>
+<p>执行给定的cURL会话。</p>
+<p>用法：</p>
+<ul>
+<li>curl_exec ( resource $ch )</li>
+</ul>
+<p>参数：</p>
+<ul>
+<li>ch： 由 curl_init() 返回的 cURL 句柄。</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>成功时返回 TRUE， 或者在失败时返回 FALSE。 然而，如果 CURLOPT_RETURNTRANSFER选项被设置，函数执行成功时会返回执行的结果，失败时返回 FALSE 。</li>
+</ul>
+<h4 id="④：释放句柄"><a href="#④：释放句柄" class="headerlink" title="④：释放句柄"></a>④：释放句柄</h4><p>curl_close()</p>
+<p>关闭一个cURL会话并且释放所有资源。cURL句柄ch 也会被释放。</p>
+<p>用法：</p>
+<ul>
+<li>curl_close ( resource $ch )</li>
+</ul>
+<p>参数：</p>
+<ul>
+<li>ch： 由 curl_init() 返回的 cURL 句柄。</li>
+</ul>
+<p>返回值：</p>
+<ul>
+<li>无</li>
+</ul>
+<h2 id="0x02-get请求"><a href="#0x02-get请求" class="headerlink" title="0x02 get请求"></a>0x02 get请求</h2><p>get请求是http请求中最基本的请求，一个普通的get请求只需初始化后，配置好url和一定量的参数，然后执行即可。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$curl</span> = curl_init();<br>curl_setopt(<span class="hljs-variable">$curl</span>, CURLOPT_URL, <span class="hljs-string">&#x27;http://www.baidu.com&#x27;</span>);<br><span class="hljs-comment">//设置头文件的信息作为数据流输出</span><br><span class="hljs-comment">//curl_setopt($curl, CURLOPT_HEADER, 1);</span><br><span class="hljs-comment">//设置获取的信息以文件流的形式返回，而不是直接输出。</span><br>curl_setopt(<span class="hljs-variable">$curl</span>, CURLOPT_RETURNTRANSFER, <span class="hljs-number">0</span>);<br><span class="hljs-comment">//执行命令</span><br><span class="hljs-variable">$data</span> = curl_exec(<span class="hljs-variable">$curl</span>);<br><span class="hljs-comment">//关闭URL请求</span><br>curl_close(<span class="hljs-variable">$curl</span>);<br><span class="hljs-comment">//显示获得的数据</span><br><span class="hljs-comment">//print_r($data);</span><br>var_dump(<span class="hljs-variable">$data</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>可以看到，设置CURLOPT_RETURNTRANSFER为0，使用php请求百度页面，结果如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$curl</span> = curl_init();<br>curl_setopt(<span class="hljs-variable">$curl</span>, CURLOPT_URL, <span class="hljs-string">&#x27;http://www.baidu.com&#x27;</span>);<br><span class="hljs-comment">//设置头文件的信息作为数据流输出</span><br><span class="hljs-comment">//curl_setopt($curl, CURLOPT_HEADER, 1);</span><br><span class="hljs-comment">//设置获取的信息以文件流的形式返回，而不是直接输出。</span><br>curl_setopt(<span class="hljs-variable">$curl</span>, CURLOPT_RETURNTRANSFER, <span class="hljs-number">1</span>);<br><span class="hljs-comment">//执行命令</span><br><span class="hljs-variable">$data</span> = curl_exec(<span class="hljs-variable">$curl</span>);<br><span class="hljs-comment">//关闭URL请求</span><br>curl_close(<span class="hljs-variable">$curl</span>);<br><span class="hljs-comment">//显示获得的数据</span><br><span class="hljs-comment">//print_r($data);</span><br>var_dump(<span class="hljs-variable">$data</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>如果设置CURLOPT_RETURNTRANSFER为1,则不会将获取的页面直接输出在页面内，结果如下：</p>
+<h2 id="0x03-post请求"><a href="#0x03-post请求" class="headerlink" title="0x03 post请求"></a>0x03 post请求</h2><p>post请求也是http请求中很重要的一种，既然是post请求，肯定要额外设置要post的数据才行，curl中需要配置CURLOPT_POST为1代表本次请求是post类型，然后再将要请求的数据通过CURLOPT_POSTFIELDS配置进本次请求，然后执行就可以提交post请求。</p>
+<p>这里我们用上一篇有关iframe框架钓鱼的留言界面进行测试，我们将留言的昵称和内容设置好，通过php curl方法请求。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$curl</span> = curl_init();<br>curl_setopt(<span class="hljs-variable">$curl</span>,CURLOPT_URL,<span class="hljs-string">&quot;http://127.0.0.1/curl/xss.php&quot;</span>);<br><span class="hljs-comment">//设置获取的信息以文件流的形式返回，而不是直接输出。</span><br>curl_setopt(<span class="hljs-variable">$curl</span>, CURLOPT_RETURNTRANSFER, <span class="hljs-number">1</span>);<br><span class="hljs-comment">//设置请求模式为post型</span><br>curl_setopt(<span class="hljs-variable">$curl</span>, CURLOPT_POST, <span class="hljs-number">1</span>);<br><span class="hljs-comment">//配置post的数据</span><br><span class="hljs-variable">$post_data</span> = <span class="hljs-keyword">array</span>(<br>	<span class="hljs-string">&quot;name&quot;</span> =&gt; <span class="hljs-string">&quot;curl_test&quot;</span>,<br>	<span class="hljs-string">&quot;message&quot;</span> =&gt; <span class="hljs-string">&quot;heyheyhey&quot;</span><br>);<br><span class="hljs-comment">//全部数据使用HTTP协议中的&quot;POST&quot;操作来发送。</span><br>curl_setopt(<span class="hljs-variable">$curl</span>, CURLOPT_POSTFIELDS, <span class="hljs-variable">$post_data</span>);<br><span class="hljs-comment">//执行请求</span><br><span class="hljs-variable">$data</span> = curl_exec(<span class="hljs-variable">$curl</span>);<br><span class="hljs-comment">//关闭请求</span><br>curl_close(<span class="hljs-variable">$curl</span>);<br><span class="hljs-comment">//显示数据</span><br>print_r(<span class="hljs-variable">$data</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>根据返回的页面，发现这条留言已经被写入。</p>
+<h2 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h2><p>在需要使用php获取页面内容时，其实可以通过更加简单的file_get_contents()函数，如下：</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$data</span>=file_get_contents(<span class="hljs-string">&quot;http://www.baidu.com&quot;</span>);<br>print_r(<span class="hljs-variable">$data</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>但是学习curl是非常有必要的，curl虽然配置的参数更繁杂，但是相对应的支持的操作也就更多，比如cookies、验证、表单提交、文件上传等等，需要更加细致的操作时，就应该选用curl。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/php/">php</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/05/25/python-flask%E6%A8%A1%E5%9D%97%E5%AD%A6%E4%B9%A0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">python-flask模块学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/05/21/%E5%88%86%E6%9E%90%E5%B9%B6%E5%A4%8D%E7%8E%B0%E4%B8%80%E6%AC%A1iframe%E6%A1%86%E6%9E%B6%E9%92%93%E9%B1%BC%E8%A1%8C%E4%B8%BA/">
+                        <span class="hidden-mobile">分析并复现一次iframe框架钓鱼行为</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

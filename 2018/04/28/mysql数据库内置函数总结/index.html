@@ -1,0 +1,547 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>mysql数据库内置函数总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="mysql数据库内置函数总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-04-28 22:30" pubdate>
+        2018年4月28日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">mysql数据库内置函数总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>熟练的掌握mysql语法和函数是开发人员和安全工作中必备的技能，所以决定将mysql的内置函数全部整理一遍，用作笔记。</p>
+<h2 id="0x01-数学函数"><a href="#0x01-数学函数" class="headerlink" title="0x01 数学函数"></a>0x01 数学函数</h2><ul>
+<li>greatest()——返回一组数中的最大值</li>
+<li>least()——返回一组数中的最小值</li>
+<li>floor()——返回一个数的向下取整</li>
+<li>ceiling()——返回一个数的向上取整</li>
+<li>round()——返回一个数四舍五入后的整数值</li>
+<li>truncate()——把一个数字截取为指定小数位数的数字</li>
+<li>abs()——返回一个数的绝对值</li>
+<li>sign()——返回一个数的符号，正数返回1，负数返回-1，零返回0</li>
+<li>sqrt()——返回一个数的平方根</li>
+<li>pow()——以一个数作为另一个数的指数，并返回结果</li>
+<li>sin()——返回一个角度(弧度)的正弦</li>
+<li>cos()——返回一个角度(弧度)的余弦</li>
+<li>tan()——返回一个角度(弧度)的正切</li>
+<li>asin()——返回一个角度(弧度)的反正弦</li>
+<li>acon()——返回一个角度(弧度)的反余弦</li>
+<li>atan()——返回一个角度(弧度)的反正切</li>
+<li>bin()——返回一个数的二进制，作为字符串</li>
+<li>otc()——返回一个数的八进制，作为字符串</li>
+<li>hex()——返回一个数的十六进制，作为字符串</li>
+</ul>
+<h2 id="0x02-聚合函数"><a href="#0x02-聚合函数" class="headerlink" title="0x02 聚合函数"></a>0x02 聚合函数</h2><ul>
+<li>count()——求组中项数，返回int型整数</li>
+<li>max()——求最大值</li>
+<li>min()——求最小值</li>
+<li>sum()——返回表达式所有值的和</li>
+<li>avg()——求组中值的平均值</li>
+<li>std()——返回给定表达式中所有值的标准差</li>
+<li>variance()——返回给定表达式中所有值</li>
+<li>group_concat()——返回由属于一组的列值连接组合而成的结果</li>
+<li>bit_and()——逻辑与</li>
+<li>bit_or()——逻辑或</li>
+<li>bit_xor()——逻辑异或</li>
+</ul>
+<h2 id="0x03-字符串函数"><a href="#0x03-字符串函数" class="headerlink" title="0x03 字符串函数"></a>0x03 字符串函数</h2><ul>
+<li>ascii(char)——返回表达式最左端字符的ascii码值</li>
+<li>char(x1,x2,x3)——将括号中的多个数字转换成字符，结果组合成一个字符串</li>
+<li>left(str,x)——返回从字符串左边开始指定的x个字符</li>
+<li>right(str,x)——返回从字符串右边开始指定的x个字符</li>
+<li>trim(str)——删除字符串首部和尾部所有空格</li>
+<li>ltrim(str)——删除字符串首部所有空格</li>
+<li>rtrim(str)——删除字符串尾部所有空格</li>
+<li>rpad(str,n,pad)——用字符串pad对str的右边进行填补直到字符串str中字符大于等于n个，然后返回前n个字符</li>
+<li>lpad(str,n,pad)——用字符串pad对str的左边进行填补直到字符串str中字符大于等于n个，然后返回前n个字符</li>
+<li>replace(str1,str2,str3)——用字符串str3替换str1中出现的所有str2</li>
+<li>concat(str1,str2…strn)——连接字符串</li>
+<li>substring(expr,start,length)——返回expr中从start开始，长度为length的子串</li>
+<li>strcmp(str1,str2)——比较两个字符串，相等返回0，str1大返回1，str2大返回-1</li>
+</ul>
+<h2 id="0x04-日期和时间函数"><a href="#0x04-日期和时间函数" class="headerlink" title="0x04 日期和时间函数"></a>0x04 日期和时间函数</h2><ul>
+<li>now()——获取当前的日期和时间</li>
+<li>curtime()——获取当前的时间</li>
+<li>curdate()——获取当前的日期</li>
+<li>year()——分析一个日期值返回其中年的部分</li>
+<li>motnth()——以数值类型返回月的部分</li>
+<li>monthname()——以字符串的类型返回月的部分</li>
+<li>dayofyear()——返回这一天在这一年中的序数</li>
+<li>dayofmonth()——返回这一天在这一月中的序数</li>
+<li>dayofweek()——返回这一天在这一周中的序数</li>
+<li>hour()——返回时间值的小时部分</li>
+<li>minute()——返回时间值的分钟部分</li>
+<li>second()——返回时间值的秒部分</li>
+<li>data_add()——对日期进行增加操作</li>
+<li>data_sub()——对日期进行减少操作</li>
+</ul>
+<h2 id="0x05-加密函数"><a href="#0x05-加密函数" class="headerlink" title="0x05 加密函数"></a>0x05 加密函数</h2><ul>
+<li>aes_encrypt(str,key)和aes_decrypt(str,key)——对str用密钥key进行aes加密，解密</li>
+<li>encode()和decode()——对一个字符串进行加密，解密</li>
+<li>encrypt(str,key)——使用unix crypt()系统加密字符串（在windows上不可用）</li>
+<li>password(str)——返回str加密后的字符串</li>
+</ul>
+<h2 id="0x06-控制流函数"><a href="#0x06-控制流函数" class="headerlink" title="0x06 控制流函数"></a>0x06 控制流函数</h2><ul>
+<li>ifnull(expr1,expr2)——判断参数expr1是否为null，为null时返回expr2，否则返回expr1</li>
+<li>nullif(expr1,expr2)——判断两个参数是否相等，如相等，返回null，如不相等，返回第一个参数</li>
+<li>if(expr1,expr2,expr3)——如果expr1表达式为真，则返回expr2，否则返回expr3</li>
+</ul>
+<h2 id="0x07-格式化函数"><a href="#0x07-格式化函数" class="headerlink" title="0x07 格式化函数"></a>0x07 格式化函数</h2><ul>
+<li>format()——把数值格式化为以逗号为间隔的数字序列</li>
+<li>data_format()——把数值格式化成日期格式</li>
+<li>time_format()——把数值格式化为时间格式</li>
+</ul>
+<h2 id="0x08-类型转换函数"><a href="#0x08-类型转换函数" class="headerlink" title="0x08 类型转换函数"></a>0x08 类型转换函数</h2><ul>
+<li>cast(expr,AS type)——将一个值转换为指定的数据类型</li>
+</ul>
+<h2 id="0x09-系统信息函数"><a href="#0x09-系统信息函数" class="headerlink" title="0x09 系统信息函数"></a>0x09 系统信息函数</h2><ul>
+<li>database()——返回当前数据库名</li>
+<li>benchmark(n,expr)——将表达式expr重复运行n次</li>
+<li>charset()——返回字符串的字符集</li>
+<li>connection_id()——返回当前客户的连接id</li>
+<li>found_rows()——将最后一次select查询的行数返回</li>
+<li>user()——返回当前登陆的用户名</li>
+<li>version()——返回当前mysql服务器版本</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/mysql/">mysql</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/04/29/%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E6%BC%8F%E6%B4%9E/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">PHP反序列化漏洞</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/04/26/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/">
+                        <span class="hidden-mobile">文件包含漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

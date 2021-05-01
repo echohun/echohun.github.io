@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>机器学习(5)——模型评估方法 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="机器学习(5)——模型评估方法">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-07-24 20:42" pubdate>
+        2018年7月24日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.7k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">机器学习(5)——模型评估方法</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-模型评估与选择"><a href="#0x00-模型评估与选择" class="headerlink" title="0x00 模型评估与选择"></a>0x00 模型评估与选择</h2><p>在机器学习中，我们需要对使用的模型进行评估，对误差等进行分析，来选择一个预测准确率最高的模型。</p>
+<h2 id="0x01-误差"><a href="#0x01-误差" class="headerlink" title="0x01 误差"></a>0x01 误差</h2><p>我们把学习器的实际预测输出与样本的真实输出之间的差异称为误差。</p>
+<ul>
+<li><p>经验误差：学习器在训练集上的误差称为训练误差或经验误差。</p>
+</li>
+<li><p>泛化误差：将训练好的模型用在新样本上的误差称为泛化误差。</p>
+</li>
+</ul>
+<p>机器学习的目的是为了预测新样本的情况，所以我们需要在新样本上表现很好的学习器，即需要得到一个泛化误差小的学习器。</p>
+<h2 id="0x02-过拟合与欠拟合"><a href="#0x02-过拟合与欠拟合" class="headerlink" title="0x02 过拟合与欠拟合"></a>0x02 过拟合与欠拟合</h2><ul>
+<li><p>过拟合：学习器把训练样本自身的一些特点当作了所有潜在样本都会具有的一般性质，导致泛化性能下降。一般是由于学习能力过强，将训练样本所包含的不太一般的性质都学到了。</p>
+</li>
+<li><p>欠拟合：学习器学习能力过弱，对训练样本的一般性质尚未学好</p>
+</li>
+</ul>
+<p>欠拟合比较容易克服，可以在决策树学习中扩展分支、在神经网络中增加训练轮数等。</p>
+<p>过拟合则难克服，过拟合是机器学习面临的关键障碍，各类学习算法都有一些针对过拟合的措施来缓解过拟合。</p>
+<h2 id="0x03-评估方法"><a href="#0x03-评估方法" class="headerlink" title="0x03 评估方法"></a>0x03 评估方法</h2><p>为了对学习器的泛化误差进行评估，需要使用一个测试集来测试学习器对新样本的判别能力，然后以测试集上的测试误差作为泛化误差的近似。</p>
+<p>测试集应该尽量与训练集互斥，即测试样本尽量不在训练集中出现、未在训练集中使用过。</p>
+<p>下来介绍几种常用的评估方法：</p>
+<h3 id="留出法"><a href="#留出法" class="headerlink" title="留出法"></a>留出法</h3><p>留出法是直接将数据集D划分为两个互斥的几何，其中一个集合作为训练集S，另一个作为测试集T。</p>
+<p>在训练集S中训练出模型后，用测试集T来评估其测试误差，作为对泛化误差的估计。</p>
+<p>训练/测试集要尽可能的保证数据分布的一致性，避免因数据划分过程引入额外的偏差而对最终结果产生影响。具体做法是尽可能保留类别比例，最好使用分层采样的方法。</p>
+<h3 id="交叉验证法"><a href="#交叉验证法" class="headerlink" title="交叉验证法"></a>交叉验证法</h3><p>交叉验证法先将数据集D划分为k个大小相似的互斥子集，每个子集尽可能的保证数据分布的一致性。<br>然后每次使用k-1个子集作为训练集，余下的一个子集作为测试集。<br>这样就可以得到k组训练/测试集，可以进行k次训练和测试，最终返回的是k个测试结果的均值。</p>
+<p>交叉验证法评估结果的稳定性和保真性在很大程度上取决于k的取值。<br>通常将交叉验证法称为“k折交叉验证”。如k取10，则称为10折交叉验证。</p>
+<h3 id="留一法"><a href="#留一法" class="headerlink" title="留一法"></a>留一法</h3><p>如果数据集D中包含m个样本，若令k=m，则得到了交叉验证法的一个特例：留一法。</p>
+<p>显然，留一法不受随机样本划分方式的影响，因为留一法只有唯一一种划分方式。</p>
+<p>留一法的评估结果往往被认为比较准确。但是留一法也存在缺陷，当数据集较大时，训练m个模型的计算开销非常大。比如我们是上千万级的数据，那么就得训练上千万个模型，这是不现实的。</p>
+<h3 id="自助法"><a href="#自助法" class="headerlink" title="自助法"></a>自助法</h3><p>上述几种方法都存在一个问题，那就是由于保留了一部分样本用于测试，导致实际评估的模型所使用的训练集比D小，会引起一些误差，而自助法，可以解决这个问题。</p>
+<p>自助法以自助采样法为基础，给定包含m个样本的数据集D，对它进行采样产生数据集D’：<br>每次随机从D中挑选一个样本，再将样本放回初始数据集中，使得该样本在下次采样时仍有可能被采到。这个过程重复执行m次后，我们就得到了包含m个样本的数据集D’，这就是自助采样的结果。</p>
+<p>D中有一部分样本会在D’中多次出现，而另一部分样本不出现。可以做一个简单的估计，样本在m次采样中始终不被采到的概率是<br><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml5_01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>取极限得到<br><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml5_02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>即通过自助采样，初始数据集中约有36.8%的样本未出现在采样数据集D’中，于是我们可以将D’用作训练集，D-D’用作测试集，这样世纪评估的模型与期望评估的模型都使用了m个训练样本，而我们仍然有数据总量36.8%、未在训练集中出现的样本用于测试。这样的测试结果，也被称为“包外估计”。</p>
+<p>自助法在数据集较小、难以有效划分训练/测试集时很有用；此外，自助法能从初始数据集中产生多个不同的训练集，这对集成学习等方法有很大的好处。</p>
+<p>自助法的缺陷是：自助法产生的数据集改变了初始数据集的分布，这会引入估计误差。</p>
+<p>所以在初始数据集够用的情况下，留出法和交叉验证法更常用。</p>
+<h2 id="0x04-调参与最终模型"><a href="#0x04-调参与最终模型" class="headerlink" title="0x04 调参与最终模型"></a>0x04 调参与最终模型</h2><p>大多数学习算法都有参数需要设定，参数配置不同，学得模型的性能往往有显著差别。因此，在进行模型评估与选择时，除了要对适用学习算法进行选择，还需要对算法参数进行设定，这就是通常所说的“参数调节”。</p>
+<p>给定包含m个样本的数据集D，在模型评估与选择过程中由于需要留出一部分数据进行评估测试，事实上我们只使用了一部分数据训练模型。因此，在模型选择完成后，学习算法和参数配置已选定，我们要用数据集D重新训练模型，使用所有的m个样本。这时产生的模型才是最终模型。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/07/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-6-%E2%80%94%E2%80%94%E6%80%A7%E8%83%BD%E5%BA%A6%E9%87%8F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">机器学习(6)——性能度量</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/07/23/xml%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">xml注入攻击总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

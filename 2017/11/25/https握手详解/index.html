@@ -1,0 +1,516 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>https握手详解 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="https握手详解">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-11-25 17:25" pubdate>
+        2017年11月25日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">https握手详解</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-什么是https协议"><a href="#0x00-什么是https协议" class="headerlink" title="0x00 什么是https协议"></a>0x00 什么是https协议</h2><p>HTTPS（全称：Hyper Text Transfer Protocol over Secure Socket Layer），是以安全为目标的HTTP通道，简单讲是HTTP的安全版。即HTTP下加入SSL层，HTTPS的安全基础是SSL，因此加密的详细内容就需要SSL。 它是一个URI scheme（抽象标识符体系），句法类同http:体系。用于安全的HTTP数据传输。  </p>
+<h2 id="0x01-HTTPS和HTTP的区别"><a href="#0x01-HTTPS和HTTP的区别" class="headerlink" title="0x01 HTTPS和HTTP的区别"></a>0x01 HTTPS和HTTP的区别</h2><p>HTTPS和HTTP的区别主要为以下四点：  </p>
+<ul>
+<li>https协议需要到ca申请证书，一般免费证书很少，需要交费。</li>
+<li>http是超文本传输协议，信息是明文传输，https 则是具有安全性的ssl加密传输协议。</li>
+<li>http和https使用的是完全不同的连接方式，用的端口也不一样，前者是80，后者是443。</li>
+<li>http的连接很简单，是无状态的；HTTPS协议是由SSL+HTTP协议构建的可进行加密传输、身份认证的网络协议，比http协议安全。  </li>
+</ul>
+<h2 id="0x02-SSL协议"><a href="#0x02-SSL协议" class="headerlink" title="0x02 SSL协议"></a>0x02 SSL协议</h2><p>SSL(Secure Sockets Layer 安全套接层),及其继任者传输层安全（Transport Layer Security，TLS）是为网络通信提供安全及数据完整性的一种安全协议。TLS与SSL在传输层对网络连接进行加密。<br>所以SSL所具备的功能是：保证传输数据的保密性、完整性，并且实现通信双方的身份认证。<br>在协议栈种位置如下：<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/1.png" srcset="/img/loading.gif" lazyload><br>SSL协议是一个分层协议，共有两层组成。  </p>
+<p>高层协议包括：  </p>
+<ul>
+<li>SSL握手协议</li>
+<li>改变加密约定协议</li>
+<li>报警协议</li>
+</ul>
+<p>底层协议是SSL记录层协议，是一个简单的封装协议，用来记录协议的功能，保证协议的完整性，机密性。</p>
+<h2 id="0x03-SSL握手"><a href="#0x03-SSL握手" class="headerlink" title="0x03 SSL握手"></a>0x03 SSL握手</h2><p>这里主要分析一下高层协议中的握手协议。<br>SSL握手协议主要负责：</p>
+<ul>
+<li>算法协商</li>
+<li>身份验证</li>
+<li>确定密钥  </li>
+</ul>
+<p>为了很直观的看到它具体做了什么，采用wireshark抓包的方式来分析一次Full Handshake，即全流程握手。  </p>
+<h2 id="0x04-wireshark抓包分析"><a href="#0x04-wireshark抓包分析" class="headerlink" title="0x04 wireshark抓包分析"></a>0x04 wireshark抓包分析</h2><p>接下来我们抓包进行分析：  </p>
+<p>1.我们打开wireshark软件，监视正在使用的网卡，然后通过浏览器访问 <a target="_blank" rel="noopener" href="http://www.github.com/">www.github.com</a> 抓取完成后我们停止捕获。  </p>
+<p>2.在过滤器输入ssl，过滤ssl协议，找到本机向 github.com 的ip地址发起的client hello。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/2.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>3.右键追踪，选择ssl流。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/3.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>4.首先是client hello，这个包携带着客户的SSL版本号，加密套件列表，压缩算法列表，客户端随机数，sessionid = 0，传送给服务器。<br>我们开始分析，首先展开client hello的SSL，找到Handshark。可以看到client hello里面包含的各项数据。<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/4.png" srcset="/img/loading.gif" lazyload></p>
+<p>  分别是：  </p>
+<ul>
+<li>SSL版本号:TLS 1.2</li>
+<li>压缩算法NULL</li>
+<li>sessionid = 0</li>
+<li>密码套件如下  </li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/5.png" srcset="/img/loading.gif" lazyload>  </p>
+<ul>
+<li>server name，可以看到是 github.com。<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/6.png" srcset="/img/loading.gif" lazyload>  </li>
+</ul>
+<p>5.然后找到server hello，这个包是服务器选择版本，确定要用的加密套件，压缩算法，计算sessionid以及随机数，发送给客户端。  </p>
+<p>同样展开SSL：<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/7.png" srcset="/img/loading.gif" lazyload><br>我们可以看到各项对应数据被放在server hello中，比如session ID，密码套件等。</p>
+<p>并且我们看到，除了server hello部分，这个包还有服务器发向客户端的证书的前一部分。然后下一个包TCP segment of a reassemble PDU，是证书的中间部分。  </p>
+<p>6.然后找到Certificate，这一步是服务端将自己的证书下发给客户端，让客户端验证自己的身份，客户端验证通过后取出证书中的公钥。<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/8.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>而我们看到的包中内容呢是证书结尾部分，包括GitHub 机构旗下github.com网站的证书及其颁发机构 DigiCert 的证书。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/9.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>7.下一部分是Server Key Exchange，用于将服务器的临时ECDH公钥传送给客户端。 </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/10.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>8.之后是Server Hello Done，此消息由服务器发送，以指示ServerHello和相关消息的结束。<br>发送此消息后，服务器将等待客户端响应。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/11.png" srcset="/img/loading.gif" lazyload></p>
+<p>9.客户端收到服务端传来的证书后，先从 CA 验证该证书的合法性，验证通过后取出证书中的服务端公钥，再生成一个随机数 Random3，再用服务端公钥非对称加密 Random3 生成 PreMaster Key。  </p>
+<p>然后我们看到下个包包含Client Key Exchange, Change Cipher Spec, Hello Request, Hello Request  </p>
+<p>10.首先是Client Key Exchange，上面客户端根据服务器传来的公钥生成了 PreMaster Key，Client Key Exchange 就是将这个 key 传给服务端。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/12.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>11.Change Cipher Spec(Client)，<br>这一步是客户端通知服务端后面再发送的消息都会使用前面协商出来的秘钥加密了。然后客户端发送握手验证报文确保消息的完整性。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/13.png" srcset="/img/loading.gif" lazyload> </p>
+<p>12.Change Cipher Spec(Server)<br>这一步是服务端收到数据后，通知客户端后面再发送的消息都会使用加密。  </p>
+<p>13.Encrypted Handshake Message，表示服务器端的SSL成功结束，发送握手验证报文确保消息的完整性。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/14.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>14.下面开始正式交换数据。</p>
+<p>所以总的过程如下图所示：<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/https/15.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>以上就是整个SSL握手过程，也是加密算法的典型应用之一。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BD%91%E7%BB%9C%E5%8D%8F%E8%AE%AE/">网络协议</a>
+                    
+                      <a class="hover-with-bg" href="/tags/https/">https</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ssl/">ssl</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/12/12/%E5%9F%BA%E4%BA%8Epython%E7%9A%84%E7%BD%91%E7%AB%99%E5%90%8E%E5%8F%B0%E6%89%AB%E6%8F%8F%E5%99%A8/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">基于python的网站后台扫描器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/11/09/%E5%A4%A9%E4%BD%93%E8%B7%9D%E7%A6%BB%E6%B5%8B%E9%87%8F/">
+                        <span class="hidden-mobile">天体距离测量</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

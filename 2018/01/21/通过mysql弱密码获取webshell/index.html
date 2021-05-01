@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>通过mysql弱密码获取webshell - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="通过mysql弱密码获取webshell">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-01-21 10:08" pubdate>
+        2018年1月21日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      758 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      9
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">通过mysql弱密码获取webshell</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-mysql"><a href="#0x00-mysql" class="headerlink" title="0x00 mysql"></a>0x00 mysql</h2><p>MySQL是一个关系型数据库管理系统，由瑞典MySQL AB 公司开发，目前属于 Oracle 旗下产品。MySQL 是最流行的关系型数据库管理系统之一，在 WEB 应用方面，MySQL是最好的关系数据库管理系统应用软件。<br>MySQL是一种关系数据库管理系统，关系数据库将数据保存在不同的表中，而不是将所有数据放在一个大仓库内，这样就增加了速度并提高了灵活性。<br>MySQL所使用的 SQL 语言是用于访问数据库的最常用标准化语言。MySQL 软件采用了双授权政策，分为社区版和商业版，由于其体积小、速度快、总体拥有成本低，尤其是开放源码这一特点，一般中小型网站的开发都选择 MySQL 作为网站数据库。  </p>
+<h2 id="0x01-mysql弱密码漏洞"><a href="#0x01-mysql弱密码漏洞" class="headerlink" title="0x01 mysql弱密码漏洞"></a>0x01 mysql弱密码漏洞</h2><p>本地mysql安全配置不当，导致不经ip过滤可以进行远程登陆，并且密码设置太过简单，使其他人可以通过mysql访问数据库并且进行读写操作。  </p>
+<h2 id="0x02-危害"><a href="#0x02-危害" class="headerlink" title="0x02 危害"></a>0x02 危害</h2><p>被拿到webshell会丢失网站的权限，入侵者就可以随意修改删除这个网站的内容。  </p>
+<h2 id="0x03-靶机环境配置"><a href="#0x03-靶机环境配置" class="headerlink" title="0x03 靶机环境配置"></a>0x03 靶机环境配置</h2><p>安装配置mysql  </p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs axapta">sudo yum install -y mysql mysql-<span class="hljs-keyword">server</span><br></code></pre></td></tr></table></figure>
+<p>安装配置apache  </p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y httpd<br></code></pre></td></tr></table></figure>
+<p>安装配置php  </p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y php<br></code></pre></td></tr></table></figure>
+<p>安装php的一些组件</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y php-mysql php-gd libjpeg* php-imap php-ldap php-odbc php-pear php-mysqlnd<br></code></pre></td></tr></table></figure>
+<p>安装完成后编辑配置文件，然后重启httpd和mariadb，并且在/var/www/html目录创建index.php<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql1.png" srcset="/img/loading.gif" lazyload><br>在index.php写入</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span> phpinfo(); <span class="hljs-meta">?&gt;</span> <br></code></pre></td></tr></table></figure>
+<p>然后浏览localhost查看组件是否安装完善  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql2.png" srcset="/img/loading.gif" lazyload><br>然后在index.php写入下面内容  </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$dbhost</span> = <span class="hljs-string">&#x27;localhost:3306&#x27;</span>;  <span class="hljs-comment">// mysql服务器主机地址</span><br><span class="hljs-variable">$dbuser</span> = <span class="hljs-string">&#x27;root&#x27;</span>;            <span class="hljs-comment">// mysql用户名</span><br><span class="hljs-variable">$dbpass</span> = <span class="hljs-string">&#x27;123456&#x27;</span>;          <span class="hljs-comment">// mysql用户名密码</span><br><span class="hljs-variable">$conn</span> = mysqli_connect(<span class="hljs-variable">$dbhost</span>, <span class="hljs-variable">$dbuser</span>, <span class="hljs-variable">$dbpass</span>);<br><span class="hljs-keyword">if</span>(! <span class="hljs-variable">$conn</span> )<br>&#123;<br>    <span class="hljs-keyword">die</span>(<span class="hljs-string">&#x27;Could not connect: &#x27;</span> . mysqli_error());<br>&#125;<br><span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;数据库连接成功！&#x27;</span>;<br>mysqli_close(<span class="hljs-variable">$conn</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>查看数据库是否连接成功<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql3.png" srcset="/img/loading.gif" lazyload><br>然后设置mysql的安全配置  </p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">vi <span class="hljs-regexp">/etc/my</span>.cnf<br></code></pre></td></tr></table></figure>
+
+<p>首先将bind-address注释掉<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql4.png" srcset="/img/loading.gif" lazyload><br>然后本地进入mysql，更改权限使root用户从任意ip都可以访问<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql5.png" srcset="/img/loading.gif" lazyload><br>查看权限发现可以通过任意地址访问<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql6.png" srcset="/img/loading.gif" lazyload>  </p>
+<h2 id="0x04-主机环境配置"><a href="#0x04-主机环境配置" class="headerlink" title="0x04 主机环境配置"></a>0x04 主机环境配置</h2><p>安装hydra</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y hydra<br></code></pre></td></tr></table></figure>
+<p>安装mysql</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y mysql<br></code></pre></td></tr></table></figure>
+<h2 id="0x05-测试"><a href="#0x05-测试" class="headerlink" title="0x05 测试"></a>0x05 测试</h2><p>过程:使用hydra进行mysql的弱密码攻击并尝试利用mysql写入webshell，从而利用<br>webshell进行进一步攻击。  </p>
+<p>通过主机对靶机进行爆破，发现root的密码是123456<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql7.png" srcset="/img/loading.gif" lazyload><br>通过mysql连接靶机：<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql8.png" srcset="/img/loading.gif" lazyload><br>构造并写入webshell：<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql9.png" srcset="/img/loading.gif" lazyload><br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql10.png" srcset="/img/loading.gif" lazyload>   </p>
+<p>编辑菜刀连接一句话木马:<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql15.png" srcset="/img/loading.gif" lazyload><br>连接成功，获得网站目录内读写权限:<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql16.png" srcset="/img/loading.gif" lazyload>  </p>
+<h2 id="0x06-进行使用openvas对该存在漏洞的系统扫描"><a href="#0x06-进行使用openvas对该存在漏洞的系统扫描" class="headerlink" title="0x06 进行使用openvas对该存在漏洞的系统扫描"></a>0x06 进行使用openvas对该存在漏洞的系统扫描</h2><p>扫描结果:  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql13.png" srcset="/img/loading.gif" lazyload><br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/mysql/mysql14.png" srcset="/img/loading.gif" lazyload>  </p>
+<h2 id="0x07-应对方案"><a href="#0x07-应对方案" class="headerlink" title="0x07 应对方案"></a>0x07 应对方案</h2><ul>
+<li>加强mysql密码强度</li>
+<li>尽量不要将mysql权限赋予公网</li>
+<li>定期检查网站内有没有木马</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
+                    
+                      <a class="hover-with-bg" href="/tags/mysql/">mysql</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/01/22/struts2-052%E6%BC%8F%E6%B4%9E/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">struts2-052漏洞</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/01/20/redis%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%BC%8F%E6%B4%9E/">
+                        <span class="hidden-mobile">redis未授权访问漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

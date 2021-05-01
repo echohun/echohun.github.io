@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>机器学习(4)——神经网络 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="机器学习(4)——神经网络">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-06-27 13:50" pubdate>
+        2018年6月27日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      20
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">机器学习(4)——神经网络</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-神经网络"><a href="#0x00-神经网络" class="headerlink" title="0x00 神经网络"></a>0x00 神经网络</h2><p>人工神经网络（Artificial Neural Network，缩写ANN），简称神经网络（Neural Network，缩写NN），是一种模仿生物神经网络(动物的中枢神经系统，特别是大脑)的结构和功能的数学模型或计算模型，用于对函数进行估计或近似。</p>
+<h2 id="0x01-神经元"><a href="#0x01-神经元" class="headerlink" title="0x01 神经元"></a>0x01 神经元</h2><p>一个神经元通常具有多个树突，主要用来接受传入信息；而轴突只有一条，轴突尾端有许多轴突末梢可以给其他多个神经元传递信息。轴突末梢跟其他神经元的树突产生连接，从而传递信号。这个连接的位置在生物学上叫做“突触”。</p>
+<p>人脑中神经元如图：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x02-神经元的数学模型"><a href="#0x02-神经元的数学模型" class="headerlink" title="0x02 神经元的数学模型"></a>0x02 神经元的数学模型</h2><p>神经元模型是一个包含输入，输出与计算功能的模型。输入可以类比为神经元的树突，而输出可以类比为神经元的轴突，计算则可以类比为细胞核。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>每个连线上都会分配一个权值，在数据传向下一层的时候要乘以对应的权值。在神经网络中，每个箭头表示值的加权传递。</p>
+<p>如果我们将神经元图中的所有变量用符号表示，并且写出输出的计算公式，就会得到：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>z是在输入和权值的线性加权和叠加了一个激活函数g的值。在MP模型里，函数g是sgn函数，也就是取符号函数。这个函数当输入大于0时，输出1，否则输出-1。</p>
+<p>接下来我们将sum函数与sgn函数合并到一个圆圈里，代表神经元的内部计算。其次，把输入a与输出z写到连接线的左上方，便于后面画复杂的网络。一个神经元可以引出多个代表输出的有向箭头，但值都是一样的。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>在其他类型神经网络中，这里的激活函数可以有很多种形式：</p>
+<ul>
+<li>线性函数</li>
+</ul>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_05.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>阈值函数</li>
+</ul>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_06.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>Sigmoid函数</li>
+</ul>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_07.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>对称Sigmoid函数</li>
+</ul>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_08.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>双曲正切函数</li>
+</ul>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_09.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li>高斯函数</li>
+</ul>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_10.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>神经元可以看作一个计算与存储单元。计算是神经元对其的输入进行计算功能。存储是神经元会暂存计算结果，并传递到下一层。</p>
+<p>一个神经网络的训练算法的功能就是通过大量的样本数据训练，让权重的值调整到最佳，以使得整个网络的预测效果最好。然后用来在已知所有输入值的情况下预测输出值。</p>
+<h2 id="0x03-单层神经网络-感知器"><a href="#0x03-单层神经网络-感知器" class="headerlink" title="0x03 单层神经网络(感知器)"></a>0x03 单层神经网络(感知器)</h2><p>感知器(Perceptron)由两层神经元组成的神经网络。两层分别是输入层和输出层，输入层只负责传输数据，输出层对前一层传输过来的数据进行计算。</p>
+<p>结构如下：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_11.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>其中，需要计算的层次也被称为计算层，因为感知器拥有一个计算层，所以称之为“单层神经网络”。</p>
+<p>感知器中，我们把 w 称为权重向量，a 称为训练样本。</p>
+<p>感知器数据分类的算法步骤如下：</p>
+<p>把 w 初始化为 0，或者把 w 的每个分量初始化为[0, 1]之间的任意小数；<br>把训练样本 a 输入感知器，得到分类结果 z （-1或1）；<br>根据分类结果更新权重向量。</p>
+<p>权重更新算法：</p>
+<p>wj=wj+∇wj</p>
+<p>∇wj=η∗(z−z′)∗aj</p>
+<p>其中</p>
+<ul>
+<li>η 是学习率，在 [0,1] 之间。</li>
+<li>z 是输入样本的正确分类，z’ 是感知器计算出来的分类。</li>
+</ul>
+<p>假设初始w=[0,0,0],a=[1,2,3]，z=1，z’=-1时，通过算法计算：</p>
+<p>∇w0=0.3∗(1−(−1))∗x0=0.3∗2∗1=0.6</p>
+<p>w0=w0+∇w0=0.6 </p>
+<p>∇w1=0.3∗(1−(−1))∗x1=0.3∗2∗2=1.2</p>
+<p>w1=w1+∇w1=1.2</p>
+<p>∇w2=0.3∗(1−(−1))∗x2=0.3∗2∗3=1.8</p>
+<p>w2=w2+∇w2=1.8</p>
+<p>得到更新后的w=[0.6,1.2,1.8]</p>
+<p>我们在输入大量样本时，每次在答案正确时不会更改，每次在答案错误时更新权值，只要取的学习率和样本量合适，就可以得到学习之后更为精准的算法。</p>
+<p>我们可以看到，感知器类似一个逻辑回归模型，可以做线性分类任务。</p>
+<p>我们可以用决策分界来形象的表达分类的效果。决策分界就是在二维的数据平面中划出一条直线，当数据的维度是3维的时候，就是划出一个平面，当数据的维度是n维时，就是划出一个n-1维的超平面。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_12.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x04-两层神经网络-多层感知器"><a href="#0x04-两层神经网络-多层感知器" class="headerlink" title="0x04 两层神经网络(多层感知器)"></a>0x04 两层神经网络(多层感知器)</h2><p>两层神经网络也就是多了一层计算层(被称为隐藏层)，在增加了这一层之后，神经网络就可以解决一些复杂的问题。</p>
+<p>此时，权值矩阵增加到两个，计算层数分为隐藏层计算和输出层计算。</p>
+<p>不过不同于单层的sgn函数，在两层神经网络中，我们使用的激活函数最多的是sigmoid函数。</p>
+<p>隐藏层计算如图：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_13.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>输出层计算如图：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_14.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>总的计算公式：</p>
+<p>g(W(1) * a(1)) = a(2); </p>
+<p>g(W(2) * a(2)) = z;</p>
+<p>与单层神经网络不同。理论证明，两层神经网络可以无限逼近任意连续函数。也就是说，面对复杂的非线性分类任务，两层（带一个隐藏层）神经网络可以分类的很好。</p>
+<p>如下例，红色的线与蓝色的线代表数据。而红色区域和蓝色区域代表由神经网络划开的区域，两者的分界线就是决策分界。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_15.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x05-多层神经网络"><a href="#0x05-多层神经网络" class="headerlink" title="0x05 多层神经网络"></a>0x05 多层神经网络</h2><p>延续两层神经网络,在两层神经网络的输出层后面，继续添加层次。原来的输出层变成中间层，新加的层次成为新的输出层。我们这样依次添加，就会产生多层神经网络。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_16.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>增加了层数，那么正向传播计算公式也会增加一步</p>
+<p>g(W(1) * a(1)) = a(2); </p>
+<p>g(W(2) * a(2)) = a(3);</p>
+<p>g(W(3) * a(3)) = z;</p>
+<p>再增加层数的话，与上面同理递推即可：</p>
+<p>g(W(1) * a(1)) = a(2); </p>
+<p>g(W(2) * a(2)) = a(3);</p>
+<p>···</p>
+<p>g(w(n-1) * a(n-1)) = a(n);</p>
+<p>g(W(n) * a(n)) = z;</p>
+<p>随着网络的层数增加，每一层对于前一层次的抽象表示更深入。代表着更深入的表示特征，以及更强的函数模拟能力。在参数数量一样的情况下，更深的网络往往具有比浅层的网络更好的识别效率。</p>
+<p>相比于单层神经网络的sgn函数和双层神经网络的sigmoid函数，到了多层神经网络时，通过一系列的研究发现，ReLU函数在训练多层神经网络时，更容易收敛，并且预测性能更好。</p>
+<p>ReLU函数不是传统的非线性函数，而是分段线性函数。其表达式非常简单，就是y=max(x,0)。简而言之，在x大于0，输出就是输入，而在x小于0时，输出就保持为0。这种函数的设计启发来自于生物神经元对于激励的线性响应，以及当低于某个阈值后就不再响应的模拟。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml4_17.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/06/28/IIS%E7%9F%AD%E6%96%87%E4%BB%B6%E5%90%8D%E6%BC%8F%E6%B4%9E/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">IIS短文件名漏洞</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/06/25/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-3-%E2%80%94%E2%80%94%E9%80%BB%E8%BE%91%E5%9B%9E%E5%BD%92/">
+                        <span class="hidden-mobile">机器学习(3)——逻辑回归</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

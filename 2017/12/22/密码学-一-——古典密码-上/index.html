@@ -1,0 +1,483 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>密码学(一)——古典密码(上) - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="密码学(一)——古典密码(上)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2017-12-22 22:10" pubdate>
+        2017年12月22日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.2k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">密码学(一)——古典密码(上)</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-信息加密原理"><a href="#0x00-信息加密原理" class="headerlink" title="0x00 信息加密原理"></a>0x00 信息加密原理</h2><p>信息加密是保证数据安全的一种方式。<br>信息加密的原理是：把明文用加密方法和密钥生成保密的密文，只有使用正确的解密方法和密钥后才能还原出明文。<br>一个完善的密码体制至少应该满足两个条件：  </p>
+<ul>
+<li>1.已知明文和加密密钥时，容易算出密文和解密过程。</li>
+<li>2.未知解密密钥时，难以由密文推出明文。  </li>
+</ul>
+<p>这里介绍几种古典密码的加密方式:  </p>
+<h2 id="0x01-Greece密码"><a href="#0x01-Greece密码" class="headerlink" title="0x01 Greece密码"></a>0x01 Greece密码</h2><p>希腊密码出现于公元前2世纪，是一种二维字母表编码方法(字母i和j算一个字母)。<br>如图将26个字母分为5×5的矩阵，用行列号作为字母的编码。<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/gudianmima/01.png" srcset="/img/loading.gif" lazyload><br>如上图，GREECE可以编码为22 42 15 15 13 15<br>因为几乎是一一对应的关系，通过统计的方法可以很轻松的得出规律。  </p>
+<h2 id="0x02-Caesar密码"><a href="#0x02-Caesar密码" class="headerlink" title="0x02 Caesar密码"></a>0x02 Caesar密码</h2><p>凯撒密码是一种古老的单表置换密码。方法是把字母表种每个字母用后面第n个字母进行替换。<br>如n=5：</p>
+<ul>
+<li>字母表为：abcdefghijklmnopqrstuvwxyz</li>
+<li>置换表为：fghijklmnopqrstuvwxyzabcde</li>
+</ul>
+<p>如caesar可以编码为hfjxfw<br>但是我们显然可以看到凯撒密码暴力破解最多只需要25次穷举就可以看到所有结果，是非常不安全的。  </p>
+<h2 id="0x03-Prefix密码"><a href="#0x03-Prefix密码" class="headerlink" title="0x03 Prefix密码"></a>0x03 Prefix密码</h2><p>标准字头密码又称为密钥短语密码，属于单表置换密码，与凯撒密码类似，但利用一个标准密钥字来做表头，构造变换表。密钥字通常是单词或者词组，便于记忆。<br>如密钥字 K = big，则变换规则如下：</p>
+<ul>
+<li>字母表为：abcdefghijklmnopqrstuvwxyz</li>
+<li>置换表为：bigacdefhjklmnopqrstuvwxyz  </li>
+</ul>
+<p>我们可以看到，big三个字母被放在了表头，然后剩下的字母依次排布。<br>如link的编码是lhnk，可以看到，这种方式如果选择的关键字太少且位于太前，后面的字母本身就对应明文，所以安全性也是很差的。并且所有的字母一一对应的加密方式，都可以用统计的方法破解。</p>
+<h2 id="0x04-Playfair密码"><a href="#0x04-Playfair密码" class="headerlink" title="0x04 Playfair密码"></a>0x04 Playfair密码</h2><p>公平竞赛密码属于多表加密体制，将明文中的双字母组合作为一个单元对待，并将这些单元转换为密文双字母组合。<br>Playfair算法使用一个5×5字母矩阵，该矩阵使用一个关键词构造。<br>例如关键词是big，那么排布规则和Prefix密码一致，只是要按照从左到右，从上到下的顺序把变换表写出来：<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/gudianmima/02.png" srcset="/img/loading.gif" lazyload><br>生成矩阵之后，根据以下规则依次对明文的两个字母加密。  </p>
+<ul>
+<li>1.属于相同对中的重复明文字母将使用一个填充字母进行分隔。</li>
+<li>2.属于矩阵同行的明文字母将由其右边的字母代替，而行的最后一个字母由行的第一个字母代替。</li>
+<li>3.属于矩阵同列的明文字母将由它下面的字母代替，而列的最后一个字母由列的第一个字母代替。</li>
+<li>4.明文的其他字母将由与其同行，其与下一个字母同列的字母代替。（也可以理解成以两个明文字母为顶角画矩形，矩形的另一对顶角即为密文字母对）  </li>
+</ul>
+<p>Playfair密码比起单字母替换的优势在于，26个字母衍生出26×26=676种双字母组合，频率分布也不规则，使分析起来要难很多。所以一战中被英国陆军作为顶级加密系统，二战中也被同盟国大量使用。</p>
+<h2 id="0x05-Vigenere密码"><a href="#0x05-Vigenere密码" class="headerlink" title="0x05 Vigenere密码"></a>0x05 Vigenere密码</h2><p>维吉尼亚密码是一种简单的单字符多表替换密码。其加密方法是：<br>为了加密一个消息，需要一个与该消息长度一致的密钥。通常该密钥为一重复的关键词。<br>如我们事先构造一个维吉尼亚矩阵，由步长为0到25的26行凯撒密码构成。<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/gudianmima/03.png" srcset="/img/loading.gif" lazyload><br>如图我们给定密钥字母d和明文字母w，密文字母就位于（d,w）位置。<br>如我们给出密钥关键字是fun，明文是exciting，则：</p>
+<ul>
+<li>密钥为：funfunfu</li>
+<li>明文为：exciting</li>
+<li>密文为：jrpnnvsa</li>
+</ul>
+<p>解密方法则是以密钥字母标识行，密文字母标识列，明文字母位于该列首部。<br>Vigenere密码的强度在于每个明文字母由多个密文字母对应，字母的频率信息变得模糊了，但是并不是所有明文得出的频率信息都丢失了，比起Playfair更优，但是还是会保留大量的频率信息。  </p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2017/12/27/%E5%AF%86%E7%A0%81%E5%AD%A6-%E4%BA%8C-%E2%80%94%E2%80%94%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81-%E4%B8%8B/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">密码学(二)——古典密码(下)</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2017/12/17/%E5%9F%9F%E5%90%8D%E6%94%B6%E9%9B%86/">
+                        <span class="hidden-mobile">域名收集</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

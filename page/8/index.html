@@ -1,0 +1,889 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 100vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="She will never see the day it blossoms,maybe.">
+              
+            </span>
+
+            
+          </div>
+
+          
+            <div class="scroll-down-bar">
+              <i class="iconfont icon-arrowdown"></i>
+            </div>
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div class="py-5" id="board"
+          style=margin-top:0>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/28/SSTI%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" target="_self">
+          SSTI服务器模板注入
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/28/SSTI%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%A8%A1%E6%9D%BF%E6%B3%A8%E5%85%A5/" target="_self">
+          
+          
+            
+          
+          0x00 前言前段时间打本校的ctf，有道叫幸运数字的题，只挖到一个xss，看了很久对题完全没有头绪，后来交wp的时候，出题师傅在群里说是SSTI，然后就去百度了一下，复现并学习一下这个漏洞。
+0x01 SSTI服务端模板注入服务端模板注入是服务端接收了用户的输入，将其作为 Web 应用模板内容的一部分，在进行目标编译渲染的过程中，执行了用户插入的恶意内容，因而可能导致了敏感信息泄露、代码执行、G
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-28 23:17" pubdate>
+              2018-05-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/SSTI/">SSTI</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/28/python-jinja2%E6%A8%A1%E5%9D%97%E5%AD%A6%E4%B9%A0/" target="_self">
+          python-jinja2模块学习
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/28/python-jinja2%E6%A8%A1%E5%9D%97%E5%AD%A6%E4%B9%A0/" target="_self">
+          
+          
+            
+          
+          0x00 前言上次总结了python flask模板，flask模板是一个包含响应文本的文件，其中包含用占位变量表示的动态部分，其具体指只在请求的上下文中才能知道。使用真是只替换变量，再返回最终得到的响应字符串，这一过程称为渲染。为了渲染模板，Flask使用了一个名为Jinja2的强大模板引擎。这次记录一下jinja2模块的学习，用作笔记。
+0x01 jinja2Jinja2是基于python的模
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-28 11:17" pubdate>
+              2018-05-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/python/">python</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/25/python-flask%E6%A8%A1%E5%9D%97%E5%AD%A6%E4%B9%A0/" target="_self">
+          python-flask模块学习
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/25/python-flask%E6%A8%A1%E5%9D%97%E5%AD%A6%E4%B9%A0/" target="_self">
+          
+          
+            
+          
+          0x00 前言最近想接触一下python作为后端的环境，所以准备从flask模块开始学习，记录一下用法，当作笔记。
+0x01 flaskFlask是一个使用 Python 编写的轻量级 Web 应用框架。其 WSGI 工具箱采用 Werkzeug ，模板引擎则使用 Jinja2 。Flask使用 BSD 授权。因为它使用简单的核心，用 extension 增加其他功能。Flask没有默认使用的数据
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-25 23:04" pubdate>
+              2018-05-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/python/">python</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/24/php-curl%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" target="_self">
+          php curl方法总结
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/24/php-curl%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/" target="_self">
+          
+          
+            
+          
+          0x00 前言做web安全的同时也需要优秀的开发能力，所以最近想提升一下自己python和php的开发能力，对一些经常用的方法做一个总结，当作笔记。
+curl方法在总结ssrf漏洞时用过，但是我当时没有做详细的说明，就放在这里总结一下。
+0x00 curlPHP的libcurl库用来与各种的服务器使用各种类型的协议进行连接和通讯。
+libcurl目前支持http、https、ftp、gopher、
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-24 21:57" pubdate>
+              2018-05-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/php/">php</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/php/">php</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/21/%E5%88%86%E6%9E%90%E5%B9%B6%E5%A4%8D%E7%8E%B0%E4%B8%80%E6%AC%A1iframe%E6%A1%86%E6%9E%B6%E9%92%93%E9%B1%BC%E8%A1%8C%E4%B8%BA/" target="_self">
+          分析并复现一次iframe框架钓鱼行为
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/21/%E5%88%86%E6%9E%90%E5%B9%B6%E5%A4%8D%E7%8E%B0%E4%B8%80%E6%AC%A1iframe%E6%A1%86%E6%9E%B6%E9%92%93%E9%B1%BC%E8%A1%8C%E4%B8%BA/" target="_self">
+          
+          
+            
+          
+          0x00 前言事情的起因是这样的，这几天正在玩手机的时候忽然收到一封邮件名是校园通知发件人是西安电子科技大学的邮件，然后顺手打开邮箱一看， http://mrw.so/ 的短链接，邮箱是一串随便注册的前缀，是钓鱼邮件没错了。看到同时抄送了那么多人，应该是在哪里注册后公开的邮箱和学校信息被人爬去批量发邮件钓鱼了。不过既然碰到了钓鱼，点开分析一下肯定是要做的。
+
+0x01 尝试点击短链接跳转到了 ht
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-21 20:55" pubdate>
+              2018-05-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/XSS/">XSS</a>
+            
+              <a href="/tags/%E7%BD%91%E7%BB%9C%E9%92%93%E9%B1%BC/">网络钓鱼</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/19/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BDgetshell/" target="_self">
+          数据库备份getshell
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/19/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%A4%87%E4%BB%BDgetshell/" target="_self">
+          
+          
+            
+          
+          0x00 前言很久之前通过数据库备份拿到的一个webshell，本来准备等他们修复了之后再写的，但是提交了漏洞和修复方案他们接收之后很长时间没有修复，忽视了漏洞。所以今天写出来了。
+0x01 多次尝试首先这个站是偶然google hacking时找到的后台弱密码，进入后台之后发现是IIS6.0的服务器：
+
+这个后台可以对前端的文章、新闻等进行修改，发现可以上传图片到文章中，是一个上传点。
+
+先编辑
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-19 11:16" pubdate>
+              2018-05-19
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/17/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6metasploit/" target="_self">
+          渗透测试框架metasploit
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/17/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E6%A1%86%E6%9E%B6metasploit/" target="_self">
+          
+          
+            
+          
+          0x00 简介Metasploit是一款开源安全漏洞检测工具，可以用于渗透测试不同的系统和框架，附带数百个已知的软件漏洞，并保持频繁更新。
+Metasploit框架是用Ruby语言开发的，包括Perl写的脚本，C ，汇编，和Python各种组件，并且可以由用户自行编写代码加入Metasploit的数据库。
+0x01 术语在讲解Metasploit之前，先对我们即将用到的术语做一个解释。
+Explo
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-17 20:26" pubdate>
+              2018-05-17
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/metasploit/">metasploit</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/14/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E4%BB%A3%E7%A0%81%E5%B1%82%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/" target="_self">
+          sql注入之代码层防御策略
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/14/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E4%BB%A3%E7%A0%81%E5%B1%82%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/" target="_self">
+          
+          
+            
+          
+          0x00 前言之前写sql注入的博客都是站在攻击者角度上的，这次站在防御方的角度上，总结一下代码层防御sql注入的一些方法。
+0x01 代码层防御在易受sql注入攻击的应用程序开发过程中，如果我们在代码里面进行一些合理的过滤和安全措施，就可以防范绝大多数的sql注入。
+0x02 参数化语句引发sql注入最根本的原因是将sql语句创建成字符串发送给数据库，即动态sql。
+而现在大多数程序在访问数据库
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-14 22:47" pubdate>
+              2018-05-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/">防御策略</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+              <a href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+            
+              <a href="/tags/%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/">防御策略</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/11/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
+          代码审计总结
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/11/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
+          
+          
+            
+          
+          0x00 前言最近在锻炼自己的代码审计能力，所以准备总结一下审计的方法和技巧。
+0x01 漏洞类型
+sql注入
+xss
+文件包含
+文件上传
+反序列化
+csrf
+ssrf
+代码执行
+
+0x02 sql注入基本sql注入对于基本的sql注入的审计，可以通过$_GET,$_POST等传参追踪数据库操作，也可以通过select , delete , update,insert 数据库操作语句反追踪传参。
+
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-11 22:44" pubdate>
+              2018-05-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/05/11/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%B7%A5%E5%85%B7RIPS/" target="_self">
+          PHP代码审计工具RIPS
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/11/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%B7%A5%E5%85%B7RIPS/" target="_self">
+          
+          
+            
+          
+          0x00 代码审计工具RIPS在安全工作中，代码审计是很重要的一项技能。在面对大规模的代码时，使用自动化工具辅助人工漏洞挖掘，可以显著提高审计工作的效率。学会利用自动化代码审计工具，是每一个代码审计人员必备的能力。
+博主在代码审计过程中选择使用RIPS，它使用了静态分析技术，能够自动化地挖掘PHP源代码潜在的安全漏洞如XSS ，sql注入，敏感信息泄漏，文件包含等常见漏洞；也可以采用正则方式扫描代
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-11 12:31" pubdate>
+              2018-05-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/page/7/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><span class="page-number current">8</span><a class="page-number" href="/page/9/#board">9</a><a class="page-number" href="/page/10/#board">10</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/#board">13</a><a class="extend next" rel="next" href="/page/9/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

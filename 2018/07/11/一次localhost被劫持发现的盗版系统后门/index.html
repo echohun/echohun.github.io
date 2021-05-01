@@ -1,0 +1,494 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>一次localhost被劫持发现的盗版系统后门 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="一次localhost被劫持发现的盗版系统后门">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-07-11 21:56" pubdate>
+        2018年7月11日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.5k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">一次localhost被劫持发现的盗版系统后门</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-起因"><a href="#0x00-起因" class="headerlink" title="0x00 起因"></a>0x00 起因</h2><p>今天准备通过一个win7虚拟机的web服务测试一些东西的时候，打开127.0.0.1忽然发现有点不对劲，网站怎么跳转到一个<a target="_blank" rel="noopener" href="http://www.776633.com的域名,然后又跳转到一个114la什么的网址导航了./">www.776633.com的域名，然后又跳转到一个114la什么的网址导航了。</a></p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>在新开一个页面重新访问localhost之后发现并不是自己眼花了，瞬间想到一个可能，嘛耶我该不会被劫持了吧。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>能造成这个情况的原因有很多，首先从最危险的情况开始排查，在确保了自己的网络环境是安全的，没有dns劫持等问题之后，考虑到这个系统是很久之前为了节约时间，临时在网上找到的别人封装好的盗版系统，难免会有后门，那么问题应该是出在这个win7系统内部了。</p>
+<h2 id="0x01-HOSTS文件劫持"><a href="#0x01-HOSTS文件劫持" class="headerlink" title="0x01 HOSTS文件劫持"></a>0x01 HOSTS文件劫持</h2><p>在这个临时安装好，没有杀毒软件的系统，有后门、恶意软件的概率很高，很多恶意软件通过修改本地hosts文件对一些网址进行劫持，所以打开hosts看看是不是有恶意软件把hosts文件给更改了。</p>
+<h3 id="HOSTS文件"><a href="#HOSTS文件" class="headerlink" title="HOSTS文件"></a>HOSTS文件</h3><p>Hosts是一个没有扩展名的系统文件，可以用记事本等工具打开，其作用就是将一些常用的网址域名与其对应的IP地址建立一个关联“数据库”，当用户在浏览器中输入一个需要登录的网址时，系统会首先自动从Hosts文件中寻找对应的IP地址，一旦找到，系统会立即打开对应网页，如果没有找到，则系统会再将网址提交DNS域名解析服务器进行IP地址的解析。</p>
+<p>如果恶意软件要通过hosts文件来劫持的话，可以通过添加一行类似：</p>
+<figure class="highlight accesslog"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs accesslog"><span class="hljs-number">127.0.0.1</span> www.baidu.com<br></code></pre></td></tr></table></figure>
+<p>这样访问百度就会解析到本地ip，如果这个文件的ip被改写成攻击者的服务器地址，那么我们访问后面的域名，就会解析到对方的服务器。</p>
+<h3 id="排查问题"><a href="#排查问题" class="headerlink" title="排查问题"></a>排查问题</h3><p>win7系统的hosts文件在C:\Windows\system32\drivers\etc目录下，我们打开hosts文件查看一下有没有被篡改。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>但是在打开的这个hosts文件中，并没有看到任何可疑的东西，那么看来不是HOSTS文件篡改造成的问题，我们只能换个思路了。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x02-恶意进程"><a href="#0x02-恶意进程" class="headerlink" title="0x02 恶意进程"></a>0x02 恶意进程</h2><p>既然不是hosts的问题，那么我访问127.0.0.1会被定向到恶意网站，一定是有恶意进程将本地80口占用，然后进行这一系列操作的，那么就去查看一下哪些进程在占用着本地80端口。</p>
+<p>在命令行中输入：</p>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs 1c">netstat -ano <span class="hljs-string">| findstr &quot;</span><span class="hljs-number">80</span><span class="hljs-string">&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack05.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>看到pid为1120的进程占用着80口，那么在任务管理器中找找到底是什么进程。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack06.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>按pid排序之后发现是httpd.exe进程，这再熟悉不过了，不就是apache服务吗，不过想想自己也没在这个系统里面装过apache服务，猜想应该是这个系统封装的时候那个作者给弄进去的，不管是不是它造成的，先直接右键关掉整个进程树。</p>
+<p>然后重新访问127.0.0.1，发现已经没有问题了，那么就确定是apache的问题。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack07.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这个时候肯定要在apache安装目录看一看这小子到底在搞什么鬼，在检查了一会配置文件等问题之后，在C:\Windows\Apache\htdocs这个目录下的index.php发现了问题：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack08.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>我来解释一下这段php代码：</p>
+<ul>
+<li>首先这个php文件从 <a target="_blank" rel="noopener" href="http://host.660055.com/index3.txt">http://host.660055.com/index3.txt</a> 这个网站读取一份txt文件，将里面的内容作为字符串存在$index中。</li>
+<li>然后以@为分隔符，将$index字符串分割成为数组保存在$arr中。</li>
+<li>然后将角标为零的元素保存为$host,角标为一的元素保存为$index，并且用$index替换index.php文件内容，用$host替换本地HOSTS文件中的内容进行进一步劫持。</li>
+</ul>
+<p>通过这部分内容，对方就可以通过更改网站中txt的内容，对所有拥有这个php文件的计算机的hosts文件进行更改，并且还能继续更新受害者计算机上的这个php文件做其他的事情。</p>
+<p>再看看这个php文件后面的部分</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack09.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，在所有的代码运行过一遍之后，php文件将网址重定向到 <a target="_blank" rel="noopener" href="http://www.776633.com./">www.776633.com。</a></p>
+<p>在通过burpsuite对这个网址进行抓包之后，除了跳转那个114la的网址导航，就只剩几个js页面。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack10.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>这几个js页面全部访问了一下，大致看了一下代码然后在控制台运行了一遍之后，发现都是把一些数据发到一个站长数据的页面，没有什么安全问题，应该是攻击者统计一些数据用的。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/localhost_hijack/hijack11.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>那么看来最后这个跳转的地址也是对方可控的，初步判断是攻击者用来刷刷这个网址导航的流量，顺便能够起到掩人耳目的作用。</p>
+<h2 id="0x03-清除恶意进程"><a href="#0x03-清除恶意进程" class="headerlink" title="0x03 清除恶意进程"></a>0x03 清除恶意进程</h2><p>分析到这里，整个流程就清楚了，我除了把这个php脚本拷贝一份留下学习思路之外，将这个htdocs目录所有东西删除掉就没有问题了，如果不放心，我们可以将apache软件从计算机卸载，然后删掉整个apache目录就行了。</p>
+<h2 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h2><p>我们清理了这个后门，仍不能保证这个系统就一定是安全的，很多盗版镜像站下载下来的系统都存在许许多多这样的问题，这种只用一两次就删掉的虚拟机为了方便用一些封装好的系统没有问题，但是如果我们是安装在自己电脑中长期使用的系统，一定要去官方下载正版的镜像。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/07/23/xml%E6%B3%A8%E5%85%A5%E6%94%BB%E5%87%BB%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">xml注入攻击总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/07/05/Docker%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">Docker使用笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

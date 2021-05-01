@@ -1,0 +1,505 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>代码审计总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="代码审计总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-05-11 22:44" pubdate>
+        2018年5月11日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">代码审计总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>最近在锻炼自己的代码审计能力，所以准备总结一下审计的方法和技巧。</p>
+<h2 id="0x01-漏洞类型"><a href="#0x01-漏洞类型" class="headerlink" title="0x01 漏洞类型"></a>0x01 漏洞类型</h2><ul>
+<li>sql注入</li>
+<li>xss</li>
+<li>文件包含</li>
+<li>文件上传</li>
+<li>反序列化</li>
+<li>csrf</li>
+<li>ssrf</li>
+<li>代码执行</li>
+</ul>
+<h2 id="0x02-sql注入"><a href="#0x02-sql注入" class="headerlink" title="0x02 sql注入"></a>0x02 sql注入</h2><h4 id="基本sql注入"><a href="#基本sql注入" class="headerlink" title="基本sql注入"></a>基本sql注入</h4><p>对于基本的sql注入的审计，可以通过$_GET,$_POST等传参追踪数据库操作，也可以通过select , delete , update,insert 数据库操作语句反追踪传参。</p>
+<p>主要注意查看有无过滤，有没有转义，有没有参数化。</p>
+<h4 id="宽字节注入"><a href="#宽字节注入" class="headerlink" title="宽字节注入"></a>宽字节注入</h4><p>在关键部分经过转义等操作也不是完全高枕无忧了，如果代码中存在一些utf-8、gbk、big5等编码的函数，就很有可能被传入一些字符吃掉反斜杠，如%df’ and ‘ 1=1’，由于反斜杠是%5c，%df%5c在编码处理时组成了“運”这种情况，使过滤功亏一篑，所以在这些存在编码的位置，要分析并测试会不会引起上述问题。</p>
+<h4 id="httpheader的参数"><a href="#httpheader的参数" class="headerlink" title="httpheader的参数"></a>httpheader的参数</h4><p>有些系统可能会将referer，X_Forwarded_For还有cookie等参数传入数据库，一般的防注入系统考虑了get和post的参数值，而忽略了这些值的检测，并且这些值都是用户可以控制的，所以也要关注一下。</p>
+<h4 id="二次注入"><a href="#二次注入" class="headerlink" title="二次注入"></a>二次注入</h4><p>攻击payload首先被Web服务器上的应用存储，随后又在关键操作中被使用，这就是二次注入。虽然我们在第一次注入的时候做了足够的过滤，但是第一次构造出可能在第二次调用时触发的payload引发注入，所以在重复利用输入的值的位置需要额外注意。</p>
+<h4 id="文件名注入"><a href="#文件名注入" class="headerlink" title="文件名注入"></a>文件名注入</h4><p>php.ini中配置安全策略可以隔绝相当一部分的sql注入，比如magic_quote_gpc=on开启之后，能实现addslshes()和stripslashes()这两个函数的功能，但是这些功能不会过滤因为$_FILE，$_SERVER之类的值</p>
+<p>有些cms会把文件名name的值保存在数据库里，但又没有对name进行过滤，可能会造成注入，所以在有对文件名处理的位置，除了考虑文件上传漏洞，也不要忘记分析一下产生sql注入的可能。</p>
+<h2 id="0x03-xss"><a href="#0x03-xss" class="headerlink" title="0x03 xss"></a>0x03 xss</h2><h4 id="反射型xss"><a href="#反射型xss" class="headerlink" title="反射型xss"></a>反射型xss</h4><p>反射型xss审计的时候基本的思路都一样，通过寻找可控没有过滤（或者可以绕过）的参数，通过echo等输出函数直接输出。寻找的一般思路就是寻找输出函数，再去根据函数寻找变量。一般的输出函数有这些：print , print_r , echo , printf , sprintf , die , var_dump ,var_export。</p>
+<h4 id="存储型"><a href="#存储型" class="headerlink" title="存储型"></a>存储型</h4><p>存储型xss审计和反射型xss审计时候思路差不多，不过存储型xss会在数据库中转一下，注意审计sql语句update ,insert更新和插入。</p>
+<h4 id="DOM"><a href="#DOM" class="headerlink" title="DOM"></a>DOM</h4><p>基于DOM的跨站脚本XSS：通过访问document.URL 或者document.location执行一些客户端逻辑的javascript代码。不依赖发送给服务器的数据。</p>
+<p>审计DOM型XSS时，关注输入可以影响的document.URL等位置。</p>
+<h2 id="0x04-文件包含"><a href="#0x04-文件包含" class="headerlink" title="0x04 文件包含"></a>0x04 文件包含</h2><p>PHP的文件包含可以直接执行包含文件的代码，包含的文件格式是不受限制的，只要能正常执行即可。</p>
+<p>文件包含分为本地包含和远程包含。</p>
+<h4 id="远程文件包含"><a href="#远程文件包含" class="headerlink" title="远程文件包含"></a>远程文件包含</h4><p>服务器的php配置中选项allow_url_fopen与allow_url_include为开启状态时，服务器会允许包含远程服务器上的文件，会产生远程文件包含的问题，所以面对这种问题，着重看是否打开了这两个配置选项。</p>
+<p>如果非要用到远程文件，在include() ; include_once() ; require();require_once()等代码的位置，要将文件名限制为固定值，完全无法被用户控制。</p>
+<h4 id="本地文件包含"><a href="#本地文件包含" class="headerlink" title="本地文件包含"></a>本地文件包含</h4><p>本地文件包含要查看的代码段和远程文件包含一样，主要查看<br>include() ; include_once() ; require();require_once()这四个函数的位置，要着重查看参数是否外部可控，尽量使其固定。</p>
+<p>如果必须要求可控的话，查看是否经历了白名单验证文件名，或者通过函数过滤了危险的字符如“../”。</p>
+<h2 id="0x05-文件上传"><a href="#0x05-文件上传" class="headerlink" title="0x05 文件上传"></a>0x05 文件上传</h2><p>文件上传漏洞需要审计的部分是上传函数</p>
+<figure class="highlight abnf"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs abnf">move_uploaded_file()<span class="hljs-comment">;</span><br></code></pre></td></tr></table></figure>
+<p>在这个函数周围，要查看是否后端检查，检查的是后缀，文件头，还是content-type。如果检查的是文件头和content-type，即</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">getimagesize</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">mime_content_type</span><span class="hljs-params">()</span></span><br></code></pre></td></tr></table></figure>
+<p>等就会产生风险。<br>还要检查是黑名单过滤还是白名单过滤，如果是黑名单过滤，则要检查是否过滤全面了（大小写等）。</p>
+<p>如果代码中没有将文件名整体重命名的函数，建议在这里加一个提升安全性。</p>
+<p>除了代码中需要检查的部分，还要检查服务器的配置文件和php插件php-cgi等，以及服务器版本是否存在解析漏洞。</p>
+<p>ps：文件上传这里，比起代码审计更好的方式是采取黑盒测试。</p>
+<h2 id="0x06-反序列化"><a href="#0x06-反序列化" class="headerlink" title="0x06 反序列化"></a>0x06 反序列化</h2><p>php反序列化的审计，主要是查找 unserialize();函数的位置。</p>
+<p>观察unserialize();函数的参数是否是用户可控的，如果可控就很容易被利用，再观察对传入参数的过滤函数检查情况。</p>
+<h2 id="0x07-csrf"><a href="#0x07-csrf" class="headerlink" title="0x07 csrf"></a>0x07 csrf</h2><p>csrf跨站请求伪造漏洞审计时主要查看在登陆后提交的代码部分，有没有通过token和referer对用户身份的合法性进行验证。还有整体有没有设置跨域权限。</p>
+<h2 id="0x08-ssrf"><a href="#0x08-ssrf" class="headerlink" title="0x08 ssrf"></a>0x08 ssrf</h2><p>对于ssrf服务端请求伪造的审计，主要去找curl命令等接收远程请求的位置有没有过滤返回信息，验证远程服务器对请求的响应，查看有没有禁用不需要的协议。</p>
+<h2 id="0x09-代码、命令执行"><a href="#0x09-代码、命令执行" class="headerlink" title="0x09 代码、命令执行"></a>0x09 代码、命令执行</h2><p>首先来说一下命令执行，命令执行就是调用系统命令cmd或者应用指令bash，审计的时候去找会执行命令的函数：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">system</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">exec</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">shell_exec</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">passthru</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">pcntl_exec</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">popen</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">proc_open</span><span class="hljs-params">()</span></span><br></code></pre></td></tr></table></figure>
+<p>然后查看这些位置有没有严格的过滤规则。</p>
+<p>代码执行漏洞会将可执行代码放在webservice中执行，审计代码执行漏洞时，可以去寻找php中将字符串转换成代码并执行的函数，主要去搜索</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">eval</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">asset</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">preg_replace</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">call_user_func</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">call_user_func_array</span><span class="hljs-params">()</span></span><br><span class="hljs-function"><span class="hljs-title">array_map</span><span class="hljs-params">()</span></span><br></code></pre></td></tr></table></figure>
+
+<p>然后查看这些位置有没有严格的过滤规则。</p>
+<h2 id="0x10-总结"><a href="#0x10-总结" class="headerlink" title="0x10 总结"></a>0x10 总结</h2><p>上述这些漏洞的原理都基本写过一遍，大部分也做了复现，所以这里不再详细解释，只是整理一下审计过程中需要注意的位置，留作笔记。</p>
+<p>顺便送上两张代码审计的思维导图</p>
+<p>php代码审计导图：<br><a target="_blank" rel="noopener" href="https://github.com/echohun/tools/blob/master/%E5%AE%89%E5%85%A8%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E8%84%91%E5%9B%BE.png">https://github.com/echohun/tools/blob/master/%E5%AE%89%E5%85%A8%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E8%84%91%E5%9B%BE.png</a></p>
+<p>python代码审计导图：<br><a target="_blank" rel="noopener" href="https://github.com/echohun/tools/blob/master/%E5%AE%89%E5%85%A8%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E8%84%91%E5%9B%BE.jpg">https://github.com/echohun/tools/blob/master/%E5%AE%89%E5%85%A8%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/Python%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E8%84%91%E5%9B%BE.jpg</a></p>
+<p>代码审计的溢出导图：<br><a target="_blank" rel="noopener" href="https://github.com/echohun/tools/blob/master/%E5%AE%89%E5%85%A8%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E7%9A%84%E6%BA%A2%E5%87%BA%E8%84%91%E5%9B%BE.png">https://github.com/echohun/tools/blob/master/%E5%AE%89%E5%85%A8%E6%80%9D%E7%BB%B4%E5%AF%BC%E5%9B%BE/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E7%9A%84%E6%BA%A2%E5%87%BA%E8%84%91%E5%9B%BE.png</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+                    
+                      <a class="hover-with-bg" href="/tags/php/">php</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/05/14/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E4%BB%A3%E7%A0%81%E5%B1%82%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">sql注入之代码层防御策略</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/05/11/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%B7%A5%E5%85%B7RIPS/">
+                        <span class="hidden-mobile">PHP代码审计工具RIPS</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

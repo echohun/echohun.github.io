@@ -1,0 +1,591 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>机器学习(2)——线性回归 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="机器学习(2)——线性回归">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-06-20 12:44" pubdate>
+        2018年6月20日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.4k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      24
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">机器学习(2)——线性回归</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>第一篇记录了机器学习的定义、分类和范围，这一篇开始从机器学习的方法学起，总结机器学习的经典方法，然后尽量自己写代码实现。</p>
+<h2 id="0x01-回归算法"><a href="#0x01-回归算法" class="headerlink" title="0x01 回归算法"></a>0x01 回归算法</h2><p>回归算法属于机器学习中监督学习类的算法，是入门机器学习最基础的算法。</p>
+<p>回归分析是研究自变量和因变量之间关系的一种预测模型技术。这些技术应用于预测，时间序列模型和找到变量之间关系。</p>
+<p>回归算法就是量化因变量受自变量影响的大小，建立线性回归方程或者非线性回归方程，从而达对因变量的预测，或者对因变量的解释作用。</p>
+<h2 id="0x02-回归分析流程"><a href="#0x02-回归分析流程" class="headerlink" title="0x02 回归分析流程"></a>0x02 回归分析流程</h2><p>①探索性分析，画不同变量之间的散点图，进行相关性检验等，了解数据的大致情况，以及得知重点关注那几个变量；</p>
+<p>②变量和模型选择；</p>
+<p>③回归分析假设条件验证；</p>
+<p>④共线性和强影响点检查；</p>
+<p>⑤模型修改，并且重复③④；</p>
+<p>⑥模型验证。</p>
+<h2 id="0x03-回归算法分类"><a href="#0x03-回归算法分类" class="headerlink" title="0x03 回归算法分类"></a>0x03 回归算法分类</h2><p>回归算法主要通过三种方法分类：自变量的个数、因变量的类型和回归线的形状。</p>
+<p>常见的回归算法有：</p>
+<ul>
+<li>线性回归</li>
+<li>逻辑回归</li>
+<li>多项式回归</li>
+<li>逐步回归</li>
+<li>岭回归</li>
+<li>Lasso回归</li>
+<li>ElasticNet回归</li>
+</ul>
+<h2 id="0x04-线性回归-Linear-Regression"><a href="#0x04-线性回归-Linear-Regression" class="headerlink" title="0x04 线性回归(Linear Regression)"></a>0x04 线性回归(Linear Regression)</h2><p>线性回归是世界上最知名的建模方法之一，在线性回归模型中，因变量是连续型的，自变量可以使连续型或离散型的，回归线是线性的。</p>
+<p>线性回归用最适直线(回归线)去建立因变量Y和一个或多个自变量X之间的关系。可以用公式来表示：</p>
+<p>Y=A+B*X+e</p>
+<p>A为截距，B为回归线的斜率，e是误差项。</p>
+<p>简单线性回归与多元线性回归的差别在于：多元线性回归有多个(&gt;1)自变量，而简单线性回归只有一个自变量。</p>
+<h4 id="简单线性回归"><a href="#简单线性回归" class="headerlink" title="简单线性回归"></a>简单线性回归</h4><p>我们首先实现一个只有单一自变量的简单线性回归</p>
+<p>我们实现这个算法，可以先以Andrew Ng机器学习讲义中美国俄亥俄州Portland Oregon城市房屋价格为例：</p>
+<p>这个例子中近简化使用房屋面积一个因子作为自变量，y轴对应其因变量房屋价格。所以我们机器学习的线性回归就变为对于给定有限的数据集，进行一元线性回归，即找到一个一次函数y=y(x) + e，使得y满足</p>
+<p>当x={2104, 1600, 2400, 1416, 3000, … }, y={400, 330, 369, 232, 540, … } </p>
+<table>
+<thead>
+<tr>
+<th>面积(feet²)</th>
+<th>价格(1000$)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2104</td>
+<td>400</td>
+</tr>
+<tr>
+<td>1600</td>
+<td>330</td>
+</tr>
+<tr>
+<td>2400</td>
+<td>369</td>
+</tr>
+<tr>
+<td>1416</td>
+<td>232</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>540</td>
+</tr>
+<tr>
+<td>···</td>
+<td>···</td>
+</tr>
+</tbody></table>
+<p>对这个问题我们先给出假设函数即需要拟合的直线：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>其中a和b是我们要求得的参数，参数得变化会引起函数的变化。</p>
+<p>而我们解出参数之后的函数是否为最优解，我们需要引入一个概念：Cost Function，即代价函数或成本函数。</p>
+<h4 id="代价函数-Cost-Function"><a href="#代价函数-Cost-Function" class="headerlink" title="代价函数(Cost Function)"></a>代价函数(Cost Function)</h4><p>在回归问题中，衡量最优解的常用代价函数为平方误差。</p>
+<p>平方误差在高中和大学的概率论、统计学等课程中我们都有所了解，就是用样本数据和拟合出的线做差值，然后对差值进行平方和并除以点数m计算平均值。</p>
+<p>而在这里，我们要导出代价函数，额外除以1/2做数学简化，形成以下代价函数：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>ps：这里额外除以1/2，是为了之后平方函数的微分项将抵消1/2项，以方便计算梯度下降。</p>
+<p>下来我们求解最优解的问题就转变为了求解代价函数的最小值。</p>
+<p>其中J是基于θ的函数，我们可以先将其简化成只有θ1的函数，令θ0=0.</p>
+<p>然后我们不断给定θ1的值，基于样本值进行计算代价函数J，就可以得到一个θ1和J的函数，并在某一点取得极小值。</p>
+<p>如样本数据为y ={(1,1), (2,2),(3,3)}时，可以得到如下的J-θ1图形：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>我们求解线性回归最优解的方法一般是梯度下降法和最小二乘法</p>
+<h4 id="最小二乘法"><a href="#最小二乘法" class="headerlink" title="最小二乘法"></a>最小二乘法</h4><p>代价函数中使用的均方误差，其实对应了我们常用的欧几里得的距离（欧式距离，Euclidean Distance）, 基于均方误差最小化进行模型求解的方法称为“最小二乘法”（least square method），即通过最小化误差的平方和寻找数据的最佳函数匹配。</p>
+<p>当函数子变量为一维时，最小二乘法就蜕变成寻找一条直线。</p>
+<p>如我们上例中的模型，寻找J极小值就是分别用J对θ1和θ0求偏导，然后寻找偏导为零的点。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>解得：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_05.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<h5 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h5><p>最小二乘法算法简单，容易理解，而然在现实机器学习却有其局限性：</p>
+<ul>
+<li><p>并非所有函数都可以求出驻点，即导数为0的点，f(x)=0</p>
+</li>
+<li><p>求解方程困难，或求根公式复杂</p>
+</li>
+<li><p>导数并无解析解</p>
+</li>
+<li><p>最小二乘法的矩阵公式,计算一个矩阵的逆是相当耗费时间的, 而且求逆也会存在数值不稳定的情况</p>
+</li>
+</ul>
+<h4 id="梯度下降法"><a href="#梯度下降法" class="headerlink" title="梯度下降法"></a>梯度下降法</h4><p>正是由于在实际中，最小二乘法遇到的困难和局限性，尤其是多数超定方程组不存在解，我们由求导转向迭代逼近。也就是梯度下降算法。</p>
+<p>首先我们了解一下什么是梯度，这在复变函数等大学课程中都曾经学过。</p>
+<h5 id="方向导数"><a href="#方向导数" class="headerlink" title="方向导数"></a>方向导数</h5><p>方向导数即研究在某一点的任意方向的变化率，是偏导数的广义扩展。</p>
+<h5 id="梯度"><a href="#梯度" class="headerlink" title="梯度"></a>梯度</h5><p>梯度则基于方向导数，是一个向量而非数，梯度代表了各个方向导数中，变化趋势最大的那个方向。</p>
+<p>那么，梯度方向就是增长最快的方向，负梯度方向就是减小最快的方向。</p>
+<h5 id="梯度下降算法"><a href="#梯度下降算法" class="headerlink" title="梯度下降算法"></a>梯度下降算法</h5><p>梯度下降算法通常也被称作最速下降法。其目的是找到一个局部极小值点；其目标与最小二乘法相同，都是使得估算值与实际值的总平方差尽量小。</p>
+<p>其方法是采用计算数学的迭代法，先给定一初始点，然后向下降最快的方向调整，在若干次迭代之后找到局部最小。</p>
+<p>比如我们给定上面的方程，初始参数是θ0,θ1，我们不断改变θ0,θ1从而减少J(θ0,θ1)的值，具体做法是求导。直到最终收敛。</p>
+<p>迭代公式如下：</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_06.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>其中θj可以是θ0和θ1这两个参数，α为步长，整个式子的意义为，θ0,θ1每次向J(θ0,θ1)负梯度方向下降步长α。</p>
+<h5 id="学习率"><a href="#学习率" class="headerlink" title="学习率"></a>学习率</h5><p>公式中的步长α，也称为学习率，用来控制每次下降的幅度。</p>
+<p>我们应该调整参数α以确保梯度下降算法在合理的时间内收敛。</p>
+<ul>
+<li>如果α过小，每步会移动非常近，收敛时间就会很长。</li>
+<li>如果α过大，每步会移动比较远，会导致直接越过极小值，甚至无法收敛到最低点。</li>
+</ul>
+<p>如果我们时间耗费较长或无法收敛，那就说明我们要重新制定学习率α。</p>
+<h5 id="线性回归梯度下降"><a href="#线性回归梯度下降" class="headerlink" title="线性回归梯度下降"></a>线性回归梯度下降</h5><p>对于线性模型，我们可以这样写梯度下降函数。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_07.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>h(x)是需要拟合的函数。<br>J(θ)称为均方误差或cost function。用来衡量训练集众的样本对线性模式的拟合程度。<br>m为训练集众样本的个数。<br>θ是我们最终需要通过梯度下降法来求得的参数。</p>
+<p>接下来的梯度下降法就有两种不同的迭代思路。</p>
+<h5 id="批量梯度下降（Batch-Gradient-Descent）"><a href="#批量梯度下降（Batch-Gradient-Descent）" class="headerlink" title="批量梯度下降（Batch Gradient Descent）"></a>批量梯度下降（Batch Gradient Descent）</h5><p>可以看到上述每次迭代都需要计算所有样本的残差并加和，批量梯度下降是梯度下降法最原始的形式，它的具体思路是在更新每一参数时都使用所有的样本来进行更新。</p>
+<p>1.计算J(θ)关于θT的偏导数,也就得到了向量中每一个θ的梯度。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_08.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>2.沿着梯度的反方向更新参数θ的值</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_09.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>3.迭代直到收敛。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_10.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>优点：全局最优解，易于并行实现。</p>
+</li>
+<li><p>缺点：当样本数目很多时，训练过程会很慢。</p>
+</li>
+</ul>
+<h5 id="随机梯度下降（Stochastic-gradient-descent）"><a href="#随机梯度下降（Stochastic-gradient-descent）" class="headerlink" title="随机梯度下降（Stochastic gradient descent）"></a>随机梯度下降（Stochastic gradient descent）</h5><p>和批量梯度有所不同的地方在于，每次迭代只选取一个样本的数据，一旦到达最大的迭代次数或是满足预期的精度，就停止。</p>
+<p>随机梯度下降法的θ更新表达式。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_11.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>迭代直到收敛。</p>
+<p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_12.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>优点：训练速度快。</p>
+</li>
+<li><p>缺点：准确度下降，并不是全局最优，不易于并行实现。</p>
+</li>
+</ul>
+<h5 id="视觉效果"><a href="#视觉效果" class="headerlink" title="视觉效果"></a>视觉效果</h5><p><img src="https://github.com/echohun/blog_image/blob/master/machine_learning/ml2_13.png?raw=true" srcset="/img/loading.gif" lazyload></p>
+<p>当我们的成本函数处于图的坑底时，J值最小，为最佳解。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/06/21/%E4%BB%BB%E6%84%8F%E5%AF%86%E7%A0%81%E9%87%8D%E7%BD%AE%E6%80%BB%E7%BB%93/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">任意密码重置总结</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/06/19/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-1-%E2%80%94%E2%80%94%E5%AE%9A%E4%B9%89%E4%B8%8E%E5%88%86%E7%B1%BB/">
+                        <span class="hidden-mobile">机器学习(1)——定义与分类</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

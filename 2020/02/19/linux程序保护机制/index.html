@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>linux程序保护机制 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="linux程序保护机制">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2020-02-19 22:21" pubdate>
+        2020年2月19日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      14
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">linux程序保护机制</h1>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>从创建博客到现在也不少时间了，写了不少网络安全的学习笔记，但都集中在web类漏洞中，近日为了扩展自己的知识体系，准备在二进制上下些功夫，从基础开始记录一下二进制漏洞的笔记。所以就先拿linux程序的保护机制来开个头吧。</p>
+<p>linux系统提供了很多安全机制来降低程序受到缓冲区溢出等攻击手法的攻击，而我们需要使用这些攻击手法来进行攻击，所以就要熟悉常见的安全机制，知己知彼，才能成功实施攻击。</p>
+<h2 id="checksec"><a href="#checksec" class="headerlink" title="checksec"></a>checksec</h2><p>checksec是一个检查linux程序开启的安全机制的shell脚本，脚本并不大，可以直接从github下载并使用：<br><a target="_blank" rel="noopener" href="https://github.com/slimm609/checksec.sh/">https://github.com/slimm609/checksec.sh/</a></p>
+<p>gdb的peda插件也带有checksec脚本，由于我们之后还要频繁使用gdb的分析二进制程序，所以直接使用gdb-peda中的checksec</p>
+<p>gdb-peda安装：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs awk">$ git clone https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/longld/</span>peda.git ~/peda<br>$ echo <span class="hljs-string">&quot;source ~/peda/peda.py&quot;</span> &gt;&gt; ~/.gdbinit <br></code></pre></td></tr></table></figure>
+<p>安装完成后原本的gdb会变成gdb-peda</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_protect/sec01.png" srcset="/img/loading.gif" lazyload></p>
+<p>随便使用一个程序尝试一下checksec</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_protect/sec02.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="CANARY"><a href="#CANARY" class="headerlink" title="CANARY"></a>CANARY</h2><p>CANARY是金丝雀的意思，来源于”金丝雀与矿工”的故事，金丝雀曾经经常被用作煤矿开采的预警系统。矿井中的一氧化碳或甲烷等有毒气体会在影响矿工之前杀死这些金丝雀，矿工们会根据金丝雀的状态,判断矿井是否安全。</p>
+<p>和金丝雀的作用类似，在linux程序中，CANARY是一种栈保护机制，栈保护机制开启后，函数执行时会先往栈中插入随机值，这个随机值就被称为CANARY，当函数返回时，会先验证这个随机数是否被更改，如果被更改说明有栈溢出行为，就会使程序强制停止，从而规避栈溢出带来的危害。</p>
+<p>canary所在位置图解：</p>
+<figure class="highlight gherkin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs gherkin">  High<br>  Address |<span class="hljs-string">                 </span>|<br>          +-----------------+<br>          |<span class="hljs-string"> args            </span>|<br>          +-----------------+<br>          |<span class="hljs-string"> return address  </span>|<br>          +-----------------+<br>  rbp =&gt;  |<span class="hljs-string"> old ebp         </span>|<br>          +-----------------+<br>rbp-8 =&gt;  |<span class="hljs-string"> canary value    </span>|<br>          +-----------------+<br>          |<span class="hljs-string"> 局部变量        </span>|<br>  Low     |<span class="hljs-string">                 </span>|<br>  Address<br></code></pre></td></tr></table></figure>
+
+<p>gcc编译时，可通过编译选项选择是否启用canary机制</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs diff"><span class="hljs-deletion">-fno-stack-protector 禁用栈保护</span><br><span class="hljs-deletion">-fstack-protector 启用堆栈保护，不过只为局部变量中含有 char 数组的函数插入保护代码</span><br><span class="hljs-deletion">-fstack-protector-all 启用堆栈保护，为所有函数插入保护代码</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="FORTIFY"><a href="#FORTIFY" class="headerlink" title="FORTIFY"></a>FORTIFY</h2><p>FORTIFY机制用于检查程序是否存在缓冲区溢出错误，适用于memcpy，memset，stpcpy，strcpy，strncpy，strcat，strncat，sprintf，snprintf，vsprintf，vsnprintf，gets等函数。</p>
+<p>在函数编译时，加入FORTIFY机制的代码会在编译过程中自动添加一部分代码，判断数组的大小，削减缓冲区溢出的危害。</p>
+<p>gcc编译时，默认不开启FORTIFY机制，可通过编译选项选择开启的FORTIFY机制强度</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">gcc <span class="hljs-attribute">-D_FORTIFY_SOURCE</span>=1 仅仅只会在编译时进行检查<br>gcc <span class="hljs-attribute">-D_FORTIFY_SOURCE</span>=2<br></code></pre></td></tr></table></figure>
+
+<h2 id="NX"><a href="#NX" class="headerlink" title="NX"></a>NX</h2><p>NX是No-eXecute的缩写，设置NX会限制数据页面内存中不可执行代码，若程序尝试在被限制内存中执行代码，CPU会抛出异常。这种防御手段可以很好的克制ret2shellcode方式的攻击手段。</p>
+<p>gcc默认开启NX机制防止数据内存中执行代码，可以通过编译选项关闭NX机制</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">gcc</span> -z execstack 关闭NX保护<br>gcc -z noexecstack 开启NX保护<br></code></pre></td></tr></table></figure>
+<p>在Windows下，类似的概念为DEP（数据执行保护），在最新版的Visual Studio中默认开启了DEP编译选项。</p>
+<h2 id="PIE"><a href="#PIE" class="headerlink" title="PIE"></a>PIE</h2><p>PIE叫做代码部分地址无关，PIE能使程序像共享库一样在主存任何位置装载，这需要将程序编译成位置无关，并链接为ELF共享对象。</p>
+<p>PIE和内存地址随机化机制ASLR（address space layout randomization)会同时工作,使代码</p>
+<p>如果不开启PIE的话，那么每次ELF文件加载的地址都是相同的。如果开启PIE，那么每次都会不同。</p>
+<p>liunx下关闭PIE的命令如下：</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">sudo -s echo <span class="hljs-number">0</span> &gt; <span class="hljs-regexp">/proc/</span>sys<span class="hljs-regexp">/kernel/</span>randomize_va_space<br></code></pre></td></tr></table></figure>
+
+<p>gcc中可以通过编译选项选择不同强度的PIE</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs stata">gcc -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 默认情况下，不开启PIE</span><br>gcc -fpie -pie -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 开启PIE，此时强度为1</span><br>gcc -fPIE -pie -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 开启PIE，此时为最高强度2</span><br>gcc -fpic -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 开启PIC，此时强度为1，不会开启PIE</span><br>gcc -fPIC -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 开启PIC，此时为最高强度2，不会开启PIE</span><br><br></code></pre></td></tr></table></figure>
+
+<h2 id="RELRO"><a href="#RELRO" class="headerlink" title="RELRO"></a>RELRO</h2><p>RELRO机制全名是read only relocation，指定binary的一块区域使其权限变为只读。<br>在linux程序中，很多攻击都是由于存储数据的区域被写入恶意代码进行的，RELRO机制主要可以缓解对GOT表的攻击(Global Offset Table)</p>
+<p>gcc中可以通过编译选项控制RELRO</p>
+<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs stata">gcc -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 默认情况下，是Partial RELRO</span><br>gcc -z norelro -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 关闭，即No RELRO</span><br>gcc -z lazy -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 部分开启，即Partial RELRO</span><br>gcc -z now -o <span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span>.c <span class="hljs-comment">// 全部开启，即</span><br></code></pre></td></tr></table></figure>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/linux/">linux</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2020/02/21/pwntools%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">pwntools工具介绍</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2020/02/15/zip%E7%82%B8%E5%BC%B9%E5%92%8C%E8%B7%A8%E7%9B%AE%E5%BD%95zip%E6%96%87%E4%BB%B6%E7%9A%84%E6%9E%84%E9%80%A0/">
+                        <span class="hidden-mobile">zip炸弹和跨目录zip文件的构造</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -1,0 +1,576 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>python-flask模块学习 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="python-flask模块学习">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-05-25 23:04" pubdate>
+        2018年5月25日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      27
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">python-flask模块学习</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-前言"><a href="#0x00-前言" class="headerlink" title="0x00 前言"></a>0x00 前言</h2><p>最近想接触一下python作为后端的环境，所以准备从flask模块开始学习，记录一下用法，当作笔记。</p>
+<h2 id="0x01-flask"><a href="#0x01-flask" class="headerlink" title="0x01 flask"></a>0x01 flask</h2><p>Flask是一个使用 Python 编写的轻量级 Web 应用框架。其 WSGI 工具箱采用 Werkzeug ，模板引擎则使用 Jinja2 。Flask使用 BSD 授权。因为它使用简单的核心，用 extension 增加其他功能。Flask没有默认使用的数据库、窗体验证工具。</p>
+<h2 id="0x02-安装"><a href="#0x02-安装" class="headerlink" title="0x02 安装"></a>0x02 安装</h2><p>安装只需在具有python环境的计算机命令行中，输入</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">pip <span class="hljs-keyword">install</span> flask<br></code></pre></td></tr></table></figure>
+
+<h2 id="0x03-基础步骤"><a href="#0x03-基础步骤" class="headerlink" title="0x03 基础步骤"></a>0x03 基础步骤</h2><ul>
+<li><p>我们在使用flask时，必须先要导入库，即</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs angelscript"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask<br></code></pre></td></tr></table></figure></li>
+<li><p>接下来，我们创建一个该类的实例，第一个参数是应用模块或者包的名称。如果使用单一的模块,就使用__name__</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-attr">app</span> = Flask(__name__)<br></code></pre></td></tr></table></figure></li>
+<li><p>然后，我们使用 route() 装饰器告诉 Flask 什么样的URL 能触发我们的函数。根目录为：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/&quot;</span></span>)</span><br></code></pre></td></tr></table></figure></li>
+<li><p>这个函数的名字也在生成 URL 时被特定的函数采用，这个函数返回我们想要显示在用户浏览器中的信息。如：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hello</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello World!&quot;</span><br></code></pre></td></tr></table></figure></li>
+<li><p>最后用 run() 函数来让应用运行在本地服务器上。 其中 if <strong>name</strong> == ‘<strong>main</strong>‘: 确保服务器只会在该脚本被 Python 解释器直接执行的时候才会运行，而不是作为模块导入的时候。即：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    app.<span class="hljs-builtin-name">run</span>()<br></code></pre></td></tr></table></figure></li>
+</ul>
+<p>这是最基础的操作所需要的五步，组合起来就是：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask<br>app = Flask(__name__)<br> <br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/&quot;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hello</span>():</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Hello World!&quot;</span><br> <br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    app.run()<br></code></pre></td></tr></table></figure>
+
+<p>然后在这个.py文件的目录下，打开命令行，使用python xxx.py的方式运行，就会部署到本地服务器的5000端口，我们通过浏览器访问127.0.0.1:5000，就会看到web页面的输出。</p>
+<h2 id="0x04-基础函数"><a href="#0x04-基础函数" class="headerlink" title="0x04 基础函数"></a>0x04 基础函数</h2><h4 id="设置公网访问"><a href="#设置公网访问" class="headerlink" title="设置公网访问"></a>设置公网访问</h4><p>web服务打开时默认是只能通过本机访问的，如果想要通过外网访问，就得先禁用了 debug 然后修改调用 run() 的方法使服务器公开。</p>
+<p>实例：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">app.<span class="hljs-builtin-name">run</span>(<span class="hljs-attribute">host</span>=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="设置路由"><a href="#设置路由" class="headerlink" title="设置路由"></a>设置路由</h4><p>上面的基础步骤已经提到，由route()函数来设置访问的url，如果我们有多个函数，就可以分别用route()装饰器将不同的函数绑定到不同的url上。</p>
+<p>实例</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs less"><span class="hljs-variable">@app</span>.route(<span class="hljs-string">&#x27;/&#x27;</span>)<br>def index():<br>    return <span class="hljs-string">&#x27;Index Page&#x27;</span><br><br><span class="hljs-variable">@app</span>.route(<span class="hljs-string">&#x27;/hello&#x27;</span>)<br>def hello():<br>    return <span class="hljs-string">&#x27;Hello World&#x27;</span><br>    <br><span class="hljs-variable">@app</span>.route(<span class="hljs-string">&#x27;/test&#x27;</span>)<br>def test():<br>    return <span class="hljs-string">&#x27;Test&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="路径变量"><a href="#路径变量" class="headerlink" title="路径变量"></a>路径变量</h4><p>路径变量的意思就如同它的名字一样，路径中的一部分是可以改变的，主要用于受变量影响的可变路径，用法是/path/<a href="converter:varname">converter:varname</a>，并且在变量之前还可以使用转换器来改变数据类型</p>
+<table>
+<thead>
+<tr>
+<th>转换器</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>string</td>
+<td>默认选项，接受除了斜杠之外的字符串</td>
+</tr>
+<tr>
+<td>int</td>
+<td>接受整数</td>
+</tr>
+<tr>
+<td>float</td>
+<td>接受浮点数</td>
+</tr>
+<tr>
+<td>path</td>
+<td>和string类似，不过可以接受带斜杠的字符串</td>
+</tr>
+<tr>
+<td>any</td>
+<td>匹配任何一种转换器</td>
+</tr>
+<tr>
+<td>uuid</td>
+<td>接受UUID字符串</td>
+</tr>
+</tbody></table>
+<p>实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/user/&lt;username&gt;&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">show_user_profile</span>(<span class="hljs-params">username</span>):</span><br>    <span class="hljs-comment"># show the user profile for that user</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;User %s&#x27;</span> % username<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/post/&lt;int:post_id&gt;&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">show_post</span>(<span class="hljs-params">post_id</span>):</span><br>    <span class="hljs-comment"># show the post with the given id, the id is an integer</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Post %d&#x27;</span> % post_id<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="构造URL"><a href="#构造URL" class="headerlink" title="构造URL"></a>构造URL</h4><p>flask中可以用 url_for(‘方法名’) 来给指定的函数构造 URL。主参数是方法名，可以额外传入对应 URL 规则的变量部分的命名参数。</p>
+<p>实例：</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-function"><span class="hljs-title">url_for</span><span class="hljs-params">(<span class="hljs-string">&#x27;index&#x27;</span>)</span></span><br><span class="hljs-function"><span class="hljs-title">url_for</span><span class="hljs-params">(<span class="hljs-string">&#x27;user&#x27;</span>, username=<span class="hljs-string">&#x27;jack&#x27;</span>)</span></span><br></code></pre></td></tr></table></figure>
+
+
+<h4 id="HTTP方法"><a href="#HTTP方法" class="headerlink" title="HTTP方法"></a>HTTP方法</h4><p>HTTP （与 Web 应用会话的协议）有许多不同的访问 URL 方法。默认情况下，路由只回应 GET 请求，但是通过 route() 装饰器传递 methods 参数可以改变这个行为。用法是app.route(‘/login’, methods=[‘GET’, ‘POST’])</p>
+<p>实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/login&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">login</span>():</span><br>    <span class="hljs-keyword">if</span> request.method == <span class="hljs-string">&#x27;POST&#x27;</span>:<br>        do_the_login()<br>    <span class="hljs-keyword">else</span>:<br>        show_the_login_form()<br></code></pre></td></tr></table></figure>
+
+<h4 id="静态文件"><a href="#静态文件" class="headerlink" title="静态文件"></a>静态文件</h4><p>动态 web 应用也会需要静态文件，通常是 CSS 和 JavaScript 文件。只要在你的包中或是模块的所在目录中创建一个名为 static 的文件夹，在应用中使用 /static 即可访问。</p>
+<p>实例：</p>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">url<span class="hljs-constructor">_for(&#x27;<span class="hljs-params">static</span>&#x27;, <span class="hljs-params">filename</span>=&#x27;<span class="hljs-params">style</span>.<span class="hljs-params">css</span>&#x27;)</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="调试模式"><a href="#调试模式" class="headerlink" title="调试模式"></a>调试模式</h4><p>如果你启用了调试支持，服务器会在代码修改后自动重新载入，并在发生错误时提供一个相当有用的调试器。</p>
+<p>实例：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">app.<span class="hljs-builtin-name">debug</span> = <span class="hljs-literal">True</span><br>app.<span class="hljs-builtin-name">run</span>()<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">app.<span class="hljs-builtin-name">run</span>(<span class="hljs-attribute">debug</span>=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="URL-“-”重定向"><a href="#URL-“-”重定向" class="headerlink" title="URL “/”重定向"></a>URL “/”重定向</h4><p>如果设置route(‘/xxx/‘)访问url时如果结尾带了一个反斜杠，就会自动重定向到不带反斜杠的url中，如果不设置反斜杠，就不会重定向，而是返回一个404错误。</p>
+<p>实例：</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs ruby"><span class="hljs-variable">@app</span>.route(<span class="hljs-string">&#x27;/about/&#x27;</span>)<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">about</span><span class="hljs-params">()</span></span><span class="hljs-symbol">:</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;The about page&#x27;</span><br></code></pre></td></tr></table></figure>
+
+
+<h4 id="模板渲染"><a href="#模板渲染" class="headerlink" title="模板渲染"></a>模板渲染</h4><p>Flask 配备了 Jinja2 模板引擎,python可以通过 render_template() 方法来渲染模板。只需将模板名和关键字的参数传入模板的变量。</p>
+<p>实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> render_template<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/hello/&#x27;</span></span>)</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/hello/&lt;name&gt;&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hello</span>(<span class="hljs-params">name=<span class="hljs-literal">None</span></span>):</span><br>    <span class="hljs-keyword">return</span> render_template(<span class="hljs-string">&#x27;hello.html&#x27;</span>, name=name)<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="文件上传"><a href="#文件上传" class="headerlink" title="文件上传"></a>文件上传</h4><p>用 Flask 处理文件上传，首先要确保在 HTML 表单中设置 enctype=”multipart/form-data”，已上传的文件存储在内存或是文件系统中一个临时的位置。可以通过请求对象的 files 属性访问它们。每个上传的文件都会存储在这个字典里。它表现近乎为一个标准的 Python file 对象，但它还有一个 save() 方法，这个方法允许你把文件保存到服务器的文件系统上。</p>
+<p>实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> request<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/upload&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">upload_file</span>():</span><br>    <span class="hljs-keyword">if</span> request.method == <span class="hljs-string">&#x27;POST&#x27;</span>:<br>        f = request.files[<span class="hljs-string">&#x27;the_file&#x27;</span>]<br>        f.save(<span class="hljs-string">&#x27;/var/www/uploads/uploaded_file.txt&#x27;</span>)<br>    ...<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h4><p>python flask可以通过 cookies 属性来访问 Cookies，用响应对象的 set_cookie 方法来设置 Cookies。请求对象的 cookies 属性是一个内容为客户端提交的所有 Cookies 的字典。</p>
+<p>实例：</p>
+<p>读取cookies</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> request<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span>():</span><br>    username = request.cookies.get(<span class="hljs-string">&#x27;username&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>写入cookies</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> make_response<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span>():</span><br>    resp = make_response(render_template(...))<br>    resp.set_cookie(<span class="hljs-string">&#x27;username&#x27;</span>, <span class="hljs-string">&#x27;the username&#x27;</span>)<br>    <span class="hljs-keyword">return</span> resp<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="重定向和错误"><a href="#重定向和错误" class="headerlink" title="重定向和错误"></a>重定向和错误</h4><p>flask可以用 redirect() 函数把用户重定向到其它地方。放弃请求并返回错误代码，用 abort() 函数。</p>
+<p>实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> abort, redirect, url_for<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span>():</span><br>    <span class="hljs-keyword">return</span> redirect(url_for(<span class="hljs-string">&#x27;login&#x27;</span>))<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/login&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">login</span>():</span><br>    abort(<span class="hljs-number">401</span>)<br>    this_is_never_executed()<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="日志记录"><a href="#日志记录" class="headerlink" title="日志记录"></a>日志记录</h4><p>Flask预置了日志系统。在我们需要日志记录功能时，只需使用logger函数即可。</p>
+<p>实例</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros">app.logger.<span class="hljs-builtin-name">debug</span>(<span class="hljs-string">&#x27;A value for debugging&#x27;</span>)<br>app.logger.<span class="hljs-builtin-name">warning</span>(<span class="hljs-string">&#x27;A warning occurred (%d apples)&#x27;</span>, 42)<br>app.logger.<span class="hljs-builtin-name">error</span>(<span class="hljs-string">&#x27;An error occurred&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+
+
+<h4 id="session"><a href="#session" class="headerlink" title="session"></a>session</h4><p>flask除请求对象之外，还有一个 session 对象。它允许你在不同请求间存储特定用户的信息。它是在 Cookies 的基础上实现的，并且对 Cookies 进行密钥签名。要使用会话，需要设置一个密钥。</p>
+<p>实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, session, redirect, url_for, escape, request<br><br>app = Flask(__name__)<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">index</span>():</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;username&#x27;</span> <span class="hljs-keyword">in</span> session:<br>        <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Logged in as %s&#x27;</span> % escape(session[<span class="hljs-string">&#x27;username&#x27;</span>])<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;You are not logged in&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/login&#x27;</span>, methods=[<span class="hljs-string">&#x27;GET&#x27;</span>, <span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">login</span>():</span><br>    <span class="hljs-keyword">if</span> request.method == <span class="hljs-string">&#x27;POST&#x27;</span>:<br>        session[<span class="hljs-string">&#x27;username&#x27;</span>] = request.form[<span class="hljs-string">&#x27;username&#x27;</span>]<br>        <span class="hljs-keyword">return</span> redirect(url_for(<span class="hljs-string">&#x27;index&#x27;</span>))<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">        &lt;form action=&quot;&quot; method=&quot;post&quot;&gt;</span><br><span class="hljs-string">            &lt;p&gt;&lt;input type=text name=username&gt;</span><br><span class="hljs-string">            &lt;p&gt;&lt;input type=submit value=Login&gt;</span><br><span class="hljs-string">        &lt;/form&gt;</span><br><span class="hljs-string">    &#x27;&#x27;&#x27;</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/logout&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">logout</span>():</span><br>    <span class="hljs-comment"># remove the username from the session if it&#x27;s there</span><br>    session.pop(<span class="hljs-string">&#x27;username&#x27;</span>, <span class="hljs-literal">None</span>)<br>    <span class="hljs-keyword">return</span> redirect(url_for(<span class="hljs-string">&#x27;index&#x27;</span>))<br><br><span class="hljs-comment"># set the secret key.  keep this really secret:</span><br>app.secret_key = <span class="hljs-string">&#x27;A0Zr98j/3yX R~XHH!jmN]LWX/,?RT&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="0x05-总结"><a href="#0x05-总结" class="headerlink" title="0x05 总结"></a>0x05 总结</h2><p>对浅显基础的知识进行学习，虽然对开发能力提升不大，但是有的时候遇到一些python后端或者需要搭建python后端漏洞环境进行测试时，如果没有接触过相关函数就会力不从心，对这些模块略微了解并总结一下，在之后遇到的时候就可以更熟练的进行审计或搭建。</p>
+<p>之后在遇到很重要的模块或者语言时，也要通过同样的方式总结一遍，等用到的时候就可以很快的入门。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/python/">python</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/05/28/python-jinja2%E6%A8%A1%E5%9D%97%E5%AD%A6%E4%B9%A0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">python-jinja2模块学习</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/05/24/php-curl%E6%96%B9%E6%B3%95%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">php curl方法总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

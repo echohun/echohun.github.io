@@ -1,0 +1,619 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>python渗透测试工具库[转载] - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="python渗透测试工具库[转载]">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2019-08-26 22:05" pubdate>
+        2019年8月26日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      34
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">python渗透测试工具库[转载]</h1>
+            
+            <div class="markdown-body">
+              <h2 id="漏洞练习平台"><a href="#漏洞练习平台" class="headerlink" title="漏洞练习平台"></a>漏洞练习平台</h2><p>WebGoat漏洞练习平台：<br><a target="_blank" rel="noopener" href="https://github.com/WebGoat/WebGoat">https://github.com/WebGoat/WebGoat</a></p>
+<p>webgoat-legacy漏洞练习平台:<br><a target="_blank" rel="noopener" href="https://github.com/WebGoat/WebGoat-Legacy">https://github.com/WebGoat/WebGoat-Legacy</a></p>
+<p>zvuldirll漏洞练习平台：<br><a target="_blank" rel="noopener" href="https://github.com/710leo/ZVulDrill">https://github.com/710leo/ZVulDrill</a></p>
+<p>vulapps漏洞练习平台：<br><a target="_blank" rel="noopener" href="https://github.com/Medicean/VulApps">https://github.com/Medicean/VulApps</a></p>
+<p>dvwa漏洞练习平台：<br><a target="_blank" rel="noopener" href="https://github.com/RandomStorm/DVWA">https://github.com/RandomStorm/DVWA</a></p>
+<p>数据库注入练习平台 ：<br><a target="_blank" rel="noopener" href="https://github.com/Audi-1/sqli-labs">https://github.com/Audi-1/sqli-labs</a></p>
+<p>用node编写的漏洞练习平台，like OWASP Node Goat：<br><a target="_blank" rel="noopener" href="https://github.com/cr0hn/vulnerable-node">https://github.com/cr0hn/vulnerable-node</a></p>
+<p>Ruby编写的一款工具，生成含漏洞的虚拟机：<br><a target="_blank" rel="noopener" href="https://github.com/cliffe/secgen">https://github.com/cliffe/secgen</a></p>
+<h2 id="花式扫描器"><a href="#花式扫描器" class="headerlink" title="花式扫描器"></a>花式扫描器</h2><p>Nmap端口扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/nmap/nmap">https://github.com/nmap/nmap</a></p>
+<p>本地网络扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/SkyLined/LocalNetworkScanner">https://github.com/SkyLined/LocalNetworkScanner</a></p>
+<p>子域名扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/lijiejie/subDomainsBrute">https://github.com/lijiejie/subDomainsBrute</a><br><a target="_blank" rel="noopener" href="https://github.com/aboul3la/Sublist3r">https://github.com/aboul3la/Sublist3r</a><br><a target="_blank" rel="noopener" href="https://github.com/TheRook/subbrute">https://github.com/TheRook/subbrute</a><br><a target="_blank" rel="noopener" href="https://github.com/infosec-au/altdns">https://github.com/infosec-au/altdns</a></p>
+<p>linux漏洞扫描：<br><a target="_blank" rel="noopener" href="https://github.com/future-architect/vuls">https://github.com/future-architect/vuls</a></p>
+<p>基于端口扫描以及关联CVE:<br><a target="_blank" rel="noopener" href="https://github.com/m0nad/HellRaiser">https://github.com/m0nad/HellRaiser</a></p>
+<p>漏洞路由扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/jh00nbr/Routerhunter-2.0">https://github.com/jh00nbr/Routerhunter-2.0</a></p>
+<p>迷你批量信息泄漏扫描脚本：<br><a target="_blank" rel="noopener" href="https://github.com/lijiejie/BBScan">https://github.com/lijiejie/BBScan</a></p>
+<p>Waf类型检测工具：<br><a target="_blank" rel="noopener" href="https://github.com/EnableSecurity/wafw00f">https://github.com/EnableSecurity/wafw00f</a></p>
+<p>服务器端口弱口令扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/wilson9x1/fenghuangscanner_v3">https://github.com/wilson9x1/fenghuangscanner_v3</a></p>
+<p>Fox-scan扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/fengxuangit/Fox-scan/">https://github.com/fengxuangit/Fox-scan/</a></p>
+<h2 id="信息搜集工具"><a href="#信息搜集工具" class="headerlink" title="信息搜集工具"></a>信息搜集工具</h2><p>社工收集器：<br><a target="_blank" rel="noopener" href="https://github.com/n0tr00t/Sreg">https://github.com/n0tr00t/Sreg</a></p>
+<p>Github信息搜集：<br><a target="_blank" rel="noopener" href="https://github.com/sea-god/gitscan">https://github.com/sea-god/gitscan</a></p>
+<p>github Repo信息搜集工具：<br><a target="_blank" rel="noopener" href="https://github.com/metac0rtex/GitHarvester">https://github.com/metac0rtex/GitHarvester</a></p>
+<p>信息探测及扫描工具：<br><a target="_blank" rel="noopener" href="https://github.com/darryllane/Bluto">https://github.com/darryllane/Bluto</a></p>
+<p>内部网络信息扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/sowish/LNScan">https://github.com/sowish/LNScan</a></p>
+<p>远程桌面登录扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/linuz/Sticky-Keys-Slayer">https://github.com/linuz/Sticky-Keys-Slayer</a></p>
+<p>网络基础设施渗透工具<br><a target="_blank" rel="noopener" href="https://github.com/SECFORCE/sparta">https://github.com/SECFORCE/sparta</a></p>
+<p>SNMAP密码破解:<br><a target="_blank" rel="noopener" href="https://github.com/SECFORCE/SNMP-Brute">https://github.com/SECFORCE/SNMP-Brute</a></p>
+<h2 id="WEB"><a href="#WEB" class="headerlink" title="WEB"></a>WEB</h2><p>webshell大合集：<br><a target="_blank" rel="noopener" href="https://github.com/tennc/webshell">https://github.com/tennc/webshell</a></p>
+<p>渗透以及web攻击脚本：<br><a target="_blank" rel="noopener" href="https://github.com/brianwrf/hackUtils">https://github.com/brianwrf/hackUtils</a></p>
+<p>web渗透小工具大合集：<br><a target="_blank" rel="noopener" href="https://github.com/rootphantomer/hacktoolsfor_me">https://github.com/rootphantomer/hacktoolsfor_me</a></p>
+<p>XSS数据接收平台：<br><a target="_blank" rel="noopener" href="https://github.com/firesunCN/BlueLotus_XSSReceiver">https://github.com/firesunCN/BlueLotus_XSSReceiver</a></p>
+<p>XSS与CSRF工具：<br><a target="_blank" rel="noopener" href="https://github.com/evilcos/xssor">https://github.com/evilcos/xssor</a></p>
+<p>xss多功能扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/shawarkhanethicalhacker/BruteXSS">https://github.com/shawarkhanethicalhacker/BruteXSS</a></p>
+<p>web漏洞扫描器:<br><a target="_blank" rel="noopener" href="https://github.com/andresriancho/w3af">https://github.com/andresriancho/w3af</a></p>
+<p>WEB漏洞扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/sullo/nikto">https://github.com/sullo/nikto</a></p>
+<p>渗透常用小工具包：<br><a target="_blank" rel="noopener" href="https://github.com/leonteale/pentestpackage">https://github.com/leonteale/pentestpackage</a></p>
+<p>web目录扫描器:<br><a target="_blank" rel="noopener" href="https://github.com/maurosoria/dirsearch">https://github.com/maurosoria/dirsearch</a></p>
+<p>web向命令注入检测工具：<br><a target="_blank" rel="noopener" href="https://github.com/stasinopoulos/commix">https://github.com/stasinopoulos/commix</a></p>
+<p>自动化SQL注入检查工具：<br><a target="_blank" rel="noopener" href="https://github.com/epinna/tplmap">https://github.com/epinna/tplmap</a></p>
+<p>SSL扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/rbsec/sslscan">https://github.com/rbsec/sslscan</a></p>
+<p>安全工具集合：<br><a target="_blank" rel="noopener" href="https://github.com/codejanus/ToolSuite">https://github.com/codejanus/ToolSuite</a></p>
+<p>apache日志分析器：<br><a target="_blank" rel="noopener" href="https://github.com/mthbernardes/ARTLAS">https://github.com/mthbernardes/ARTLAS</a></p>
+<p>php代码审计工具：<br><a target="_blank" rel="noopener" href="https://github.com/pwnsdx/BadCode">https://github.com/pwnsdx/BadCode</a></p>
+<p>web指纹识别扫描：<br><a target="_blank" rel="noopener" href="https://github.com/urbanadventurer/whatweb">https://github.com/urbanadventurer/whatweb</a></p>
+<p>检查网站恶意攻击：<br><a target="_blank" rel="noopener" href="https://github.com/ciscocsirt/malspider">https://github.com/ciscocsirt/malspider</a></p>
+<p>wordprees漏洞扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/wpscanteam/wpscan">https://github.com/wpscanteam/wpscan</a></p>
+<p>固件漏洞扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/misterch0c/firminator_backend">https://github.com/misterch0c/firminator_backend</a></p>
+<p>数据库注入工具<br><a target="_blank" rel="noopener" href="https://github.com/sqlmapproject/sqlmap">https://github.com/sqlmapproject/sqlmap</a></p>
+<p>Web代理：<br><a target="_blank" rel="noopener" href="https://github.com/zt2/sqli-hunter">https://github.com/zt2/sqli-hunter</a></p>
+<p>新版中国菜刀：<br><a target="_blank" rel="noopener" href="https://github.com/Chora10/Cknife">https://github.com/Chora10/Cknife</a></p>
+<p>git泄露利用EXP：<br><a target="_blank" rel="noopener" href="https://github.com/lijiejie/GitHack">https://github.com/lijiejie/GitHack</a></p>
+<p>浏览器攻击框架：<br><a target="_blank" rel="noopener" href="https://github.com/beefproject/beef">https://github.com/beefproject/beef</a></p>
+<p>自动化绕过WAF脚本：<br><a target="_blank" rel="noopener" href="https://github.com/khalilbijjou/WAFNinja">https://github.com/khalilbijjou/WAFNinja</a><br><a target="_blank" rel="noopener" href="https://github.com/owtf/wafbypasser">https://github.com/owtf/wafbypasser</a></p>
+<p>一款开源WAF：<br><a target="_blank" rel="noopener" href="https://github.com/SpiderLabs/ModSecurity">https://github.com/SpiderLabs/ModSecurity</a></p>
+<p>http命令行客户端：<br><a target="_blank" rel="noopener" href="https://github.com/jkbrzt/httpie">https://github.com/jkbrzt/httpie</a></p>
+<p>浏览器调试利器：<br><a target="_blank" rel="noopener" href="https://github.com/firebug/firebug">https://github.com/firebug/firebug</a></p>
+<p>DISCUZ漏洞扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/code-scan/dzscan">https://github.com/code-scan/dzscan</a></p>
+<p>自动化代码审计工具<br><a target="_blank" rel="noopener" href="https://github.com/wufeifei/cobra">https://github.com/wufeifei/cobra</a></p>
+<p>浏览器攻击框架：<br><a target="_blank" rel="noopener" href="https://github.com/julienbedard/browsersploit">https://github.com/julienbedard/browsersploit</a></p>
+<p>tomcat自动后门部署：<br><a target="_blank" rel="noopener" href="https://github.com/mgeeky/tomcatWarDeployer">https://github.com/mgeeky/tomcatWarDeployer</a></p>
+<p>网络空间指纹扫描器：<br><a target="_blank" rel="noopener" href="https://github.com/nanshihui/Scan-T">https://github.com/nanshihui/Scan-T</a></p>
+<p>burpsuit之J2EE扫描插件：<br><a target="_blank" rel="noopener" href="https://github.com/ilmila/J2EEScan">https://github.com/ilmila/J2EEScan</a></p>
+<h2 id="windows域渗透工具"><a href="#windows域渗透工具" class="headerlink" title="windows域渗透工具"></a>windows域渗透工具</h2><p>mimikatz明文注入：<br><a target="_blank" rel="noopener" href="https://github.com/gentilkiwi/mimikatz">https://github.com/gentilkiwi/mimikatz</a></p>
+<p>Powershell渗透库合集：<br><a target="_blank" rel="noopener" href="https://github.com/PowerShellMafia/PowerSploit">https://github.com/PowerShellMafia/PowerSploit</a></p>
+<p>Powershell tools合集：<br><a target="_blank" rel="noopener" href="https://github.com/clymb3r/PowerShell">https://github.com/clymb3r/PowerShell</a></p>
+<p>powershell的mimikittenz:<br><a target="_blank" rel="noopener" href="https://github.com/putterpanda/mimikittenz">https://github.com/putterpanda/mimikittenz</a></p>
+<p>域渗透教程:<br><a target="_blank" rel="noopener" href="https://github.com/l3m0n/pentest_study">https://github.com/l3m0n/pentest_study</a></p>
+<p>Fuzz:<br>Web向Fuzz工具<br><a target="_blank" rel="noopener" href="https://github.com/xmendez/wfuzz">https://github.com/xmendez/wfuzz</a></p>
+<p>HTTP暴力破解，撞库攻击脚本<br><a target="_blank" rel="noopener" href="https://github.com/lijiejie/htpwdScan">https://github.com/lijiejie/htpwdScan</a></p>
+<h2 id="漏洞利用及攻击框架"><a href="#漏洞利用及攻击框架" class="headerlink" title="漏洞利用及攻击框架"></a>漏洞利用及攻击框架</h2><p>msf框架：<br><a target="_blank" rel="noopener" href="https://github.com/rapid7/metasploit-framework">https://github.com/rapid7/metasploit-framework</a></p>
+<p>pocsscan攻击框架：<br><a target="_blank" rel="noopener" href="https://github.com/erevus-cn/pocscan">https://github.com/erevus-cn/pocscan</a></p>
+<p>Pocsuite攻击框架:<br><a target="_blank" rel="noopener" href="https://github.com/knownsec/Pocsuite">https://github.com/knownsec/Pocsuite</a></p>
+<p>Beebeeto攻击框架：<br><a target="_blank" rel="noopener" href="https://github.com/n0tr00t/Beebeeto-framework">https://github.com/n0tr00t/Beebeeto-framework</a></p>
+<p>漏洞POC&amp;EXP:<br>ExploitDB官方git版本:<br><a target="_blank" rel="noopener" href="https://github.com/offensive-security/exploit-database">https://github.com/offensive-security/exploit-database</a></p>
+<p>php漏洞代码分析：<br><a target="_blank" rel="noopener" href="https://github.com/80vul/phpcodz">https://github.com/80vul/phpcodz</a></p>
+<p>CVE-2016-2107:<br><a target="_blank" rel="noopener" href="https://github.com/FiloSottile/CVE-2016-2107">https://github.com/FiloSottile/CVE-2016-2107</a></p>
+<p>CVE-2015-7547 POC：<br><a target="_blank" rel="noopener" href="https://github.com/fjserna/CVE-2015-7547">https://github.com/fjserna/CVE-2015-7547</a></p>
+<p>JAVA反序列化POC生成工具:<br><a target="_blank" rel="noopener" href="https://github.com/frohoff/ysoserial">https://github.com/frohoff/ysoserial</a></p>
+<p>JAVA反序列化EXP:<br><a target="_blank" rel="noopener" href="https://github.com/foxglovesec/JavaUnserializeExploits">https://github.com/foxglovesec/JavaUnserializeExploits</a></p>
+<p>Jenkins CommonCollections EXP:<br><a target="_blank" rel="noopener" href="https://github.com/CaledoniaProject/jenkins-cli-exploit">https://github.com/CaledoniaProject/jenkins-cli-exploit</a></p>
+<p>CVE-2015-2426 EXP (windows内核提权):<br><a target="_blank" rel="noopener" href="https://github.com/vlad902/hacking-team-windows-kernel-lpe">https://github.com/vlad902/hacking-team-windows-kernel-lpe</a></p>
+<p>use docker to show web attack(php本地文件包含结合phpinfo getshell 以及ssrf结合curl的利用演示):<br><a target="_blank" rel="noopener" href="https://github.com/hxer/vulnapp">https://github.com/hxer/vulnapp</a></p>
+<p>php7缓存覆写漏洞Demo及相关工具:<br><a target="_blank" rel="noopener" href="https://github.com/GoSecure/php7-opcache-override">https://github.com/GoSecure/php7-opcache-override</a></p>
+<p>XcodeGhost木马样本:<br><a target="_blank" rel="noopener" href="https://github.com/XcodeGhostSource/XcodeGhost">https://github.com/XcodeGhostSource/XcodeGhost</a></p>
+<h2 id="中间人攻击及钓鱼"><a href="#中间人攻击及钓鱼" class="headerlink" title="中间人攻击及钓鱼"></a>中间人攻击及钓鱼</h2><p>中间人攻击框架:<br><a target="_blank" rel="noopener" href="https://github.com/secretsquirrel/the-backdoor-factory">https://github.com/secretsquirrel/the-backdoor-factory</a><br><a target="_blank" rel="noopener" href="https://github.com/secretsquirrel/BDFProxy">https://github.com/secretsquirrel/BDFProxy</a><br><a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/MITMf">https://github.com/byt3bl33d3r/MITMf</a></p>
+<p>Inject code, jam wifi, and spy on wifi users:<br><a target="_blank" rel="noopener" href="https://github.com/DanMcInerney/LANs.py">https://github.com/DanMcInerney/LANs.py</a></p>
+<p>中间人代理工具:<br><a target="_blank" rel="noopener" href="https://github.com/intrepidusgroup/mallory">https://github.com/intrepidusgroup/mallory</a></p>
+<p>wifi钓鱼:<br><a target="_blank" rel="noopener" href="https://github.com/sophron/wifiphisher">https://github.com/sophron/wifiphisher</a></p>
+<h2 id="密码破解"><a href="#密码破解" class="headerlink" title="密码破解"></a>密码破解</h2><p>密码破解工具:<br><a target="_blank" rel="noopener" href="https://github.com/shinnok/johnny">https://github.com/shinnok/johnny</a></p>
+<p>本地存储的各类密码提取利器:<br><a target="_blank" rel="noopener" href="https://github.com/AlessandroZ/LaZagne">https://github.com/AlessandroZ/LaZagne</a></p>
+<h2 id="二进制及代码分析工具"><a href="#二进制及代码分析工具" class="headerlink" title="二进制及代码分析工具"></a>二进制及代码分析工具</h2><p>二进制分析工具<br><a target="_blank" rel="noopener" href="https://github.com/devttys0/binwalk">https://github.com/devttys0/binwalk</a></p>
+<p>系统扫描器<br><a target="_blank" rel="noopener" href="https://github.com/quarkslab/binmap">https://github.com/quarkslab/binmap</a></p>
+<p>rp:<br><a target="_blank" rel="noopener" href="https://github.com/0vercl0k/rp">https://github.com/0vercl0k/rp</a></p>
+<p>Windows Exploit Development工具<br><a target="_blank" rel="noopener" href="https://github.com/lillypad/badger">https://github.com/lillypad/badger</a></p>
+<p>二进制静态分析工具（python）:<br><a target="_blank" rel="noopener" href="https://github.com/bdcht/amoco">https://github.com/bdcht/amoco</a></p>
+<p>Python Exploit Development Assistance for GDB:<br><a target="_blank" rel="noopener" href="https://github.com/longld/peda">https://github.com/longld/peda</a></p>
+<p>对BillGates Linux Botnet系木马活动的监控工具<br><a target="_blank" rel="noopener" href="https://github.com/ValdikSS/billgates-botnet-tracker">https://github.com/ValdikSS/billgates-botnet-tracker</a></p>
+<p>木马配置参数提取工具:<br><a target="_blank" rel="noopener" href="https://github.com/kevthehermit/RATDecoders">https://github.com/kevthehermit/RATDecoders</a></p>
+<p>Shellphish编写的二进制分析工具（CTF向）:<br><a target="_blank" rel="noopener" href="https://github.com/angr/angr">https://github.com/angr/angr</a></p>
+<p>针对python的静态代码分析工具:<br><a target="_blank" rel="noopener" href="https://github.com/yinwang0/pysonar2">https://github.com/yinwang0/pysonar2</a></p>
+<p>一个自动化的脚本（shell）分析工具，用来给出警告和建议:<br><a target="_blank" rel="noopener" href="https://github.com/koalaman/shellcheck">https://github.com/koalaman/shellcheck</a></p>
+<p>基于AST变换的简易Javascript反混淆辅助工具:<br><a target="_blank" rel="noopener" href="https://github.com/ChiChou/etacsufbo">https://github.com/ChiChou/etacsufbo</a></p>
+<h2 id="EXP编写框架及工具"><a href="#EXP编写框架及工具" class="headerlink" title="EXP编写框架及工具"></a>EXP编写框架及工具</h2><p>二进制EXP编写工具:<br><a target="_blank" rel="noopener" href="https://github.com/t00sh/rop-tool">https://github.com/t00sh/rop-tool</a></p>
+<p>CTF Pwn 类题目脚本编写框架:<br><a target="_blank" rel="noopener" href="https://github.com/Gallopsled/pwntools">https://github.com/Gallopsled/pwntools</a></p>
+<p>an easy-to-use io library for pwning development:<br><a target="_blank" rel="noopener" href="https://github.com/zTrix/zio">https://github.com/zTrix/zio</a></p>
+<p>跨平台注入工具:<br><a target="_blank" rel="noopener" href="https://github.com/frida/frida">https://github.com/frida/frida</a></p>
+<p>哈希长度扩展攻击EXP：<br><a target="_blank" rel="noopener" href="https://github.com/citronneur/rdpy">https://github.com/citronneur/rdpy</a></p>
+<h2 id="隐写"><a href="#隐写" class="headerlink" title="隐写"></a>隐写</h2><p>隐写检测工具<br><a target="_blank" rel="noopener" href="https://github.com/abeluck/stegdetect">https://github.com/abeluck/stegdetect</a></p>
+<h2 id="各类安全资料"><a href="#各类安全资料" class="headerlink" title="各类安全资料:"></a>各类安全资料:</h2><p>data_hacking合集:<br><a target="_blank" rel="noopener" href="https://github.com/ClickSecurity/data_hacking">https://github.com/ClickSecurity/data_hacking</a></p>
+<p>mobile-security-wiki:<br><a target="_blank" rel="noopener" href="https://github.com/exploitprotocol/mobile-security-wiki">https://github.com/exploitprotocol/mobile-security-wiki</a></p>
+<p>书籍《reverse-engineering-for-beginners》:<br><a target="_blank" rel="noopener" href="https://github.com/veficos/reverse-engineering-for-beginners">https://github.com/veficos/reverse-engineering-for-beginners</a></p>
+<p>一些信息安全标准及设备配置:<br><a target="_blank" rel="noopener" href="https://github.com/luyg24/IT_security">https://github.com/luyg24/IT_security</a></p>
+<p>APT相关笔记:<br><a target="_blank" rel="noopener" href="https://github.com/kbandla/APTnotes">https://github.com/kbandla/APTnotes</a></p>
+<p>Kcon资料:<br><a target="_blank" rel="noopener" href="https://github.com/knownsec/KCon">https://github.com/knownsec/KCon</a></p>
+<p>《DO NOT FUCK WITH A HACKER》:<br><a target="_blank" rel="noopener" href="https://github.com/citypw/DNFWAH">https://github.com/citypw/DNFWAH</a></p>
+<p>各类安全脑洞图：<br><a target="_blank" rel="noopener" href="https://github.com/phith0n/Mind-Map">https://github.com/phith0n/Mind-Map</a></p>
+<p>信息安全流程图：<br><a target="_blank" rel="noopener" href="https://github.com/SecWiki/sec-chart/tree/294d7c1ff1eba297fa892dda08f3c05e90ed1428">https://github.com/SecWiki/sec-chart/tree/294d7c1ff1eba297fa892dda08f3c05e90ed1428</a></p>
+<h2 id="各类CTF资源"><a href="#各类CTF资源" class="headerlink" title="各类CTF资源"></a>各类CTF资源</h2><p>近年ctf writeup大全:<br><a target="_blank" rel="noopener" href="https://github.com/ctfs/write-ups-2016">https://github.com/ctfs/write-ups-2016</a><br><a target="_blank" rel="noopener" href="https://github.com/ctfs/write-ups-2015">https://github.com/ctfs/write-ups-2015</a><br><a target="_blank" rel="noopener" href="https://github.com/ctfs/write-ups-2014">https://github.com/ctfs/write-ups-2014</a></p>
+<p>fbctf竞赛平台Demo:<br><a target="_blank" rel="noopener" href="https://github.com/facebook/fbctf">https://github.com/facebook/fbctf</a></p>
+<p>ctf Resources:<br><a target="_blank" rel="noopener" href="https://github.com/ctfs/resources">https://github.com/ctfs/resources</a></p>
+<p>ctf及黑客资源合集:<br><a target="_blank" rel="noopener" href="https://github.com/bt3gl/My-Gray-Hacker-Resources">https://github.com/bt3gl/My-Gray-Hacker-Resources</a></p>
+<p>ctf和安全工具大合集:<br><a target="_blank" rel="noopener" href="https://github.com/zardus/ctf-tools">https://github.com/zardus/ctf-tools</a></p>
+<p>ctf向 python工具包<br><a target="_blank" rel="noopener" href="https://github.com/P1kachu/v0lt">https://github.com/P1kachu/v0lt</a></p>
+<h2 id="各类编程资源"><a href="#各类编程资源" class="headerlink" title="各类编程资源"></a>各类编程资源</h2><p>大礼包（什么都有）:<br><a target="_blank" rel="noopener" href="https://github.com/bayandin/awesome-awesomeness">https://github.com/bayandin/awesome-awesomeness</a></p>
+<p>bash-handbook:<br><a target="_blank" rel="noopener" href="https://github.com/denysdovhan/bash-handbook">https://github.com/denysdovhan/bash-handbook</a></p>
+<p>python资源大全:<br><a target="_blank" rel="noopener" href="https://github.com/jobbole/awesome-python-cn">https://github.com/jobbole/awesome-python-cn</a></p>
+<p>git学习资料:<br><a target="_blank" rel="noopener" href="https://github.com/xirong/my-git">https://github.com/xirong/my-git</a></p>
+<p>安卓开源代码解析<br><a target="_blank" rel="noopener" href="https://github.com/android-cn/android-open-project">https://github.com/android-cn/android-open-project</a></p>
+<p>python框架，库，资源大合集:<br><a target="_blank" rel="noopener" href="https://github.com/vinta/awesome-python">https://github.com/vinta/awesome-python</a></p>
+<p>JS 正则表达式库（用于简化构造复杂的JS正则表达式）:<br><a target="_blank" rel="noopener" href="https://github.com/VerbalExpressions/JSVerbalExpressions">https://github.com/VerbalExpressions/JSVerbalExpressions</a></p>
+<h2 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h2><p>python 正则表达式库（用于简化构造复杂的python正则表达式）:<br><a target="_blank" rel="noopener" href="https://github.com/VerbalExpressions/">https://github.com/VerbalExpressions/</a></p>
+<p>python任务管理以及命令执行库:<br><a target="_blank" rel="noopener" href="https://github.com/pyinvoke/invoke">https://github.com/pyinvoke/invoke</a></p>
+<p>python exe打包库:<br><a target="_blank" rel="noopener" href="https://github.com/pyinstaller/pyinstaller">https://github.com/pyinstaller/pyinstaller</a></p>
+<p>Veil-Evasion免杀项目：<br><a target="_blank" rel="noopener" href="https://github.com/Veil-Framework/Veil-Evasion">https://github.com/Veil-Framework/Veil-Evasion</a></p>
+<p>py3 爬虫框架:<br><a target="_blank" rel="noopener" href="https://github.com/orf/cyborg">https://github.com/orf/cyborg</a></p>
+<p>一个提供底层接口数据包编程和网络协议支持的python库:<br><a target="_blank" rel="noopener" href="https://github.com/CoreSecurity/impacket">https://github.com/CoreSecurity/impacket</a></p>
+<p>python requests 库:<br><a target="_blank" rel="noopener" href="https://github.com/kennethreitz/requests">https://github.com/kennethreitz/requests</a></p>
+<p>python 实用工具合集:<br><a target="_blank" rel="noopener" href="https://github.com/mahmoud/boltons">https://github.com/mahmoud/boltons</a></p>
+<p>python爬虫系统:<br><a target="_blank" rel="noopener" href="https://github.com/binux/pyspider">https://github.com/binux/pyspider</a></p>
+<h2 id="科学上网"><a href="#科学上网" class="headerlink" title="科学上网"></a>科学上网</h2><p>科学上网工具<br><a target="_blank" rel="noopener" href="https://github.com/XX-net/XX-Net">https://github.com/XX-net/XX-Net</a></p>
+<h2 id="福利"><a href="#福利" class="headerlink" title="福利"></a>福利</h2><p>微信自动抢红包动态库<br><a target="_blank" rel="noopener" href="https://github.com/east520/AutoGetRedEnv">https://github.com/east520/AutoGetRedEnv</a></p>
+<p>微信抢红包插件（安卓版）<br><a target="_blank" rel="noopener" href="https://github.com/geeeeeeeeek/WeChatLuckyMoney">https://github.com/geeeeeeeeek/WeChatLuckyMoney</a></p>
+<p>hardsed神器:<br><a target="_blank" rel="noopener" href="https://github.com/yangyangwithgnu/hardseed">https://github.com/yangyangwithgnu/hardseed</a></p>
+<h2 id="甲方安全工程师生存指南"><a href="#甲方安全工程师生存指南" class="headerlink" title="甲方安全工程师生存指南"></a>甲方安全工程师生存指南</h2><p>web索引及日志搜索工具：<br><a target="_blank" rel="noopener" href="https://github.com/thomaspatzke/WASE">https://github.com/thomaspatzke/WASE</a></p>
+<p>开源日志采集器：<br><a target="_blank" rel="noopener" href="https://github.com/wgliang/logcool">https://github.com/wgliang/logcool</a></p>
+<p>扫描CS结构的web debuger<br><a target="_blank" rel="noopener" href="https://github.com/Kozea/wdb">https://github.com/Kozea/wdb</a></p>
+<p>恢复sqlite数据库删除注册信息：<br><a target="_blank" rel="noopener" href="https://github.com/aramosf/recoversqlite/">https://github.com/aramosf/recoversqlite/</a></p>
+<p>gps欺骗检测工具:<br><a target="_blank" rel="noopener" href="https://github.com/zxsecurity/gpsnitch">https://github.com/zxsecurity/gpsnitch</a></p>
+<p>应急处置响应框架:<br><a target="_blank" rel="noopener" href="https://github.com/biggiesmallsAG/nightHawkResponse">https://github.com/biggiesmallsAG/nightHawkResponse</a></p>
+<p>web安全开发指南:<br><a target="_blank" rel="noopener" href="https://github.com/FallibleInc/security-guide-for-developers">https://github.com/FallibleInc/security-guide-for-developers</a></p>
+<p>各个知名厂商漏洞测试报告模板：<br><a target="_blank" rel="noopener" href="https://github.com/juliocesarfort/public-pentesting-reports">https://github.com/juliocesarfort/public-pentesting-reports</a></p>
+<p>linux下恶意代码检测包：<br><a target="_blank" rel="noopener" href="https://github.com/rfxn/linux-malware-detect">https://github.com/rfxn/linux-malware-detect</a></p>
+<p>操作系统运行指标可视化框架：<br><a target="_blank" rel="noopener" href="https://github.com/facebook/osquery">https://github.com/facebook/osquery</a></p>
+<p>恶意代码分析系统：<br><a target="_blank" rel="noopener" href="https://github.com/cuckoosandbox/cuckoo">https://github.com/cuckoosandbox/cuckoo</a></p>
+<p>定期搜索及存储web应用：<br><a target="_blank" rel="noopener" href="https://github.com/Netflix/Scumblr">https://github.com/Netflix/Scumblr</a></p>
+<p>事件响应框架：<br><a target="_blank" rel="noopener" href="https://github.com/google/grr">https://github.com/google/grr</a></p>
+<p>综合主机监控检测平台：<br><a target="_blank" rel="noopener" href="https://github.com/ossec/ossec-hids">https://github.com/ossec/ossec-hids</a></p>
+<p>分布式实时数字取证系统：<br><a target="_blank" rel="noopener" href="https://github.com/mozilla/mig">https://github.com/mozilla/mig</a></p>
+<p>Microsoft &amp; Unix 文件系统及硬盘取证工具：<br><a target="_blank" rel="noopener" href="https://github.com/sleuthkit/sleuthkit">https://github.com/sleuthkit/sleuthkit</a></p>
+<h2 id="蜜罐"><a href="#蜜罐" class="headerlink" title="蜜罐"></a>蜜罐</h2><p>SSH蜜罐：<br><a target="_blank" rel="noopener" href="https://github.com/desaster/kippo">https://github.com/desaster/kippo</a></p>
+<p>蜜罐集合资源：<br><a target="_blank" rel="noopener" href="https://github.com/paralax/awesome-honeypots">https://github.com/paralax/awesome-honeypots</a></p>
+<p>kippo进阶版蜜罐：<br><a target="_blank" rel="noopener" href="https://github.com/micheloosterhof/cowrie">https://github.com/micheloosterhof/cowrie</a></p>
+<p>SMTP 蜜罐：<br><a target="_blank" rel="noopener" href="https://github.com/awhitehatter/mailoney">https://github.com/awhitehatter/mailoney</a></p>
+<p>web应用程序蜜罐：<br><a target="_blank" rel="noopener" href="https://github.com/mushorg/glastopf">https://github.com/mushorg/glastopf</a></p>
+<p>数据库蜜罐：<br><a target="_blank" rel="noopener" href="https://github.com/jordan-wright/elastichoney">https://github.com/jordan-wright/elastichoney</a></p>
+<p>web蜜罐：<br><a target="_blank" rel="noopener" href="https://github.com/atiger77/Dionaea">https://github.com/atiger77/Dionaea</a></p>
+<h2 id="远控"><a href="#远控" class="headerlink" title="远控"></a>远控</h2><p>用gmail充当C&amp;C服务器的后门<br><a target="_blank" rel="noopener" href="https://github.com/byt3bl33d3r/gcat">https://github.com/byt3bl33d3r/gcat</a></p>
+<p>开源的远控：<br><a target="_blank" rel="noopener" href="https://github.com/UbbeLoL/uRAT">https://github.com/UbbeLoL/uRAT</a></p>
+<p>c#远控：<br><a target="_blank" rel="noopener" href="https://github.com/hussein-aitlahcen/BlackHole">https://github.com/hussein-aitlahcen/BlackHole</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/python/">python</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/python/">python</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2019/09/02/samba%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">samba安装与配置</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/12/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-11-%E2%80%94%E2%80%94%E5%86%B3%E7%AD%96%E6%A0%91/">
+                        <span class="hidden-mobile">机器学习(11)——决策树</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

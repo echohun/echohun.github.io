@@ -1,0 +1,485 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>配置tor browser实现访问暗网 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="配置tor browser实现访问暗网">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-03-01 01:15" pubdate>
+        2018年3月1日 凌晨
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">配置tor browser实现访问暗网</h1>
+            
+            <div class="markdown-body">
+              <p>写这一篇博客犹豫了很久，最终还是决定发表出来，毕竟技术本无对错，但我们要明辨是非。  </p>
+<h2 id="0x00-暗网"><a href="#0x00-暗网" class="headerlink" title="0x00 暗网"></a>0x00 暗网</h2><p>暗网是指那些存储在网络数据库里、但不能通过超链接访问而需要通过动态网页技术访问的资源集合，不属于那些可以被标准搜索引擎索引的表面网络。  </p>
+<p>但当今的爬虫并非完全爬行不到Hidden Web后台数据库内，一些主要的搜索引擎已经覆盖Hidden Web大约三分之一的内容。然而，在覆盖率上当前搜索引擎存在技术上的本质缺陷。  </p>
+<h2 id="0x01-tor工作原理"><a href="#0x01-tor工作原理" class="headerlink" title="0x01 tor工作原理"></a>0x01 tor工作原理</h2><p>Tor由已经安装了Tor软件的电脑连接网络而成。它之所以被称为onion，是因为它的结构就跟洋葱相同，你只能看出它的外表，而想要看到核心，就必须把它层层的剥开。即每个路由器间的传输都经过点对点密钥（symmetric key）来加密，形成有层次的结构。它中间所经过的各节点，都好像洋葱的一层皮，把客户端包在里面，算是保护信息来源的一种方式。</p>
+<p>用 Tor 创建一条私有网络路径时，用户的软件或客户端通过网络上的中继递增地建立一条由若干加密连接组成的环路（circuit）。环路一次扩展一跳（hop），环路上的中继仅仅知道它从哪一个中继接收数据以及向哪一个中继发送数据。没有一台单独的中继会知道数据包的完整路径。客户端与环路上的每一跳都协商一组独立的密钥，这样可以保证数据通过任何一跳时都无法跟踪。  </p>
+<h2 id="0x02-tor-browser浏览器"><a href="#0x02-tor-browser浏览器" class="headerlink" title="0x02 tor browser浏览器"></a>0x02 tor browser浏览器</h2><p>tor browser的最大特点就是匿名性。</p>
+<ul>
+<li><p>您的互联网服务提供商和任何本地的监视者都将无法查看您的连接、跟踪您的网络活动，包括您所访问网站的名称和地址。</p>
+</li>
+<li><p>您使用的网站和服务的运营商以及任何监视它们的人都将看到连接来自 Tor 网络而不是您的互联网IP地址，并且不知道您是谁，除非您明确标识自己。</p>
+</li>
+</ul>
+<h2 id="0x03-配置过程"><a href="#0x03-配置过程" class="headerlink" title="0x03 配置过程"></a>0x03 配置过程</h2><p>首先我们下载安装tor browser<br>下载地址： <a target="_blank" rel="noopener" href="https://tor-browser.en.softonic.com/">https://tor-browser.en.softonic.com/</a>  </p>
+<p>然后我们运行tor browser进行配置：  </p>
+<p>首先我们知道国内是无法直连的，所以我们要选择configure来配置代理。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor01.png" srcset="/img/loading.gif" lazyload>  </p>
+<p>然后在你的网络提供商是否对Tor网络进行了封锁或审查这里选yes。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor02.png" srcset="/img/loading.gif" lazyload></p>
+<p>选了yes就要配置网桥，这里我们可以使用他提供的一些集成网桥，但是速度比较慢，自己去试试速度然后选个合适的。  </p>
+<p>但是我们想要更快更稳定的话，我们可以访问访问 <a target="_blank" rel="noopener" href="https://bridges.torproject.org/bridges?transport=obfs4">https://bridges.torproject.org/bridges?transport=obfs4</a> 获取obfs4网桥 。 </p>
+<p>然后在<a target="_blank" rel="noopener" href="https://link.jianshu.com/?t=https://atlas.torproject.org/#search/%E7%BD%91%E5%9D%80%E5%90%8E%E9%9D%A2%E5%8A%A0%E5%85%A5%E5%88%9A%E6%89%8D%E8%8E%B7%E5%8F%96%E7%BD%91%E6%A1%A5%E4%B8%AD%E9%97%B4%E7%9A%84%E5%9B%9B%E5%8D%81%E4%BD%8D%E5%AD%97%E6%AF%8D%E6%95%B0%E5%AD%97%E6%9D%A5%E6%B5%8B%E8%AF%95%E8%BF%9E%E6%8E%A5%E9%80%9F%E5%BA%A6%E3%80%82">https://link.jianshu.com/?t=https://atlas.torproject.org/#search/网址后面加入刚才获取网桥中间的四十位字母数字来测试连接速度。</a>  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor03.png" srcset="/img/loading.gif" lazyload></p>
+<p>速度足够快的我们保留下来几条，选自定义网桥，然后逐条填在里面。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor04.png" srcset="/img/loading.gif" lazyload></p>
+<p>其实这里配置已经可以使用了，但是在下一步如果我们有vpn的话，就直接选择使用本地代理，然后如果使用的是ss的话，那就直接选sock5协议，地址填127.0.0.1，端口填1080即可。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor05.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor06.png" srcset="/img/loading.gif" lazyload></p>
+<p>在这里为什么我们还要选择vpn呢？因为GFW的原因，很多的网桥都失效了，我们很难找到能用的网桥，就算找到了，速度也非常慢，所以如果有vpn的话，我们就可以直接绕过ISP对Tor的审查，并且速度也会非常快。  </p>
+<p>接着我们选择connect，稍微等几十秒配置成功，就可以使用了。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor07.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor08.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后我们需要找一些暗网的导航网站，如<a target="_blank" rel="noopener" href="https://hiddenwikitor.com/">https://hiddenwikitor.com/</a><br>然后去寻找我们需要的网站。但是千万谨记隐藏自己的真实身份。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/tor/tor09.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x04-总结"><a href="#0x04-总结" class="headerlink" title="0x04 总结"></a>0x04 总结</h2><p>暗网因为其匿名性，缺乏监管，变成了一个鱼龙混杂的地方，它是互联网真正的暗面。我们小小的满足了一下好奇心，然后就应该明白我们并不属于这里。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9A%97%E7%BD%91/">暗网</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/tor/">tor</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9A%97%E7%BD%91/">暗网</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/03/17/ubuntu16.04%E5%AE%89%E8%A3%85snort/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">ubuntu16.04安装snort</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/01/27/sql%E6%B3%A8%E5%85%A5%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/">
+                        <span class="hidden-mobile">sql注入漏洞复现</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

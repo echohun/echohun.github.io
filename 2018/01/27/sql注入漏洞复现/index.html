@@ -1,0 +1,552 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>sql注入漏洞复现 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="sql注入漏洞复现">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2018-01-27 19:16" pubdate>
+        2018年1月27日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.8k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      22
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">sql注入漏洞复现</h1>
+            
+            <div class="markdown-body">
+              <h2 id="0x00-sql注入"><a href="#0x00-sql注入" class="headerlink" title="0x00 sql注入"></a>0x00 sql注入</h2><p>SQL注入是用户从正常的www访问通过全局变量POST和GET提交一些sql语句对数据库的数据进行操作。  </p>
+<h2 id="0x01-环境搭建"><a href="#0x01-环境搭建" class="headerlink" title="0x01 环境搭建"></a>0x01 环境搭建</h2><p>安装MariaDB、PHP、Apache环境:  </p>
+<p>安装MariaDB：</p>
+<figure class="highlight axapta"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs axapta">sudo yum install -y mysql mysql-<span class="hljs-keyword">server</span><br></code></pre></td></tr></table></figure>
+<p>安装apache：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y httpd<br></code></pre></td></tr></table></figure>
+<p>安装php：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y php<br></code></pre></td></tr></table></figure>
+<p>安装php的一些组件：</p>
+<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">sudo yum <span class="hljs-keyword">install</span> -y php-gd libjpeg* php-imap php-ldap php-odbc php-pear php-mysqlnd<br></code></pre></td></tr></table></figure>
+<p>安装完成后编辑配置文件，然后重启httpd和mariadb。  </p>
+<h2 id="0x02-搭载存在SQL注入的php页面"><a href="#0x02-搭载存在SQL注入的php页面" class="headerlink" title="0x02 搭载存在SQL注入的php页面"></a>0x02 搭载存在SQL注入的php页面</h2><p>首先输入mysql -u root -p<br>然后输入密码进入数据库，创建一个test的数据库，然后在test里创建一个名为users的表单，表单中写入如下三组数据作为测试数据。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%871.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后在/var/www/html目录创建select.php<br>在select.php中写入一个存在SQL注入的代码段</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-variable">$servername</span> = <span class="hljs-string">&quot;localhost&quot;</span>;<br><span class="hljs-variable">$username</span> = <span class="hljs-string">&quot;root&quot;</span>;<br><span class="hljs-variable">$password</span> = <span class="hljs-string">&quot;123456&quot;</span>;<br><span class="hljs-variable">$dbname</span> = <span class="hljs-string">&quot;test&quot;</span>;<br><br><span class="hljs-comment">// 创建连接</span><br><span class="hljs-variable">$conn</span> = <span class="hljs-keyword">new</span> mysqli(<span class="hljs-variable">$servername</span>, <span class="hljs-variable">$username</span>, <span class="hljs-variable">$password</span>, <span class="hljs-variable">$dbname</span>);<br><span class="hljs-comment">// Check connection</span><br><span class="hljs-keyword">if</span> (<span class="hljs-variable">$conn</span>-&gt;connect_error) &#123;<br>    <span class="hljs-keyword">die</span>(<span class="hljs-string">&quot;连接失败: &quot;</span> . <span class="hljs-variable">$conn</span>-&gt;connect_error);<br>&#125;<br><span class="hljs-variable">$id</span>= <span class="hljs-variable">$_GET</span>[<span class="hljs-string">&#x27;x&#x27;</span>];<span class="hljs-comment">//接受get传递的参数名x的值并赋值给变量id</span><br><span class="hljs-variable">$sql</span> = <span class="hljs-string">&quot;select * from users where id=<span class="hljs-subst">$id</span>&quot;</span>;<span class="hljs-comment">//定义sql语句并组合变量id</span><br><span class="hljs-variable">$result</span> = <span class="hljs-variable">$conn</span>-&gt;query(<span class="hljs-variable">$sql</span>);<br><span class="hljs-keyword">while</span>(<span class="hljs-variable">$row</span> = <span class="hljs-variable">$result</span>-&gt;fetch_assoc()) &#123;<br>        <span class="hljs-keyword">echo</span> <span class="hljs-string">&quot;Id: &quot;</span> . <span class="hljs-variable">$row</span>[<span class="hljs-string">&quot;id&quot;</span>]. <span class="hljs-string">&quot;  Name: &quot;</span> . <span class="hljs-variable">$row</span>[<span class="hljs-string">&quot;username&quot;</span>]. <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>;<br>&#125; <br><span class="hljs-variable">$conn</span>-&gt;close();<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+<p>这段代码的作用是读取一个输入的变量id，然后通过id查询数据库中这个id对应的username。  </p>
+<p>测试一下效果，通过读入x=1出现下面结果说明成功。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%872.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x03-手工注入"><a href="#0x03-手工注入" class="headerlink" title="0x03 手工注入"></a>0x03 手工注入</h2><p>(1)判断是否存在SQL注入  </p>
+<p>与一个正确的式子时，结果不变。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%873.png" srcset="/img/loading.gif" lazyload></p>
+<p>与一个错误的式子，结果改变，说明存在注入点。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%874.png" srcset="/img/loading.gif" lazyload></p>
+<p>(2)当前数据库权限判断<br>提交and ord(mid(user(),1,1))=114如果页面正常则为root权限，下图可以看出是root权限</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%875.png" srcset="/img/loading.gif" lazyload></p>
+<p>(3)判断字段数<br>提交union select * from users order by 数字填猜测的字段数，下图可见，填4可以正常显示，填5不能，所以字段数是4个。</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%876.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%877.png" srcset="/img/loading.gif" lazyload></p>
+<p>(4)获取数据库库名<br>获取字段数之后，我们就构造 and 1=2 union select 1,schema_name,3,4 from information_schema.schemata来查询所有数据库名  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%878.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里的1一直到4，就是之前找到的四个字段，然后information_schema库的schemata表中的schema_name字段就存着数据库名。</p>
+<p>(5)获取数据库表名<br>获取数据库名之后，我们就构造 and 1=2 union select 1,table_name,3,4 from information_schema.tables where table_schema=0x76657374来查询test数据库下的所有表名  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%879.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里的1一直到4，就是之前找到的四个字段，然后information_schema库的tables表中的table_name字段就存着表名，where后面的限定条件用来选择数据库，等号后面填数据库ascii编码的十六进制（如test是0x76657374）。</p>
+<p>(6)获取数据库字段名<br>获取数据库名和表名之后，我们就构造 and 1=2 union select 1,column_name,3,4 from information_schema.columns where table_name=0x7573657273 and table_schema=0x76657374来查询test数据库下users表中的所有字段名。<br><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8710.png" srcset="/img/loading.gif" lazyload></p>
+<p>这里的1一直到4，就是之前找到的四个字段，然后information_schema库的columns表中的column_name字段就存着字段名，where后面的限定条件用来选择数据库和对应表，等号后面填数据库和表的ascii编码的十六进制（如test是0x76657374，users是0x7573657273）。</p>
+<p>(7)获取数据<br>已经获取了字段名和其顺序，我们知道了之前输出的位置是1，2号位的id和username，然后我们需要输出password和email到1，2号位，所以构造<br>and 1=2 union select email,password,3,4 from test.users<br>来查询test数据库下users表的email和password，获取这些数据。  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8711.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x04-sqlmap注入"><a href="#0x04-sqlmap注入" class="headerlink" title="0x04 sqlmap注入"></a>0x04 sqlmap注入</h2><p>使用sqlmap时我们有以下几种探测方式<br>参数：–technique<br>这个参数可以指定sqlmap使用的探测技术，默认情况下会测试所有的方式。<br>支持的探测方式如下：  </p>
+<ul>
+<li>B: Boolean-based blind SQL injection（布尔型注入）</li>
+<li>E: Error-based SQL injection（报错型注入）</li>
+<li>U: UNION query SQL injection（可联合查询注入）</li>
+<li>S: Stacked queries SQL injection（可多语句查询注入）</li>
+<li>T: Time-based blind SQL injection（基于时间延迟注入）</li>
+</ul>
+<p>我们先用默认方式测试一下：  </p>
+<p>先查看有哪些数据库：<br>sqlmap -u “192.168.0.104/select.php?x=1” –dbs</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8712.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后查看test数据库中的所有表:<br>sqlmap -u “192.168.0.104/select.php?x=1” -D test –tables</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8713.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后查看users表中所有字段:<br>sqlmap -u “192.168.0.104/select.php?x=1” –D test -T users –columns</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8714.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后查看password字段中所有值:<br>sqlmap -u “192.168.0.104/select.php?x=1” –D test -T users -C password –dump  </p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8715.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="0x05-抓包分析"><a href="#0x05-抓包分析" class="headerlink" title="0x05 抓包分析"></a>0x05 抓包分析</h2><p>我们再对其中几种注入方式进行抓包分析：  </p>
+<ul>
+<li><p>sqlmap Union注入  </p>
+<p>  可联合查询注入，通过UNION查询获取到所有想要的数据。</p>
+<p>  使用场景：请求返回后能输出SQL执行后查询到的所有内容。  </p>
+<p>  sqlmap -u “192.168.43.63/select.php?x=1” -D test –tables –technique=U</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8716.png" srcset="/img/loading.gif" lazyload></p>
+<p>从wireshrak抓包可以看到，只通过http请求从返回的信息中获取数据。  </p>
+<ul>
+<li><p>sqlmap Boolean Based注入</p>
+<p>  布尔型注入，可以根据返回页面判断条件真假的注入。</p>
+<p>  使用场景：我们无法根据应用程序的返回页面得到我们需要的数据库信息。但是可以通过构造逻辑判断（比较大小）来得到我们需要的信息。  </p>
+<p>  sqlmap -u “192.168.43.63/select.php?x=1”–dbs –technique=B</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8717.png" srcset="/img/loading.gif" lazyload></p>
+<p>从wireshark抓包我们可以看到，sqlmap一直在构造逻辑，然后通过反回的Error（500）或者ok（200）来得到信息。  </p>
+<ul>
+<li><p>sqlmap Time Based注入</p>
+<p>  基于时间的盲注，即不能根据页面返回内容判断任何信息，用条件语句查看时间延迟语句是否执行（即页面返回时间是否增加）来判断。</p>
+<p>  应用场景 ： 页面不会返回错误信息，不会输出UNION注入所查出来的泄露的信息。类似搜索这类请求，boolean注入也无能为力，因为搜索返回空也属于正常的，这时就得采用time-based的注入了，即判断请求响应的时间，但该类型注入获取信息的速度非常慢。  </p>
+<p>  sqlmap -u “192.168.43.63/select.php?x=1” –dbs –technique=T –flush-session</p>
+<p>  因为之前已经抓取到了数据库，为了防止结果影响，在这里加入–flush-session参数来清空之前的session，重新测试该目标。</p>
+</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/backup/sql_injection/%E5%9B%BE%E7%89%8718.png" srcset="/img/loading.gif" lazyload></p>
+<p>从wireshark中可以看出，sqlmap在构造sleep函数，不通过返回来判断结果，而是通过返回的时间是否在预期内来判断是否存在注入点。  </p>
+<h2 id="0x08-危害"><a href="#0x08-危害" class="headerlink" title="0x08 危害"></a>0x08 危害</h2><ul>
+<li>入侵者可以通过网页来提交mysql语句对公司数据库敏感数据进行读取，配合python脚本可以获取整个数据库的数据。</li>
+<li>入侵者可以对公司数据库数据进行篡改，造成巨大损失。</li>
+<li>入侵者可以私自添加系统账号或是数据库使用者账号，拿到webshell，然后进而控制整个web服务器。</li>
+</ul>
+<h2 id="0x09-应对方案"><a href="#0x09-应对方案" class="headerlink" title="0x09 应对方案"></a>0x09 应对方案</h2><ul>
+<li><p>1.对输入参数进行验证</p>
+</li>
+<li><p>2.特殊字符过滤</p>
+</li>
+<li><p>3.使用参数化语句，不要拼接sql</p>
+</li>
+<li><p>4.编码输出</p>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                    
+                      <a class="hover-with-bg" href="/tags/mysql/">mysql</a>
+                    
+                      <a class="hover-with-bg" href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2018/03/01/%E9%85%8D%E7%BD%AEtor-browser%E5%AE%9E%E7%8E%B0%E8%AE%BF%E9%97%AE%E6%9A%97%E7%BD%91/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">配置tor browser实现访问暗网</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2018/01/27/openssl%E5%BF%83%E8%84%8F%E5%87%BA%E8%A1%80%E6%BC%8F%E6%B4%9E/">
+                        <span class="hidden-mobile">openssl心脏出血漏洞</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
