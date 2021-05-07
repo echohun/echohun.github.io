@@ -182,6 +182,111 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2021/05/07/goby%E7%BC%96%E5%86%99%E8%87%AA%E5%AE%9A%E4%B9%89poc/" target="_self">
+          goby编写自定义poc
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/05/07/goby%E7%BC%96%E5%86%99%E8%87%AA%E5%AE%9A%E4%B9%89poc/" target="_self">
+          
+          
+            
+          
+          前言goby是一款攻击面分析工具，同时拥有资产扫描、资产识别和漏洞扫描能力，安装简单，直接解压即可使用，界面也非常友好，内置了大量由官方和其他网络安全从业者提供的poc。
+官网： https://gobies.org/
+帮助goby提交poc积攒到一定数量可以获取功能更强大的hvv红队专版，本文以CVE-2021-21975 VMware vRealize Operations Manager S
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-07 19:26" pubdate>
+              2021-05-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%B7%A5%E5%85%B7/">工具</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/05/06/oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5/" target="_self">
+          oracle数据库注入
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/05/06/oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5/" target="_self">
+          
+          
+            
+          
+          前言过去渗透遇到oracle注入都是使用工具去跑的，这几天看到相关的文章就想起自己对oracle数据库手工注入的知识点还有所欠缺，本文做次简单的笔记整理
+角色123connect --连接角色，基本角色resource --开发者角色dba --超级管理员角色
+
+注入时常用命令123456789101112查询用户名select user from dual;获取当前数据库名select * fr
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-06 21:06" pubdate>
+              2021-05-06
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/oracle/">oracle</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2021/04/29/%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B8%AD%E5%88%A9%E7%94%A8ipc%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%80%BB%E7%BB%93/" target="_self">
           域渗透中利用ipc命令执行总结
         </a>
@@ -596,112 +701,6 @@ reGeorg安装使用原版reGeorg项目地址：https://github.com/sensepost/reGe
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/powershell/">powershell</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/01/10/%E5%B8%B8%E8%A7%81%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/" target="_self">
-          常见未授权访问漏洞总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/01/10/%E5%B8%B8%E8%A7%81%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE%E6%BC%8F%E6%B4%9E%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          前言未授权访问漏洞是常见的攻击入口点，某些严重的未授权访问会直接导致getshell，熟悉常见的未授权访问漏洞排查方法对红蓝双方都有很大的帮助。本文对常见的未授权访问利用所需的工具和命令做总结。
-mysql3306端口未授权访问，可读取数据库内容，可尝试在web路径写webshell
-工具：Navicat
-sqlserver1433端口未授权访问，可读取数据库内容，可尝试执行master..cmd
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-01-10 18:18" pubdate>
-              2021-01-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%9C%AA%E6%8E%88%E6%9D%83%E8%AE%BF%E9%97%AE/">未授权访问</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/01/05/linux%E5%90%8E%E9%97%A8%E6%89%8B%E6%B3%95%E6%80%BB%E7%BB%93/" target="_self">
-          linux后门手法总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/01/05/linux%E5%90%8E%E9%97%A8%E6%89%8B%E6%B3%95%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          创建用户12useradd guest;echo &#x27;guest:123456&#x27;|chpasswdecho &quot;guest:x:0:0::/:/bin/sh&quot; &gt;&gt; /etc/passwd
-
-ssh公钥登录将公钥放到服务器的.ssh/authorized_keys中，使用私钥登录
-suid shell使用root账户执行如下命令，在某个用户目录下建立
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-01-05 20:00" pubdate>
-              2021-01-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%90%8E%E9%97%A8/">后门</a>
             
           </div>
         

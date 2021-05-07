@@ -182,6 +182,114 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2018/04/26/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/" target="_self">
+          文件包含漏洞
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/04/26/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/" target="_self">
+          
+          
+            
+          
+          0x00 文件包含漏洞PHP文件包含漏洞，就是在通过函数包含文件时，由于没有对包含的文件名进行有效的过滤处理，被攻击者利用从而导致了包含了Web根目录以外的文件进来，就会导致文件信息的泄露甚至注入了恶意代码。
+0x01 原理文件包含漏洞主要是程序员把一些公用的代码写在一个单独的文件中，然后使用其他文件进行包含调用，如果需要包含的文件使用硬编码，一般是不会出现安全问题，但是有时可能不确定需要包含哪些
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-04-26 20:33" pubdate>
+              2018-04-26
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">文件包含</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/04/24/XSS%E7%BB%95%E8%BF%87%E5%92%8C%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
+          XSS绕过和利用方式总结
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/04/24/XSS%E7%BB%95%E8%BF%87%E5%92%8C%E5%88%A9%E7%94%A8%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
+          
+          
+            
+          
+          0x00 XSSXSS，跨站脚本攻击(Cross Site Scripting)，恶意攻击者往Web页面里插入恶意Script代码，当用户浏览该页之时，嵌入其中Web里面的Script代码会被执行，从而达到恶意攻击用户的目的。比如获取用户Cookie，会话劫持，钓鱼欺骗等多种攻击。
+0x01 绕过实际的情况中，很多网站会对&lt;&gt;，script等关键词进行限制，也有的不允许在input中运
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-04-24 22:02" pubdate>
+              2018-04-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/XSS/">XSS</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2018/04/23/SSRF%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/" target="_self">
           SSRF服务端请求伪造
         </a>
@@ -605,120 +713,6 @@
               <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
             
               <a href="/tags/xss/">xss</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/04/01/sql%E6%B3%A8%E5%85%A5%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95/" target="_self">
-          sql注入中的一些绕过方法
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/04/01/sql%E6%B3%A8%E5%85%A5%E4%B8%AD%E7%9A%84%E4%B8%80%E4%BA%9B%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95/" target="_self">
-          
-          
-            
-          
-          0x00 sql注入之前搭建sql注入环境测试过最基本的sql注入，但是实际情况中，会有很多的过滤来限制注入，这里记录读了《代码审计》和网络上搜集学习之后后掌握的几种常见的绕过方法，当作笔记。
-0x01 大小写绕过mysql语句是不区分大小写的，如果过滤时没考虑到这点，就可以通过大小写混用来绕过。如：
-1UNion SeLecT
-0x02 宽字节注入程序在进行操作之前一般会进行一些编码处理，但是做
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-04-01 11:47" pubdate>
-              2018-04-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-              <a href="/tags/mysql/">mysql</a>
-            
-              <a href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" target="_self">
-          文件上传漏洞
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" target="_self">
-          
-          
-            
-          
-          0x00 什么是文件上传漏洞在网站一些可以上传文件的地方，利用上传漏洞上传木马可以直接得到WEBSHELL，危害等级极高。
-0x01 产生原因
-未过滤或本地过滤未过滤指没有限制任何格式的文件上传，这个时侯入侵者上传php文件，就可以直接利用。本地过滤是在前端进行过滤，实际上相当于没有任何限制，入侵者可以通过抓包更改文件名直接绕过前端检查。
-黑名单扩展名过滤黑名单因为限制的扩展名不够完善，导致可以通
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-03-29 20:07" pubdate>
-              2018-03-29
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-              <a href="/tags/php/">php</a>
-            
-              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
             
           </div>
         
