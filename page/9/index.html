@@ -182,6 +182,65 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2018/05/14/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E4%BB%A3%E7%A0%81%E5%B1%82%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/" target="_self">
+          sql注入之代码层防御策略
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/14/sql%E6%B3%A8%E5%85%A5%E4%B9%8B%E4%BB%A3%E7%A0%81%E5%B1%82%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/" target="_self">
+          
+          
+            
+          
+          0x00 前言之前写sql注入的博客都是站在攻击者角度上的，这次站在防御方的角度上，总结一下代码层防御sql注入的一些方法。
+0x01 代码层防御在易受sql注入攻击的应用程序开发过程中，如果我们在代码里面进行一些合理的过滤和安全措施，就可以防范绝大多数的sql注入。
+0x02 参数化语句引发sql注入最根本的原因是将sql语句创建成字符串发送给数据库，即动态sql。
+而现在大多数程序在访问数据库
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-14 22:47" pubdate>
+              2018-05-14
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/">防御策略</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+              <a href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+            
+              <a href="/tags/%E9%98%B2%E5%BE%A1%E7%AD%96%E7%95%A5/">防御策略</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2018/05/11/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
           代码审计总结
         </a>
@@ -685,72 +744,11 @@ serialize可以将变量转换为字节流并且在转换中可以保存当前�
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/04/28/mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0%E6%80%BB%E7%BB%93/" target="_self">
-          mysql数据库内置函数总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/04/28/mysql%E6%95%B0%E6%8D%AE%E5%BA%93%E5%86%85%E7%BD%AE%E5%87%BD%E6%95%B0%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          0x00 前言熟练的掌握mysql语法和函数是开发人员和安全工作中必备的技能，所以决定将mysql的内置函数全部整理一遍，用作笔记。
-0x01 数学函数
-greatest()——返回一组数中的最大值
-least()——返回一组数中的最小值
-floor()——返回一个数的向下取整
-ceiling()——返回一个数的向上取整
-round()——返回一个数四舍五入后的整数值
-truncate()——把一
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-04-28 22:30" pubdate>
-              2018-04-28
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-              <a href="/tags/mysql/">mysql</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/8/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/#board">10</a><a class="page-number" href="/page/11/#board">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/13/#board">13</a><a class="extend next" rel="next" href="/page/10/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/8/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/#board">10</a><a class="page-number" href="/page/11/#board">11</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/#board">14</a><a class="extend next" rel="next" href="/page/10/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
