@@ -182,6 +182,57 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/02/15/zip%E7%82%B8%E5%BC%B9%E5%92%8C%E8%B7%A8%E7%9B%AE%E5%BD%95zip%E6%96%87%E4%BB%B6%E7%9A%84%E6%9E%84%E9%80%A0/" target="_self">
+          zip炸弹和跨目录zip文件的构造
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/02/15/zip%E7%82%B8%E5%BC%B9%E5%92%8C%E8%B7%A8%E7%9B%AE%E5%BD%95zip%E6%96%87%E4%BB%B6%E7%9A%84%E6%9E%84%E9%80%A0/" target="_self">
+          
+          
+            
+          
+          前言在对可上传zip文件的上传点进行测试时，除了一般的上传漏洞，我们也要关注其后台代码对zip文件解压后的大小和跨目录解压问题的检查。博主在本文中将介绍测试上述两种问题所用到的zip文件如何构造。
+什么是zip炸弹zip炸弹就是一个高压缩比的zip文件，它本身可能只有几M或几十M的大小，但是解压缩之后会产生巨大的数据量，会解压到几十G的大小甚至更大，这种zip文件会对解压缩的系统造成严重的资源负担
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-02-15 16:45" pubdate>
+              2020-02-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0-zip/">文件上传,zip</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/02/12/linux%E5%B8%B8%E8%A7%81%E6%8F%90%E6%9D%83%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
           linux常见提权方式总结
         </a>
@@ -634,58 +685,6 @@ vulapps漏洞练习平台：https://github.c
             
           </div>
         
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/09/14/%E7%82%B9%E5%87%BB%E5%8A%AB%E6%8C%81/" target="_self">
-          点击劫持
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/09/14/%E7%82%B9%E5%87%BB%E5%8A%AB%E6%8C%81/" target="_self">
-          
-          
-            
-          
-          0x00 点击劫持(clickjacking)点击劫持，clickjacking，也被称为UI-覆盖攻击。它是通过覆盖不可见的框架误导受害者点击。虽然受害者点击的是他所看到的网页，但其实他所点击的是被黑客精心构建的另一个置于原网页上面的透明页面。这种攻击利用了HTML中iframe标签的透明属性。
-0x01 点击劫持基础步骤攻击者创建一个网页，并用iframe包含另一个目标网站。（如淘宝等）
-调整
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-09-14 11:52" pubdate>
-              2018-09-14
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
         
       </div>
     </article>
