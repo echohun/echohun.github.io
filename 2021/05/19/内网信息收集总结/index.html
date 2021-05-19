@@ -1,0 +1,510 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>内网信息收集总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="内网信息收集总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-05-19 21:59" pubdate>
+        2021年5月19日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.3k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">内网信息收集总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文记录一些内网渗透的注意点，信息比较散乱，后续更新完善</p>
+<h2 id="本机信息查询"><a href="#本机信息查询" class="headerlink" title="本机信息查询"></a>本机信息查询</h2><h3 id="常用信息"><a href="#常用信息" class="headerlink" title="常用信息"></a>常用信息</h3><figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs taggerscript">本机服务列表<br>wmic service list brief<br>本机进程列表<br>Tasklist /v<br>浏览器代理信息<br>reg query &quot;HKEY_CURRENT_USER<span class="hljs-symbol">\S</span>oftware<span class="hljs-symbol">\M</span>icrosoft<span class="hljs-symbol">\W</span>indows<span class="hljs-symbol">\C</span>urrentVersion<span class="hljs-symbol">\I</span>nternet Settings&quot;<br>RDP端口号（16进制）<br>reg query &quot;HKEY_LOCAL_MACHINE<span class="hljs-symbol">\S</span>YSTEM<span class="hljs-symbol">\C</span>urrentControlSet<span class="hljs-symbol">\C</span>ontrol<span class="hljs-symbol">\T</span>erminal Server<span class="hljs-symbol">\W</span>inStations<span class="hljs-symbol">\R</span>DP-TCP&quot; /V portNumber<br>用户列表<br>net user<br>本地管理员<br>net localgroup administrators<br>在线用户<br>query user || qwinsta<br></code></pre></td></tr></table></figure>
+
+<h3 id="提权相关补丁信息查询和流程"><a href="#提权相关补丁信息查询和流程" class="headerlink" title="提权相关补丁信息查询和流程"></a>提权相关补丁信息查询和流程</h3><p><a target="_blank" rel="noopener" href="http://uuzdaisuki.com/2021/04/12/windows%E6%8F%90%E6%9D%83%E9%80%9F%E6%9F%A5%E6%B5%81%E7%A8%8B/">http://uuzdaisuki.com/2021/04/12/windows%E6%8F%90%E6%9D%83%E9%80%9F%E6%9F%A5%E6%B5%81%E7%A8%8B/</a></p>
+<h3 id="本机3389开启"><a href="#本机3389开启" class="headerlink" title="本机3389开启"></a>本机3389开启</h3><p>1.通用开3389：</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">wmic RDTOGGLE <span class="hljs-keyword">WHERE</span> ServerName=<span class="hljs-string">&#x27;%COMPUTERNAME%&#x27;</span> <span class="hljs-keyword">call</span> SetAllowTSConnections <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+<p>2.Win2003:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal<span class="hljs-string">&quot; &quot;</span>Server <span class="hljs-regexp">/v fDenyTSConnections /</span>t REG_DWORD <span class="hljs-regexp">/d 00000000 /</span>f<br></code></pre></td></tr></table></figure>
+<p>3.Win2008:</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal<span class="hljs-string">&quot; &quot;</span>Server <span class="hljs-regexp">/v fDenyTSConnections /</span>t REG_DWORD <span class="hljs-regexp">/d 00000000 /</span>f<br></code></pre></td></tr></table></figure>
+<p>4.win08 win2003 win7 win2012 winxp</p>
+<p>win08，win2012三条命令皆可，win7前两条:</p>
+<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">wmic /namespace:\root\cimv2 erminalservices <span class="hljs-type">path</span> win32_terminalservicesetting <span class="hljs-keyword">where</span> (__CLASS != &quot;&quot;) <span class="hljs-keyword">call</span> setallowtsconnections <span class="hljs-number">1</span><br><br>wmic /namespace:\root\cimv2 erminalservices <span class="hljs-type">path</span> win32_tsgeneralsetting <span class="hljs-keyword">where</span> (TerminalName =<span class="hljs-string">&#x27;RDP-Tcp&#x27;</span>) <span class="hljs-keyword">call</span> setuserauthenticationrequired <span class="hljs-number">1</span><br><br>reg <span class="hljs-keyword">add</span> &quot;HKLM\SYSTEM\CurrentControlSet\Control\Terminal Server&quot; /v fSingleSessionPerUser /t REG_DWORD /d <span class="hljs-number">0</span> /f<br></code></pre></td></tr></table></figure>
+
+<h3 id="杀毒软件进程名"><a href="#杀毒软件进程名" class="headerlink" title="杀毒软件进程名"></a>杀毒软件进程名</h3><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs stylus"><span class="hljs-number">360s</span>d<span class="hljs-selector-class">.exe</span> <span class="hljs-number">360</span>杀毒<br><span class="hljs-number">360</span>tray<span class="hljs-selector-class">.exe</span> <span class="hljs-number">360</span>实时保护<br>ZhuDongFangYu<span class="hljs-selector-class">.exe</span> <span class="hljs-number">360</span>主动防御<br>KSafeTray<span class="hljs-selector-class">.exe</span> 金山卫士<br>SafeDogUpdateCenter<span class="hljs-selector-class">.exe</span> 服务器安全狗<br>McAfee McShield<span class="hljs-selector-class">.exe</span> McAfee<br>egui<span class="hljs-selector-class">.exe</span> NOD32<br>AVP<span class="hljs-selector-class">.EXE</span> 卡巴斯基<br>avguard<span class="hljs-selector-class">.exe</span> 小红伞<br>bdagent<span class="hljs-selector-class">.exe</span> BitDefender<br></code></pre></td></tr></table></figure>
+
+<h3 id="敏感信息获取"><a href="#敏感信息获取" class="headerlink" title="敏感信息获取"></a>敏感信息获取</h3><figure class="highlight llvm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs llvm">源码<br>数据库备份文件<br>浏览器密码、cookie<br><span class="hljs-number">3389</span>、ipc连接记录<br>vpn<br>哈希提取<br><span class="hljs-symbol">http:</span>//uuzdaisuki.com/<span class="hljs-number">2021</span>/<span class="hljs-number">04</span>/<span class="hljs-number">22</span>/windows<span class="hljs-variable">%E5</span><span class="hljs-variable">%93</span><span class="hljs-variable">%88</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%B8</span><span class="hljs-variable">%8</span>C<span class="hljs-variable">%E6</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%90</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%96</span><span class="hljs-variable">%E6</span><span class="hljs-variable">%96</span><span class="hljs-variable">%B9</span><span class="hljs-variable">%E5</span><span class="hljs-variable">%BC</span><span class="hljs-variable">%8</span>F<span class="hljs-variable">%E6</span><span class="hljs-variable">%80</span><span class="hljs-variable">%BB</span><span class="hljs-variable">%E7</span><span class="hljs-variable">%BB</span><span class="hljs-variable">%93</span>/<br></code></pre></td></tr></table></figure>
+
+<h2 id="域信息或内网信息收集"><a href="#域信息或内网信息收集" class="headerlink" title="域信息或内网信息收集"></a>域信息或内网信息收集</h2><p>在拿到一个shell之后，需要先判断此机器有无域环境、是否出网、是否多网卡、内网网段分别是哪些。</p>
+<figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs dos">查看网络配置信息<br><span class="hljs-built_in">ipconfig</span> /all<br>ifconfig<br>判断主域<br><span class="hljs-built_in">net</span> <span class="hljs-built_in">time</span> /domain<br></code></pre></td></tr></table></figure>
+<p>根据是否出网选择不同的代理方式，如目标出网，可采用frp等方式搭建代理，不出网有webshell等情况，可采用reGeorg等方式搭建代理。</p>
+<p>查看当前机器的网络配置信息，根据ip地址和子网掩码推测其可能存在的内网网段。以此来确认我们有没有搭建代理的必要。</p>
+<h3 id="域内信息收集"><a href="#域内信息收集" class="headerlink" title="域内信息收集"></a>域内信息收集</h3><figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs pgsql">net <span class="hljs-keyword">view</span> 查看域内机器列表<br>net <span class="hljs-keyword">view</span> /<span class="hljs-keyword">domain</span>: ZZZ 查看ZZZ域中所有的机器列表。<br>net <span class="hljs-keyword">group</span> /<span class="hljs-keyword">domain</span> 查询域里面所有的用户组列表<br>net <span class="hljs-keyword">group</span> &quot;domain computers&quot; /<span class="hljs-keyword">domain</span> 查看所有域成员计算机列表<br>net accounts /<span class="hljs-keyword">domain</span> 查询域用户密码过期等信息<br>net <span class="hljs-keyword">user</span> /<span class="hljs-keyword">domain</span> 获取域用户列表<br>net <span class="hljs-keyword">group</span> &quot;domain admins&quot; /<span class="hljs-keyword">domain</span> 获取域管理员列表<br>net <span class="hljs-keyword">group</span> &quot;domain controllers&quot; /<span class="hljs-keyword">domain</span> 查看域控制器<br>net <span class="hljs-keyword">local</span> <span class="hljs-keyword">group</span> administrators 查看本地管理员组用户[通常含有域用户]<br>net localgroup administrators /<span class="hljs-keyword">domain</span> 登录域管理员用户<br>net <span class="hljs-keyword">view</span> /<span class="hljs-keyword">domain</span> 查看内网存在多少个域<br></code></pre></td></tr></table></figure>
+
+<h3 id="域内命令执行"><a href="#域内命令执行" class="headerlink" title="域内命令执行"></a>域内命令执行</h3><p><a target="_blank" rel="noopener" href="http://uuzdaisuki.com/2021/04/29/%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B8%AD%E5%88%A9%E7%94%A8ipc%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%80%BB%E7%BB%93/">http://uuzdaisuki.com/2021/04/29/%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B8%AD%E5%88%A9%E7%94%A8ipc%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%80%BB%E7%BB%93/</a></p>
+<p>票据传递</p>
+<p><a target="_blank" rel="noopener" href="http://uuzdaisuki.com/2021/04/21/%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92%E6%94%BB%E5%87%BB/">http://uuzdaisuki.com/2021/04/21/%E7%A5%A8%E6%8D%AE%E4%BC%A0%E9%80%92%E6%94%BB%E5%87%BB/</a></p>
+<h3 id="敏感系统收集"><a href="#敏感系统收集" class="headerlink" title="敏感系统收集"></a>敏感系统收集</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs plain">域控<br>OA系统<br>财务系统<br>数据库系统<br>邮件服务器<br>文件服务器<br>官网服务器<br>人事系统<br></code></pre></td></tr></table></figure>
+
+<h3 id="内网信息收集"><a href="#内网信息收集" class="headerlink" title="内网信息收集"></a>内网信息收集</h3><p>对目标内网进行扫描有两种方式，一种是通过代理进行扫描，一种是在shell中上传安装扫描工具。</p>
+<p>上传扫描工具要考虑对方的系统、环境等情况</p>
+<h4 id="ping探测存活"><a href="#ping探测存活" class="headerlink" title="ping探测存活"></a>ping探测存活</h4><figure class="highlight dos"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs dos"><span class="hljs-number">1</span>、如果IP连续，例如（<span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-number">1</span>-<span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-number">10</span>）：<br>@<span class="hljs-built_in">echo</span> off&amp;<span class="hljs-built_in">setlocal</span> ENABLEDELAYEDEXPANSION<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">exist</span> onlist.txt<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">exist</span> offlist.txt <br><span class="hljs-keyword">for</span> /l <span class="hljs-variable">%%i</span> <span class="hljs-keyword">in</span> (<span class="hljs-number">1</span>,<span class="hljs-number">1</span>,<span class="hljs-number">10</span>) <span class="hljs-keyword">do</span> (<br>	<span class="hljs-built_in">ping</span> -n <span class="hljs-number">1</span> <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-variable">%%i</span>&gt;<span class="hljs-built_in">nul</span> <span class="hljs-number">2</span>&gt;<span class="hljs-built_in">nul</span><br>	<span class="hljs-keyword">if</span> <span class="hljs-variable">!errorlevel!</span>==<span class="hljs-number">0</span> (<span class="hljs-built_in">echo</span> <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-variable">%%i</span> &gt;&gt;c:\bat\onlist.txt) <span class="hljs-keyword">else</span> (<span class="hljs-built_in">echo</span> <span class="hljs-number">192</span>.<span class="hljs-number">168</span>.<span class="hljs-number">1</span>.<span class="hljs-variable">%%i</span> &gt;&gt;c:\bat\offlist.txt)<br>)<br> <br><span class="hljs-number">2</span>、如果IP不连续，那使用一个文件plist写入要测试的地址列表，然后批处理：<br>@<span class="hljs-built_in">echo</span> off&amp;<span class="hljs-built_in">setlocal</span> ENABLEDELAYEDEXPANSION<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">exist</span> c:\bat\onlist.txt <span class="hljs-built_in">del</span> c:\bat\onlist.txt<br><span class="hljs-keyword">if</span> <span class="hljs-keyword">exist</span> c:\bat\offlist.txt <span class="hljs-built_in">del</span> c:\bat\offlist.txt <br><span class="hljs-keyword">for</span> /f <span class="hljs-variable">%%i</span> <span class="hljs-keyword">in</span> (c:\bat\pclist.txt) <span class="hljs-keyword">do</span> (<br>	<span class="hljs-built_in">ping</span> -n <span class="hljs-number">1</span> <span class="hljs-variable">%%i</span>&gt;<span class="hljs-built_in">nul</span> <span class="hljs-number">2</span>&gt;<span class="hljs-built_in">nul</span><br>	<span class="hljs-keyword">if</span> <span class="hljs-variable">!errorlevel!</span>==<span class="hljs-number">0</span> (<span class="hljs-built_in">echo</span> <span class="hljs-variable">%%i</span> &gt;&gt;c:\bat\onlist.txt) <span class="hljs-keyword">else</span> (<span class="hljs-built_in">echo</span> <span class="hljs-variable">%%i</span> &gt;&gt;c:\bat\offlist.txt)<br>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="自写python脚本探测端口"><a href="#自写python脚本探测端口" class="headerlink" title="自写python脚本探测端口"></a>自写python脚本探测端口</h4><p>由于linux系统和程序员使用的windows环境一般都存在python环境，使用自写python脚本portscan扫描内网端口也很方便</p>
+<p>常用的扫描端口列表<br>21,22,80,443,445,1433,1521,3306,3389,5900,6379,7001,8000,8080,8443</p>
+<h3 id="内网常见端口对应服务攻击"><a href="#内网常见端口对应服务攻击" class="headerlink" title="内网常见端口对应服务攻击"></a>内网常见端口对应服务攻击</h3><h4 id="针对各类服务爆破"><a href="#针对各类服务爆破" class="headerlink" title="针对各类服务爆破"></a>针对各类服务爆破</h4><p>使用爆破工具获得口令,重点攻击：</p>
+<ul>
+<li>FTP（ 21 / TCP）</li>
+<li>SSH（ 22 / TCP）</li>
+<li>Telnet（ 23 / TCP）</li>
+<li>NetBIOS / SMB / Samba（ 139 / TCP 和 445 / TCP）</li>
+<li>LDAP（ 389 / TCP）</li>
+<li>Kerberos（ 88 / TCP）</li>
+<li>RDP /终端服务（ 3389 / TCP）</li>
+<li>HTTP(S) / HTTP 管理服务（ 80 / TCP 和 443 / TCP）</li>
+<li>MSSQL（ 1433 / TCP）</li>
+<li>Oracle（ 1521 / TCP）</li>
+<li>MySQL（ 3306 / TCP）</li>
+<li>VNC（ 5900 / TCP）</li>
+</ul>
+<h4 id="其他未授权访问端口"><a href="#其他未授权访问端口" class="headerlink" title="其他未授权访问端口"></a>其他未授权访问端口</h4><ul>
+<li>Redis（6379）</li>
+<li>MongoDB（27017）</li>
+<li>Elasticsearch（9200）</li>
+<li>ZooKeeper（2181，2182）</li>
+<li>docker（2375）</li>
+<li>Memcached（11211）</li>
+<li>nfs（2049）</li>
+<li>CouchDB（5984）</li>
+<li>hadoop（50070）</li>
+</ul>
+<h4 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h4><ul>
+<li>Weblogic（7001/weblogic反序列化）</li>
+<li>Zabbix （8069/命令执行）</li>
+<li>Jenkins(8080-8089/控制台命令执行)</li>
+<li>JBoss(8080-8089/反序列化)</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/05/15/webshell%E5%85%8D%E6%9D%80%E7%A0%94%E7%A9%B6asp%E7%AF%87/">
+                        <span class="hidden-mobile">webshell免杀研究asp篇</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
