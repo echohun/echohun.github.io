@@ -182,6 +182,159 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/02/25/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2syscall/" target="_self">
+          栈溢出之ret2syscall
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/02/25/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2syscall/" target="_self">
+          
+          
+            
+          
+          前言在NX保护机制被打开无法使用ret2shellcode，且代码中没有可利用片段时无法使用ret2text时，仍然有很多方法可以构造恶意代码，这篇文章就介绍另一种方法：ret2syscall
+ret2syscall原理ret2syscall，系统呼叫，也叫系统调用，顾名思义，ret2syscall是一种通过系统调用来执行恶意代码的攻击方式。
+在计算机中，系统调用指运行在使用者空间的程序向操作系统
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-02-25 21:12" pubdate>
+              2020-02-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/rop/">rop</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/02/24/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2shellcode/" target="_self">
+          栈溢出之ret2shellcode
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/02/24/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2shellcode/" target="_self">
+          
+          
+            
+          
+          前言上一篇博客讲到的ret2text中，我们利用了程序中已有的sys函数中的恶意代码来进行getshell，而实际情况中很可能没有这种代码，我们就需要自己拼接或构造恶意代码。这篇文章就讲另一种方式，使用填充shellcode的方法构造恶意代码。
+ret2shellcode原理ret2shellcode，即控制程序执行shellcode代码，shellcode需要放在一个可执行区域，然后通过返回地址
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-02-24 19:50" pubdate>
+              2020-02-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/rop/">rop</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/02/22/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2text/" target="_self">
+          栈溢出之ret2text
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/02/22/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2text/" target="_self">
+          
+          
+            
+          
+          前言目前栈溢出漏洞主要的利用方式是ROP(Return Oriented Programming)，即返回导向编程，通过栈溢出内容覆盖返回地址，使其跳转到我们想要执行恶意代码的位置中。而跳转的目标有可能是一段本就已经写好的可以执行恶意命令的函数，也有可能是某个全局变量空间，甚至构造一个系统调用的cpu指令，跳转到一个libc中的函数等。最终目的都是执行恶意命令，而未来几篇文章分别介绍采取上述不同的
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-02-22 20:25" pubdate>
+              2020-02-22
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/rop/">rop</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/02/21/pwntools%E5%B7%A5%E5%85%B7%E4%BB%8B%E7%BB%8D/" target="_self">
           pwntools工具介绍
         </a>
@@ -534,162 +687,6 @@ CRLF攻击CRLF注入漏洞，是因为Web应用没有对用户输入做严格验
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">工具配置</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2019/09/02/samba%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" target="_self">
-          samba安装与配置
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2019/09/02/samba%E5%AE%89%E8%A3%85%E4%B8%8E%E9%85%8D%E7%BD%AE/" target="_self">
-          
-          
-            
-          
-          samba 简介Samba，用来让UNIX系列的操作系统与微软Windows操作系统的SMB/CIFS（Server Message Block/Common Internet File System）网络协定做连结，在Windows与UNIX系列OS之间搭起一座桥梁，使两者可以进行资源共享。常用于需要频繁访问和读写文件的情况，如在windows下使用人性化的编辑器来书写或修改代码，在linux中
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-09-02 23:21" pubdate>
-              2019-09-02
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/linux/">linux</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">工具配置</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2019/08/26/python%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E5%BA%93-%E8%BD%AC%E8%BD%BD/" target="_self">
-          python渗透测试工具库[转载]
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2019/08/26/python%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%B7%A5%E5%85%B7%E5%BA%93-%E8%BD%AC%E8%BD%BD/" target="_self">
-          
-          
-            
-          
-          漏洞练习平台WebGoat漏洞练习平台：https://github.com/WebGoat/WebGoat
-webgoat-legacy漏洞练习平台:https://github.com/WebGoat/WebGoat-Legacy
-zvuldirll漏洞练习平台：https://github.com/710leo/ZVulDrill
-vulapps漏洞练习平台：https://github.c
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2019-08-26 22:05" pubdate>
-              2019-08-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/python/">python</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-              <a href="/tags/python/">python</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/12/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-11-%E2%80%94%E2%80%94%E5%86%B3%E7%AD%96%E6%A0%91/" target="_self">
-          机器学习(11)——决策树
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/12/24/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0-11-%E2%80%94%E2%80%94%E5%86%B3%E7%AD%96%E6%A0%91/" target="_self">
-          
-          
-            
-          
-          0x00 决策树决策树在机器学习中是一种经典的分类算法。决策树的结构是一个树结构(可以是二叉树或非二叉树)。其中每个非叶节点表示一个特征属性上的测试，每个分支代表这个特证属性在某个值域上的输出，而每个叶子节点存放一个类别。使用决策树进行决策的过程就是从根节点开始，测试待分类项中相应的特征属性，并按照其值选择输出分支，直到到达叶子节点，此时叶子节点上的类别就是决策结果。
-举个例子，假如我们要判断一只
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-12-24 23:52" pubdate>
-              2018-12-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
             
           </div>
         

