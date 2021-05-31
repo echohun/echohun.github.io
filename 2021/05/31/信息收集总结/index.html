@@ -18,7 +18,7 @@
   <meta name="author" content="麻薯">
   <meta name="keywords" content="">
   
-  <title>使用nssm注册windows服务进行持久化 - Leticia&#39;s Blog</title>
+  <title>信息收集总结 - Leticia&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="使用nssm注册windows服务进行持久化">
+            <span class="h2" id="subtitle" title="信息收集总结">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-05-27 23:11" pubdate>
-        2021年5月27日 晚上
+      <time datetime="2021-05-31 23:04" pubdate>
+        2021年5月31日 晚上
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      141 字
+      1.2k 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      13
        分钟
     </span>
   
@@ -225,22 +225,55 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">使用nssm注册windows服务进行持久化</h1>
+            <h1 style="display: none">信息收集总结</h1>
             
             <div class="markdown-body">
-              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>NSSM是一款注册Windows系统服务的工具。将应用程序注册为windows系统服务可以使其在系统停止、重启等情况仍可自动运行，可用于持久化后门。</p>
-<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><a target="_blank" rel="noopener" href="http://www.nssm.cc/download">http://www.nssm.cc/download</a></p>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>解压并在nssm.exe目录打开cmd</p>
-<p>使用如下命令注册服务</p>
-<figure class="highlight cmake"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs cmake">nssm <span class="hljs-keyword">install</span> 服务名<br></code></pre></td></tr></table></figure>
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>之前也总结过类似的信息收集相关的文章，但是每隔一段时间理解和手法都会有所不同，本文以hvv或授权但仅提供公司名称域名等情况下渗透测试的视角总结一些自己最近做信息收集的流程套路。</p>
+<h2 id="信息收集"><a href="#信息收集" class="headerlink" title="信息收集"></a>信息收集</h2><h3 id="一、初始已知信息"><a href="#一、初始已知信息" class="headerlink" title="一、初始已知信息"></a>一、初始已知信息</h3><p>前言中提到的两种情况，一般初始信息只有公司名称、个别官网域名、靶标名称等信息，以此为起点进行信息收集。</p>
+<h3 id="二、搜寻根域名"><a href="#二、搜寻根域名" class="headerlink" title="二、搜寻根域名"></a>二、搜寻根域名</h3><p>此步骤个人的经验是，面对大公司优先选择工信部备案查询，小公司用搜索引擎做起点，然后几种方式都可以过一遍，查漏补缺，尽量获取最全的信息。大部分公司根域名都不会很多，全部过一遍也不会用掉多少时间。</p>
+<h4 id="1-搜索引擎"><a href="#1-搜索引擎" class="headerlink" title="1.搜索引擎"></a>1.搜索引擎</h4><p>搜索引擎直接搜索其公司名称，获取其相关根域名</p>
+<h4 id="2-天眼查、企查查"><a href="#2-天眼查、企查查" class="headerlink" title="2.天眼查、企查查"></a>2.天眼查、企查查</h4><p>从天眼查、企查查等途径，输入公司名，查询其域名以及全资控股子公司的域名</p>
+<p><a target="_blank" rel="noopener" href="https://www.qcc.com/">https://www.qcc.com/</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.tianyancha.com/">https://www.tianyancha.com/</a></p>
+<h4 id="3-工信部备案"><a href="#3-工信部备案" class="headerlink" title="3.工信部备案"></a>3.工信部备案</h4><p>工信部备案查询域名/ip地址（需要详细且正确的公司名称，结果也会很全面）</p>
+<p><a target="_blank" rel="noopener" href="https://beian.miit.gov.cn/#/Integrated/recordQuery">https://beian.miit.gov.cn/#/Integrated/recordQuery</a></p>
+<h4 id="4-fofa"><a href="#4-fofa" class="headerlink" title="4.fofa"></a>4.fofa</h4><p>fofa查询其公司名称，获取相关域名</p>
+<h4 id="5-站长之家"><a href="#5-站长之家" class="headerlink" title="5.站长之家"></a>5.站长之家</h4><p>使用其icp查询功能查询备案，当我们不知道公司完整名称的时候也可以使用此网站功能使用已知域名查询完整备案公司名称</p>
+<p><a target="_blank" rel="noopener" href="http://icp.chinaz.com/">http://icp.chinaz.com/</a></p>
+<h4 id="6-反查域名"><a href="#6-反查域名" class="headerlink" title="6.反查域名"></a>6.反查域名</h4><p>用已知的某些ip反查域名</p>
+<p><a target="_blank" rel="noopener" href="https://dns.aizhan.com/">https://dns.aizhan.com/</a></p>
+<p><a target="_blank" rel="noopener" href="https://whois.aizhan.com/">https://whois.aizhan.com/</a></p>
+<h3 id="三、子域名"><a href="#三、子域名" class="headerlink" title="三、子域名"></a>三、子域名</h3><p>在子域名收集这步本人一般不喜欢爆破的方式，子域名爆破比较依赖字典，字典小就收集不全，字典大就很费时间，所以一般优先在各类解析记录的网站查询。</p>
+<h4 id="1-各类网站查询解析记录"><a href="#1-各类网站查询解析记录" class="headerlink" title="1.各类网站查询解析记录"></a>1.各类网站查询解析记录</h4><p>以bilibili为例：</p>
+<p><a target="_blank" rel="noopener" href="https://www.dnsgrep.cn/subdomain/bilibili.com">https://www.dnsgrep.cn/subdomain/bilibili.com</a></p>
+<p><a target="_blank" rel="noopener" href="https://securitytrails.com/list/apex_domain/bilibili.com">https://securitytrails.com/list/apex_domain/bilibili.com</a></p>
+<p>类似的网站非常多，这两个都是免费的，但是第二个要注册登录</p>
+<h4 id="2-子域名爆破"><a href="#2-子域名爆破" class="headerlink" title="2.子域名爆破"></a>2.子域名爆破</h4><p>相关的工具很多，部分扫描器也自带子域名爆破功能或可安装相关插件。</p>
+<p>subDomainsBrute</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/lijiejie/subDomainsBrute">https://github.com/lijiejie/subDomainsBrute</a></p>
+<h4 id="3-fofa、shodan"><a href="#3-fofa、shodan" class="headerlink" title="3.fofa、shodan"></a>3.fofa、shodan</h4><p>利用这类工具对域名资产进行查询，如<br>fofa语法domain=”xxx.com”</p>
+<h4 id="4-OneForAll"><a href="#4-OneForAll" class="headerlink" title="4.OneForAll"></a>4.OneForAll</h4><p>此工具会集成多种方式搜集子域名，包括dns查询、证书查询等，详情见其项目中的readme</p>
+<p>安装</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs awk">git clone https:<span class="hljs-regexp">//gi</span>thub.com<span class="hljs-regexp">/shmilylty/</span>OneForAll.git<br>cd OneForAll/<br>python3 -m pip install -U pip setuptools wheel -i https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/pypi/</span>simple/<br>pip3 install -r requirements.txt -i https:<span class="hljs-regexp">//mi</span>rrors.aliyun.com<span class="hljs-regexp">/pypi/</span>simple/<br>python3 oneforall.py --help<br></code></pre></td></tr></table></figure>
 
-
-<p>填写木马路径和服务名，可以填写欺骗性较强的服务名</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/nssm/nssm_01.png" srcset="/img/loading.gif" lazyload></p>
-<p>在服务里设置自动启动</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/nssm/nssm_02.png" srcset="/img/loading.gif" lazyload></p>
-<p>重启对方机器，在msf中开启监听，成功得到shell</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/nssm/nssm_03.png" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">python3</span> oneforall.<span class="hljs-keyword">py</span> --target example.<span class="hljs-keyword">com</span> run<br><span class="hljs-keyword">python3</span> oneforall.<span class="hljs-keyword">py</span> --targets ./example.txt run<br></code></pre></td></tr></table></figure>
+<p><a target="_blank" rel="noopener" href="https://github.com/shmilylty/OneForAll">https://github.com/shmilylty/OneForAll</a></p>
+<h3 id="四、ip"><a href="#四、ip" class="headerlink" title="四、ip"></a>四、ip</h3><p>ip列表不完全来源于域名解析，有一部分ip是直接使用ip地址提供服务的，需要提前收集这部分信息，另一部分是通过域名解析过来的。</p>
+<h4 id="1-各类网站查询解析记录-1"><a href="#1-各类网站查询解析记录-1" class="headerlink" title="1.各类网站查询解析记录"></a>1.各类网站查询解析记录</h4><p>同子域名查询中的操作，但是需要做的是把ip列表导出</p>
+<h4 id="2-解析域名"><a href="#2-解析域名" class="headerlink" title="2.解析域名"></a>2.解析域名</h4><p>将所有已收集到的子域名通过脚本批量调用dig或nslookup解析ip</p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs vim">nslookup xxx.<span class="hljs-keyword">com</span><br><span class="hljs-keyword">dig</span> xxx.<span class="hljs-keyword">com</span> @<span class="hljs-number">114.114</span>.<span class="hljs-number">114.114</span><br></code></pre></td></tr></table></figure>
+<p>编写脚本批量调用dig命令，导出结果</p>
+<p>或将域名列表放在在线解析网站中，导出其解析结果</p>
+<p>这个步骤中需要额外关注cdn的情况，绕过cdn寻找其真实ip，可参考这篇文档</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/bin-maker/2021CDN">https://github.com/bin-maker/2021CDN</a></p>
+<h4 id="3-c段"><a href="#3-c段" class="headerlink" title="3.c段"></a>3.c段</h4><p>将前面已经获得的ip全部整理好，使用脚本进行排序，懒得写脚本也可以使用在线的功能</p>
+<p>如ip地址排序计算器<br><a target="_blank" rel="noopener" href="https://www.jisuan.mobi/p616N6bz3bNb1yPQ.html">https://www.jisuan.mobi/p616N6bz3bNb1yPQ.html</a></p>
+<p>得到排序好的ip，可以先自己判断哪些c段可能属于目标，再进行一些扫描和访问，整理更全面的ip列表。</p>
+<h3 id="五、端口"><a href="#五、端口" class="headerlink" title="五、端口"></a>五、端口</h3><p>使用masscan、nmap等工具对端口信息进行收集</p>
+<h3 id="六、web服务"><a href="#六、web服务" class="headerlink" title="六、web服务"></a>六、web服务</h3><p>使用webfinder等工具扫描已整理ip列表的web常用端口，导出形如<a href="http://xxx.com:port/以及https://xxx.com:port/的web服务列表">http://xxx.com:port/以及https://xxx.com:port/的web服务列表</a></p>
+<h4 id="指纹识别"><a href="#指纹识别" class="headerlink" title="指纹识别"></a>指纹识别</h4><p>1.<a target="_blank" rel="noopener" href="http://whatweb.bugscaner.com/look/">http://whatweb.bugscaner.com/look/</a><br>2.<a target="_blank" rel="noopener" href="https://www.yunsee.cn/">https://www.yunsee.cn/</a></p>
+<h3 id="七、漏扫"><a href="#七、漏扫" class="headerlink" title="七、漏扫"></a>七、漏扫</h3><h4 id="1-主机扫描"><a href="#1-主机扫描" class="headerlink" title="1.主机扫描"></a>1.主机扫描</h4><p>上文整理好的ip列表和域名列表，可以丢入主机扫描相关的扫描器中，如goby、Nessus等</p>
+<h3 id="2-web扫描"><a href="#2-web扫描" class="headerlink" title="2.web扫描"></a>2.web扫描</h3><p>整理好web服务列表，可以丢入awvs等工具进行扫描，同时可以联动xray批量扫描</p>
 
             </div>
             <hr>
@@ -250,7 +283,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/bypass/">bypass</a>
+                      <a class="hover-with-bg" href="/categories/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">信息收集</a>
                     
                   </div>
                 
@@ -258,7 +291,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/bypass/">bypass</a>
+                      <a class="hover-with-bg" href="/tags/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">信息收集</a>
                     
                   </div>
                 
@@ -275,18 +308,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/05/31/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%80%BB%E7%BB%93/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">信息收集总结</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/05/25/%E5%87%A0%E6%AC%BE%E8%BF%9C%E6%8E%A7%E5%85%8D%E6%9D%80%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8%E6%80%BB%E7%BB%93/">
-                        <span class="hidden-mobile">几款远控免杀工具使用总结</span>
+                      <a href="/2021/05/27/%E4%BD%BF%E7%94%A8nssm%E6%B3%A8%E5%86%8Cwindows%E6%9C%8D%E5%8A%A1%E8%BF%9B%E8%A1%8C%E6%8C%81%E4%B9%85%E5%8C%96/">
+                        <span class="hidden-mobile">使用nssm注册windows服务进行持久化</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
