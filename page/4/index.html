@@ -182,6 +182,166 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/09/15/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90%E7%9A%84%E6%8E%92%E6%9F%A5%E8%8C%83%E5%9B%B4/" target="_self">
+          攻击溯源的排查范围
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/09/15/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90%E7%9A%84%E6%8E%92%E6%9F%A5%E8%8C%83%E5%9B%B4/" target="_self">
+          
+          
+            
+          
+          前言在系统被入侵后，需要迅速梳理出黑客的攻击路径，本文总结windows系统攻击溯源过程中必要的排查范围。
+排查项目用户查看当前登录用户1query user
+查看系统中所有用户1231. net user2. 开始-运行-lusrmgr.msc3.查看C:\Users目录排查是否新建用户目录，如果存在则排查对应用户的download和desktop目录是否有可疑文件
+
+查看是否存在隐藏账号，克隆
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-09-15 20:24" pubdate>
+              2020-09-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90/">攻击溯源</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90/">攻击溯源</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/08/20/office%E5%AE%8F%E6%94%BB%E5%87%BB/" target="_self">
+          office宏攻击
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/08/20/office%E5%AE%8F%E6%94%BB%E5%87%BB/" target="_self">
+          
+          
+            
+          
+          前言office宏攻击是钓鱼邮件场景中最常见的攻击手段，其制作简单，兼容性强，非常适合批量攻击，但由于其需要用户交互，隐蔽性差，攻击能否成功基本取决于目标的安全意识强弱。
+宏病毒office宏病毒一般寄存于office文档中，如word，excel，ppt，以excel最常见，当用户打开这种文档时，内置的宏命令就会执行，在计算机中执行恶意命令。
+一般的恶意命令会自动访问提前部署好的恶意服务器下载木
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-08-20 20:50" pubdate>
+              2020-08-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/office/">office</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/08/07/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%90%84%E9%98%B6%E6%AE%B5%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" target="_self">
+          渗透测试各阶段工具速查(持续更新)
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/08/07/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95%E5%90%84%E9%98%B6%E6%AE%B5%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5-%E6%8C%81%E7%BB%AD%E6%9B%B4%E6%96%B0/" target="_self">
+          
+          
+            
+          
+          前言本文是渗透测试各阶段工具和快速用法速查笔记，将会持续更新。
+站点信息收集12345678GoogleFofaShodanZoomeyeGobywhatwebGithubrobtex
+
+快速探测存活主机nmap
+123nmap 172.18.2.1/24 -sS -Pn -n --open --min-hostgroup 4 --min-parallelism 1024 --host-timeo
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-08-07 21:29" pubdate>
+              2020-08-07
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/08/06/ad%E5%9F%9F%E6%B8%97%E9%80%8F%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%80%BB%E7%BB%93/" target="_self">
           ad域渗透命令执行总结
         </a>
@@ -551,175 +711,11 @@ mssql数据库写入文件调用xp_cmdshell调用windows命令echo写入文件1e
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/07/10/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
-          数据库读取文件方式总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/07/10/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          前言当我们找到一个sql注入漏洞时，首先能做的是将数据库的信息全部拖库，然后就会尝试使用数据库来获取更多的权限和资产，通过数据库读取服务器内文件是其中一种方式，本文仅讨论远程连接数据库场景下的文件读取，对常用的mssql、mysql、oracle三种数据库的读取方式做总结。
-mssql数据库读取文件调用xp_cmdshell调用windows命令type读取文件1exec master.xp..c
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-07-10 00:15" pubdate>
-              2020-07-10
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
-          openssl加密反弹shell
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
-          
-          
-            
-          
-          前言在渗透测试过程中，经常会遇到目标服务器有防火墙，能够识别进出站的恶意流量并阻止反弹shell执行，遇到这种情况一般我们采用分块传输，编码，畸形报文等各种手段绕过。本篇介绍一种更方便的方式：使用openssl加密传输。
-攻击机操作攻击机生成密钥对
-1openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-07-08 19:54" pubdate>
-              2020-07-08
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/05/12/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AF%BC%E8%87%B4%E7%9A%84redos%E9%97%AE%E9%A2%98/" target="_self">
-          正则表达式导致的redos问题
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/05/12/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AF%BC%E8%87%B4%E7%9A%84redos%E9%97%AE%E9%A2%98/" target="_self">
-          
-          
-            
-          
-          前言正则表达式是非常受欢迎的字符串处理工具，在各种场景都有着广泛的用途，而不规范的使用也会引发一些安全问题，比如针对运算资源的攻击：redos，它就是一种错误使用正则表达式导致运算量随待匹配字符指数级增长的安全问题。
-贪婪和非贪婪匹配正则表达式有很多重复运算符，而使用这些重复运算符匹配时往往会有不同答案都符合条件，正则表达式在默认情况下会选择贪婪匹配的方式。
-
-
-
-符号
-用途
-
-
-
-
-|    匹
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-05-12 21:48" pubdate>
-              2020-05-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/3/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/#board">14</a><a class="extend next" rel="next" href="/page/5/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/3/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="page-number current">4</span><a class="page-number" href="/page/5/#board">5</a><a class="page-number" href="/page/6/#board">6</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/#board">15</a><a class="extend next" rel="next" href="/page/5/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

@@ -182,6 +182,170 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/07/10/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
+          数据库读取文件方式总结
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/07/10/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
+          
+          
+            
+          
+          前言当我们找到一个sql注入漏洞时，首先能做的是将数据库的信息全部拖库，然后就会尝试使用数据库来获取更多的权限和资产，通过数据库读取服务器内文件是其中一种方式，本文仅讨论远程连接数据库场景下的文件读取，对常用的mssql、mysql、oracle三种数据库的读取方式做总结。
+mssql数据库读取文件调用xp_cmdshell调用windows命令type读取文件1exec master.xp..c
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-07-10 00:15" pubdate>
+              2020-07-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
+          openssl加密反弹shell
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
+          
+          
+            
+          
+          前言在渗透测试过程中，经常会遇到目标服务器有防火墙，能够识别进出站的恶意流量并阻止反弹shell执行，遇到这种情况一般我们采用分块传输，编码，畸形报文等各种手段绕过。本篇介绍一种更方便的方式：使用openssl加密传输。
+攻击机操作攻击机生成密钥对
+1openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-07-08 19:54" pubdate>
+              2020-07-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2020/05/12/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AF%BC%E8%87%B4%E7%9A%84redos%E9%97%AE%E9%A2%98/" target="_self">
+          正则表达式导致的redos问题
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/05/12/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AF%BC%E8%87%B4%E7%9A%84redos%E9%97%AE%E9%A2%98/" target="_self">
+          
+          
+            
+          
+          前言正则表达式是非常受欢迎的字符串处理工具，在各种场景都有着广泛的用途，而不规范的使用也会引发一些安全问题，比如针对运算资源的攻击：redos，它就是一种错误使用正则表达式导致运算量随待匹配字符指数级增长的安全问题。
+贪婪和非贪婪匹配正则表达式有很多重复运算符，而使用这些重复运算符匹配时往往会有不同答案都符合条件，正则表达式在默认情况下会选择贪婪匹配的方式。
+
+
+
+符号
+用途
+
+
+
+
+|    匹
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-05-12 21:48" pubdate>
+              2020-05-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/">正则表达式</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/02/27/%E6%A0%88%E6%BA%A2%E5%87%BA%E4%B9%8Bret2libc/" target="_self">
           栈溢出之ret2libc
         </a>
@@ -536,168 +700,11 @@ che
     </article>
   </div>
 
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/02/12/linux%E5%B8%B8%E8%A7%81%E6%8F%90%E6%9D%83%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
-          linux常见提权方式总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/02/12/linux%E5%B8%B8%E8%A7%81%E6%8F%90%E6%9D%83%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          前言提权是渗透测试中重要的一步，我们通常使用各种内核漏洞的cve来进行提权，但是在本文中博主想介绍一些，由于人为配置不当造成的提权方法，开阔提权时的思路。
-1. crontab定时任务提权crontab是cron table的简写，它是cron的配置文件，而cron是linux内置管理定时任务的进程。
-我们可以通过如下指令来编辑和查看当前工作表命令 
-1234crontab [-u usernam
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-02-12 23:00" pubdate>
-              2020-02-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%8F%90%E6%9D%83/">提权</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/linux-%E6%8F%90%E6%9D%83/">linux,提权</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/02/04/ida%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E7%A8%8B%E5%BA%8F/" target="_self">
-          ida远程调试linux程序
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/02/04/ida%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E7%A8%8B%E5%BA%8F/" target="_self">
-          
-          
-            
-          
-          前言在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。
-ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-02-04 00:26" pubdate>
-              2020-02-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/ida/">ida</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">工具配置</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/01/06/CRLF%E6%94%BB%E5%87%BB/" target="_self">
-          CRLF攻击
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/01/06/CRLF%E6%94%BB%E5%87%BB/" target="_self">
-          
-          
-            
-          
-          CRLFCRLF是Carriage-Return Line-Feed的缩写，意思是回车换行，就是回车符(CR，ASCII 13，\r，%0d) 和换行符(LF，ASCII 10，\n，%0a)。。换行在有的ASCII码表也用newline（简nl）来进行表示,这里的lf是line feed的概念，意思是一样的。
-CRLF攻击CRLF注入漏洞，是因为Web应用没有对用户输入做严格验证，导致攻击者可以
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-01-06 22:55" pubdate>
-              2020-01-06
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-              <a href="/tags/crlf/">crlf</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
 
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/4/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/14/#board">14</a><a class="extend next" rel="next" href="/page/6/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/4/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><span class="space">&hellip;</span><a class="page-number" href="/page/15/#board">15</a><a class="extend next" rel="next" href="/page/6/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 
