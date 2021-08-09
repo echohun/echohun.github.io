@@ -182,6 +182,118 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2018/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" target="_self">
+          文件上传漏洞
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/03/29/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E6%BC%8F%E6%B4%9E/" target="_self">
+          
+          
+            
+          
+          0x00 什么是文件上传漏洞在网站一些可以上传文件的地方，利用上传漏洞上传木马可以直接得到WEBSHELL，危害等级极高。
+0x01 产生原因
+未过滤或本地过滤未过滤指没有限制任何格式的文件上传，这个时侯入侵者上传php文件，就可以直接利用。本地过滤是在前端进行过滤，实际上相当于没有任何限制，入侵者可以通过抓包更改文件名直接绕过前端检查。
+黑名单扩展名过滤黑名单因为限制的扩展名不够完善，导致可以通
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-03-29 20:07" pubdate>
+              2018-03-29
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">文件上传</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/03/24/%E5%9F%BA%E4%BA%8Epython%E7%9A%84u%E7%9B%98%E8%87%AA%E5%8A%A8%E6%8B%B7%E8%B4%9D%E5%B7%A5%E5%85%B7/" target="_self">
+          基于python的u盘自动拷贝工具
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/03/24/%E5%9F%BA%E4%BA%8Epython%E7%9A%84u%E7%9B%98%E8%87%AA%E5%8A%A8%E6%8B%B7%E8%B4%9D%E5%B7%A5%E5%85%B7/" target="_self">
+          
+          
+            
+          
+          0x00 需要用到的库
+OS：OS库提供了使用各种操作系统功能的接口。主要有对目录或者文件的新建，删除，查看文件属性，还提供了对文件以及目录的路径操作。
+shutil：对文件提供了移动，复制，打包，压缩等功能，这里主要用到复制功能。
+time： 时间处理的库，在这里用来程序休眠的时间。  
+
+0x01 程序设计思路我们需要每隔一段时间检查是否有u盘插入，如果检测到有u盘，则将u盘的内容全部拷贝到本
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-03-24 21:54" pubdate>
+              2018-03-24
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/python/">python</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/python/">python</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2018/03/24/BurpSuite%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" target="_self">
           BurpSuite使用笔记
         </a>
@@ -603,122 +715,6 @@
               <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
             
               <a href="/tags/redis/">redis</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2017/12/27/%E5%AF%86%E7%A0%81%E5%AD%A6-%E4%BA%8C-%E2%80%94%E2%80%94%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81-%E4%B8%8B/" target="_self">
-          密码学(二)——古典密码(下)
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2017/12/27/%E5%AF%86%E7%A0%81%E5%AD%A6-%E4%BA%8C-%E2%80%94%E2%80%94%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81-%E4%B8%8B/" target="_self">
-          
-          
-            
-          
-          0x00 信息加密原理信息加密是保证数据安全的一种方式。信息加密的原理是：把明文用加密方法和密钥生成保密的密文，只有使用正确的解密方法和密钥后才能还原出明文。一个完善的密码体制至少应该满足两个条件：  
-
-1.已知明文和加密密钥时，容易算出密文和解密过程。
-2.未知解密密钥时，难以由密文推出明文。  
-
-这里介绍以下三种古典密码的加密方式:  
-
-Vernam密码
-Hill密码
-Enigma密码
-
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2017-12-27 17:21" pubdate>
-              2017-12-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2017/12/22/%E5%AF%86%E7%A0%81%E5%AD%A6-%E4%B8%80-%E2%80%94%E2%80%94%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81-%E4%B8%8A/" target="_self">
-          密码学(一)——古典密码(上)
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2017/12/22/%E5%AF%86%E7%A0%81%E5%AD%A6-%E4%B8%80-%E2%80%94%E2%80%94%E5%8F%A4%E5%85%B8%E5%AF%86%E7%A0%81-%E4%B8%8A/" target="_self">
-          
-          
-            
-          
-          0x00 信息加密原理信息加密是保证数据安全的一种方式。信息加密的原理是：把明文用加密方法和密钥生成保密的密文，只有使用正确的解密方法和密钥后才能还原出明文。一个完善的密码体制至少应该满足两个条件：  
-
-1.已知明文和加密密钥时，容易算出密文和解密过程。
-2.未知解密密钥时，难以由密文推出明文。  
-
-这里介绍几种古典密码的加密方式:  
-0x01 Greece密码希腊密码出现于公元前2世纪，是
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2017-12-22 22:10" pubdate>
-              2017-12-22
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
             
           </div>
         
