@@ -182,6 +182,72 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2018/05/11/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
+          代码审计总结
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/05/11/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
+          
+          
+            
+          
+          0x00 前言最近在锻炼自己的代码审计能力，所以准备总结一下审计的方法和技巧。
+0x01 漏洞类型
+sql注入
+xss
+文件包含
+文件上传
+反序列化
+csrf
+ssrf
+代码执行
+
+0x02 sql注入基本sql注入对于基本的sql注入的审计，可以通过$_GET,$_POST等传参追踪数据库操作，也可以通过select , delete , update,insert 数据库操作语句反追踪传参。
+
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-05-11 22:44" pubdate>
+              2018-05-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+              <a href="/tags/php/">php</a>
+            
+              <a href="/tags/%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1/">代码审计</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2018/05/11/PHP%E4%BB%A3%E7%A0%81%E5%AE%A1%E8%AE%A1%E5%B7%A5%E5%85%B7RIPS/" target="_self">
           PHP代码审计工具RIPS
         </a>
@@ -673,61 +739,6 @@ truncate()——把一
               <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
             
               <a href="/tags/mysql/">mysql</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/04/26/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/" target="_self">
-          文件包含漏洞
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/04/26/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB%E6%BC%8F%E6%B4%9E/" target="_self">
-          
-          
-            
-          
-          0x00 文件包含漏洞PHP文件包含漏洞，就是在通过函数包含文件时，由于没有对包含的文件名进行有效的过滤处理，被攻击者利用从而导致了包含了Web根目录以外的文件进来，就会导致文件信息的泄露甚至注入了恶意代码。
-0x01 原理文件包含漏洞主要是程序员把一些公用的代码写在一个单独的文件中，然后使用其他文件进行包含调用，如果需要包含的文件使用硬编码，一般是不会出现安全问题，但是有时可能不确定需要包含哪些
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-04-26 20:33" pubdate>
-              2018-04-26
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-              <a href="/tags/php/">php</a>
-            
-              <a href="/tags/%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">文件包含</a>
             
           </div>
         

