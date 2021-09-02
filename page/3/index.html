@@ -182,6 +182,65 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2021/05/12/webshell%E5%85%8D%E6%9D%80%E7%A0%94%E7%A9%B6jsp%E7%AF%87/" target="_self">
+          webshell免杀研究jsp篇
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2021/05/12/webshell%E5%85%8D%E6%9D%80%E7%A0%94%E7%A9%B6jsp%E7%AF%87/" target="_self">
+          
+          
+            
+          
+          原理向服务器端发送恶意代码写成的文件(即：shell)，客户端通过远程连接，利用shell连接到服务器，并可对服务器进行操作。
+结构实现三步
+
+数据的传递
+执行所传递的数据
+回显
+
+数据传递1String x = request.getParameter(&quot;x&quot;);
+
+执行所传递的数据1234Class rt = Class.forName(&quot;java.lang.Ru
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-12 22:23" pubdate>
+              2021-05-12
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/bypass/">bypass</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/bypass/">bypass</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2021/05/11/webshell%E5%85%8D%E6%9D%80%E7%A0%94%E7%A9%B6php%E7%AF%87/" target="_self">
           webshell免杀研究php篇
         </a>
@@ -661,57 +720,6 @@ reGeorg安装使用原版reGeorg项目地址：https://github.com/sensepost/reGe
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E6%8F%90%E6%9D%83/">提权</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/03/15/%E5%B8%B8%E8%A7%81windows%E9%92%93%E9%B1%BC%E6%96%87%E4%BB%B6%E5%88%B6%E4%BD%9C/" target="_self">
-          常见windows钓鱼文件制作
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/03/15/%E5%B8%B8%E8%A7%81windows%E9%92%93%E9%B1%BC%E6%96%87%E4%BB%B6%E5%88%B6%E4%BD%9C/" target="_self">
-          
-          
-            
-          
-          快捷方式1.ps1:
-123456$WshShell = New-Object -comObject WScript.Shell  $Shortcut = $WshShell.CreateShortcut(&quot;test.lnk&quot;)  $Shortcut.TargetPath = &quot;%SystemRoot%\system32\cmd.exe&quot;  $Shortcu
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-15 19:20" pubdate>
-              2021-03-15
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E9%92%93%E9%B1%BC/">钓鱼</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E9%92%93%E9%B1%BC/">钓鱼</a>
             
           </div>
         

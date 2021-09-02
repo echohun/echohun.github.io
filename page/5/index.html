@@ -182,6 +182,60 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/09/15/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90%E7%9A%84%E6%8E%92%E6%9F%A5%E8%8C%83%E5%9B%B4/" target="_self">
+          攻击溯源的排查范围
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/09/15/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90%E7%9A%84%E6%8E%92%E6%9F%A5%E8%8C%83%E5%9B%B4/" target="_self">
+          
+          
+            
+          
+          前言在系统被入侵后，需要迅速梳理出黑客的攻击路径，本文总结windows系统攻击溯源过程中必要的排查范围。
+排查项目用户查看当前登录用户1query user
+查看系统中所有用户1231. net user2. 开始-运行-lusrmgr.msc3.查看C:\Users目录排查是否新建用户目录，如果存在则排查对应用户的download和desktop目录是否有可疑文件
+
+查看是否存在隐藏账号，克隆
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-09-15 20:24" pubdate>
+              2020-09-15
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90/">攻击溯源</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%94%BB%E5%87%BB%E6%BA%AF%E6%BA%90/">攻击溯源</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/08/20/office%E5%AE%8F%E6%94%BB%E5%87%BB/" target="_self">
           office宏攻击
         </a>
@@ -647,58 +701,6 @@ mssql数据库读取文件调用xp_cmdshell调用windows命令type读取文件1e
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
-          openssl加密反弹shell
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
-          
-          
-            
-          
-          前言在渗透测试过程中，经常会遇到目标服务器有防火墙，能够识别进出站的恶意流量并阻止反弹shell执行，遇到这种情况一般我们采用分块传输，编码，畸形报文等各种手段绕过。本篇介绍一种更方便的方式：使用openssl加密传输。
-攻击机操作攻击机生成密钥对
-1openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-07-08 19:54" pubdate>
-              2020-07-08
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
             
           </div>
         

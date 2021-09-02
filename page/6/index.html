@@ -182,6 +182,58 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
+          openssl加密反弹shell
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2020/07/08/openssl%E5%8A%A0%E5%AF%86%E5%8F%8D%E5%BC%B9shell/" target="_self">
+          
+          
+            
+          
+          前言在渗透测试过程中，经常会遇到目标服务器有防火墙，能够识别进出站的恶意流量并阻止反弹shell执行，遇到这种情况一般我们采用分块传输，编码，畸形报文等各种手段绕过。本篇介绍一种更方便的方式：使用openssl加密传输。
+攻击机操作攻击机生成密钥对
+1openssl req -x509 -newkey rsa:4096 -keyout key.pem -out cert.pem -days 365
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-07-08 19:54" pubdate>
+              2020-07-08
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2020/05/12/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%AF%BC%E8%87%B4%E7%9A%84redos%E9%97%AE%E9%A2%98/" target="_self">
           正则表达式导致的redos问题
         </a>
@@ -643,57 +695,6 @@ che
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/linux-%E6%8F%90%E6%9D%83/">linux,提权</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2020/02/04/ida%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E7%A8%8B%E5%BA%8F/" target="_self">
-          ida远程调试linux程序
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2020/02/04/ida%E8%BF%9C%E7%A8%8B%E8%B0%83%E8%AF%95linux%E7%A8%8B%E5%BA%8F/" target="_self">
-          
-          
-            
-          
-          前言在分析二进制程序时，经常需要借助动态调试的方法，在linux中我们通常使用gdb来进行动态调试，但是gdb使用方法较复杂，对新手不友好，而ida具有很好的图形化界面，使用ida对linux程序进行远程动态调试在这种情况下是一种不错的选择。
-ida远程调试配置1.要配置ida远程调试，首先需要将ida安装目录dbgsrv中的linux_server、linux_server64（根据所调试程序是
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-02-04 00:26" pubdate>
-              2020-02-04
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/ida/">ida</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%B7%A5%E5%85%B7%E9%85%8D%E7%BD%AE/">工具配置</a>
             
           </div>
         
