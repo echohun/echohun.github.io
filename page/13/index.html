@@ -182,6 +182,171 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2018/04/23/%E5%B8%B8%E7%94%A8%E7%AB%AF%E5%8F%A3%E7%AC%94%E8%AE%B0/" target="_self">
+          常用端口笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/04/23/%E5%B8%B8%E7%94%A8%E7%AB%AF%E5%8F%A3%E7%AC%94%E8%AE%B0/" target="_self">
+          
+          
+            
+          
+          0x00 前言熟知常用端口作用和容易引发的问题是网络安全中重要的一部分，这里记录一下常见端口的作用，用作笔记。
+0x01 各端口作用12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849505152535455565758596061626364656667686970717
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-04-23 21:05" pubdate>
+              2018-04-23
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
+            
+              <a href="/tags/%E7%AB%AF%E5%8F%A3/">端口</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/04/22/python%E8%84%9A%E6%9C%AC%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%8C%96sql%E7%9B%B2%E6%B3%A8/" target="_self">
+          python脚本实现自动化sql盲注
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/04/22/python%E8%84%9A%E6%9C%AC%E5%AE%9E%E7%8E%B0%E8%87%AA%E5%8A%A8%E5%8C%96sql%E7%9B%B2%E6%B3%A8/" target="_self">
+          
+          
+            
+          
+          0x00 前言前面几篇博客写了sql注入时的绕过方法和盲注时经常使用的函数，但是我们明显能看到一个问题，那就是盲注时候需要对比每个字符的ascii码，如果手工注入就会十分浪费时间，所以我们这次尝试用python实现自动话注入。
+0x01 布尔型盲注12345678910111213141516171819202122#! -*- encoding:utf-8 -*-# python3# autho
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-04-22 22:59" pubdate>
+              2018-04-22
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/python/">python</a>
+            
+              <a href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2018/04/21/sql%E6%B3%A8%E5%85%A5%E7%9B%B2%E6%B3%A8%E6%97%B6%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" target="_self">
+          sql注入盲注时常用函数
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2018/04/21/sql%E6%B3%A8%E5%85%A5%E7%9B%B2%E6%B3%A8%E6%97%B6%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0/" target="_self">
+          
+          
+            
+          
+          0x00 盲注盲注是不能通过直接显示的途径来获取数据库数据的方法，在盲注中，攻击者根据其返回页面的不同来判断信息。盲注一般可分为三类：Booleanbase、Timebase、Errorbase。
+接下来介绍一些sql盲注中常用的函数。
+0x01 limit()limit()函数的作用是限制由SELECT语句返回的数据数量，用法是
+123SELECT column1, column2, colum
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2018-04-21 17:40" pubdate>
+              2018-04-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/">渗透测试</a>
+            
+              <a href="/tags/mysql/">mysql</a>
+            
+              <a href="/tags/sql%E6%B3%A8%E5%85%A5/">sql注入</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2018/04/21/CSRF%E8%B7%A8%E7%AB%99%E8%AF%B7%E6%B1%82%E4%BC%AA%E9%80%A0/" target="_self">
           CSRF跨站请求伪造
         </a>
@@ -556,167 +721,6 @@ time： 时间处理的库，在这里用来程序休眠的时间。
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/python/">python</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/03/24/BurpSuite%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" target="_self">
-          BurpSuite使用笔记
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/03/24/BurpSuite%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/" target="_self">
-          
-          
-            
-          
-          0x00 What is BurpSuiteBurp Suite 是用于攻击web 应用程序的集成平台。它包含了许多工具，并为这些工具设计了许多接口，以促进加快攻击应用程序的过程。  
-0x01 主要功能
-1.Target(目标)——显示目标目录结构的的一个功能
-2.Proxy（代理）——是一个拦截HTTP/S的代理服务器（抓包），作为一个在浏览器和目标应用程序之间的中间人，允许你拦截，查看，修改
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-03-24 15:55" pubdate>
-              2018-03-24
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%AC%94%E8%AE%B0/">笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/BurpSuite/">BurpSuite</a>
-            
-              <a href="/tags/%E7%AC%94%E8%AE%B0/">笔记</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/03/17/ubuntu16.04%E5%AE%89%E8%A3%85snort/" target="_self">
-          ubuntu16.04安装snort
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/03/17/ubuntu16.04%E5%AE%89%E8%A3%85snort/" target="_self">
-          
-          
-            
-          
-          0x00 snort是什么？snort是一款开源的入侵检测系统，由Marty Roesch先生用C语言开发，直至今天，Snort已发展成为一个多平台(Multi-Platform),实时(Real-Time)流量分析，网络IP数据包(Pocket)记录等特性的强大的网络入侵检测/防御系统。  
-0x01 snort安装这里主要讲ubuntu下通过编译源码的安装方法  
-首先，我们在snort官方 
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-03-17 22:04" pubdate>
-              2018-03-17
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/">网络安全</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/snort/">snort</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2018/03/01/%E9%85%8D%E7%BD%AEtor-browser%E5%AE%9E%E7%8E%B0%E8%AE%BF%E9%97%AE%E6%9A%97%E7%BD%91/" target="_self">
-          配置tor browser实现访问暗网
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2018/03/01/%E9%85%8D%E7%BD%AEtor-browser%E5%AE%9E%E7%8E%B0%E8%AE%BF%E9%97%AE%E6%9A%97%E7%BD%91/" target="_self">
-          
-          
-            
-          
-          写这一篇博客犹豫了很久，最终还是决定发表出来，毕竟技术本无对错，但我们要明辨是非。  
-0x00 暗网暗网是指那些存储在网络数据库里、但不能通过超链接访问而需要通过动态网页技术访问的资源集合，不属于那些可以被标准搜索引擎索引的表面网络。  
-但当今的爬虫并非完全爬行不到Hidden Web后台数据库内，一些主要的搜索引擎已经覆盖Hidden Web大约三分之一的内容。然而，在覆盖率上当前搜索引擎存
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2018-03-01 01:15" pubdate>
-              2018-03-01
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%9A%97%E7%BD%91/">暗网</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/tor/">tor</a>
-            
-              <a href="/tags/%E6%9A%97%E7%BD%91/">暗网</a>
             
           </div>
         

