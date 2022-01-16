@@ -182,6 +182,119 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/01/21/%E6%96%87%E4%BB%B6%E9%9A%90%E8%97%8F%E6%8A%80%E5%B7%A7/" target="_self">
+          文件隐藏技巧
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/21/%E6%96%87%E4%BB%B6%E9%9A%90%E8%97%8F%E6%8A%80%E5%B7%A7/" target="_self">
+          
+          
+            
+          
+          linuxlinux中隐藏文件的方式是创建以.开头的文件名，但是由于shell中ls只要加入-a参数就可查看隐藏文件，一般加点并起不到什么作用，这里分享几种迷惑性的隐藏思路
+创建…目录由于每个目录都存在.和..两个目录
+其默认不使用-a参数也不会显示
+使用-a时会与.与..共同出现，有时会被人为忽略
+更改ls修改ls程序屏蔽掉特定的字符串显示
+正常情况：
+
+创建/usr/local/bin/ls
+
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-21 00:23" pubdate>
+              2022-01-21
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E9%98%B2%E5%BE%A1%E8%A7%84%E9%81%BF/">防御规避</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%98%B2%E5%BE%A1%E8%A7%84%E9%81%BF/">防御规避</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/01/20/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%8E%86%E5%8F%B2%E6%BC%8F%E6%B4%9E%E6%B1%87%E6%80%BB/" target="_self">
+          域渗透历史漏洞汇总
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/01/20/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%8E%86%E5%8F%B2%E6%BC%8F%E6%B4%9E%E6%B1%87%E6%80%BB/" target="_self">
+          
+          
+            
+          
+          MS14-068(CVE-2014-6324)Kerberos 校验和漏洞
+https://nvd.nist.gov/vuln/detail/CVE-2014-6324
+EXP/POC:
+https://github.com/abatchy17/WindowsExploits/tree/master/MS14-068
+CVE-2020-1472Netlogon特权提升漏洞
+https://nvd.
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-01-20 16:40" pubdate>
+              2022-01-20
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%9F%9F%E6%B8%97%E9%80%8F/">域渗透</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/">域渗透</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/01/06/linux%E8%BF%9B%E7%A8%8B%E9%9A%90%E5%8C%BF/" target="_self">
           linux进程隐匿
         </a>
@@ -600,110 +713,6 @@ SIP通过sip劫持对恶意代码签名获得系统信任https://github
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">命令执行</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/08/09/%E7%BD%91%E7%BB%9C%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" target="_self">
-          网络隧道技术总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/08/09/%E7%BD%91%E7%BB%9C%E9%9A%A7%E9%81%93%E6%8A%80%E6%9C%AF%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          windows netsh端口转发12345678910开启转发netsh interface portproxy add v4tov4 listenaddress=localaddress listenport=localport connectaddress=destaddress connectport=destport查看存在的转发netsh interface portproxy sho
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-08-09 21:25" pubdate>
-              2021-08-09
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E4%BB%A3%E7%90%86/">代理</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E4%BB%A3%E7%90%86/">代理</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2021/08/05/windows%E6%8C%81%E4%B9%85%E5%8C%96%E6%80%BB%E7%BB%93/" target="_self">
-          windows持久化总结
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2021/08/05/windows%E6%8C%81%E4%B9%85%E5%8C%96%E6%80%BB%E7%BB%93/" target="_self">
-          
-          
-            
-          
-          启动项在启动路径中存入后门
-1C:\Users\Administrator\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-
-启动项注册表
-1234HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\RunHKEY_CURRENT_USER\Softwar
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2021-08-05 21:25" pubdate>
-              2021-08-05
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%8C%81%E4%B9%85%E5%8C%96/">持久化</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E6%8C%81%E4%B9%85%E5%8C%96/">持久化</a>
             
           </div>
         

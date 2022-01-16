@@ -18,7 +18,7 @@
   <meta name="author" content="麻薯">
   <meta name="keywords" content="">
   
-  <title>linux进程隐匿 - Leticia&#39;s Blog</title>
+  <title>域渗透历史漏洞汇总 - Leticia&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="linux进程隐匿">
+            <span class="h2" id="subtitle" title="域渗透历史漏洞汇总">
               
             </span>
 
@@ -173,8 +173,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-01-06 22:22" pubdate>
-        2022年1月6日 晚上
+      <time datetime="2022-01-20 16:40" pubdate>
+        2022年1月20日 下午
       </time>
     </span>
   
@@ -185,7 +185,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      243 字
+      379 字
     </span>
   
 
@@ -195,7 +195,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3
+      6
        分钟
     </span>
   
@@ -225,56 +225,61 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">linux进程隐匿</h1>
+            <h1 style="display: none">域渗透历史漏洞汇总</h1>
             
             <div class="markdown-body">
-              <h2 id="netstat-伪装"><a href="#netstat-伪装" class="headerlink" title="netstat 伪装"></a>netstat 伪装</h2><p>先寻找netstat路径</p>
-<p>whereis netstat<br>which netstat</p>
-<p>得到</p>
-<p>/usr/bin/netstat</p>
-<p>创建<br>/usr/local/bin/netstat</p>
-<p>写入</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># !<span class="hljs-regexp">/bin/</span>bash<br><span class="hljs-regexp">/usr/</span>bin/netstat $@ | <span class="hljs-keyword">grep</span> -Ev <span class="hljs-string">&#x27;name|name|name&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<p>含有引号中每个|分割符中的选项都会被屏蔽</p>
-<p>可以是进程名、ip或端口</p>
-<p>然后赋予执行权限并开启新shell，则生效。</p>
-<p>例：</p>
-<p>如我们开启python httpserver在8000端口</p>
-<p>直接执行</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">netstat</span> -ano | grep <span class="hljs-number">0.0.0.0</span><br></code></pre></td></tr></table></figure>
-
-<p>得到结果中有开放的8000端口</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image01.png" srcset="/img/loading.gif" lazyload></p>
-<p>修改/usr/local/bin/netstat为</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># !<span class="hljs-regexp">/bin/</span>bash<br><span class="hljs-regexp">/usr/</span>bin/netstat $@ | <span class="hljs-keyword">grep</span> -Ev <span class="hljs-string">&#x27;8000&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">chmod +x <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>netstat<br></code></pre></td></tr></table></figure>
-
-<p>打开新shell执行</p>
-<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">netstat</span> -ano | grep <span class="hljs-number">0.0.0.0</span><br></code></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image02.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="ps伪装"><a href="#ps伪装" class="headerlink" title="ps伪装"></a>ps伪装</h2><p>以ps伪装隐藏ssh为例</p>
-<p>首先通过ps查看ssh进程</p>
-<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs vim"><span class="hljs-keyword">ps</span> -ef | <span class="hljs-keyword">grep</span> ssh<br></code></pre></td></tr></table></figure>
-
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image03.png" srcset="/img/loading.gif" lazyload></p>
-<p>先寻找ps路径</p>
-<p>whereis ps<br>which ps</p>
-<p>得到</p>
-<p>/bin/ps</p>
-<p>创建</p>
-<p>/usr/local/bin/ps</p>
-<p>写入需要伪装的进程如ssh</p>
-<figure class="highlight gradle"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs gradle"># !<span class="hljs-regexp">/bin/</span>bash<br><span class="hljs-regexp">/bin/</span>ps $@ | <span class="hljs-keyword">grep</span> -Ev <span class="hljs-string">&#x27;ssh&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs awk">chmod +x <span class="hljs-regexp">/usr/</span>local<span class="hljs-regexp">/bin/</span>ps<br></code></pre></td></tr></table></figure>
-
-
-
-<p>新shell种使用ps命令，无法看到包含ssh关键字的进程</p>
-<p><img src="https://raw.githubusercontent.com/echohun/blog_image/master/linux_hiding/image04.png" srcset="/img/loading.gif" lazyload></p>
+              <h3 id="MS14-068-CVE-2014-6324"><a href="#MS14-068-CVE-2014-6324" class="headerlink" title="MS14-068(CVE-2014-6324)"></a>MS14-068(CVE-2014-6324)</h3><p>Kerberos 校验和漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2014-6324">https://nvd.nist.gov/vuln/detail/CVE-2014-6324</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/abatchy17/WindowsExploits/tree/master/MS14-068">https://github.com/abatchy17/WindowsExploits/tree/master/MS14-068</a></p>
+<h3 id="CVE-2020-1472"><a href="#CVE-2020-1472" class="headerlink" title="CVE-2020-1472"></a>CVE-2020-1472</h3><p>Netlogon特权提升漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2020-1472">https://nvd.nist.gov/vuln/detail/CVE-2020-1472</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/blackarrowsec/redteam-research/tree/master/CVE-2020-1472">https://github.com/blackarrowsec/redteam-research/tree/master/CVE-2020-1472</a></p>
+<h3 id="CVE-2021-42287-amp-42278"><a href="#CVE-2021-42287-amp-42278" class="headerlink" title="CVE-2021-42287&amp;42278"></a>CVE-2021-42287&amp;42278</h3><p>Windows域服务权限提升漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2021-42287">https://nvd.nist.gov/vuln/detail/CVE-2021-42287</a></p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2021-42278">https://nvd.nist.gov/vuln/detail/CVE-2021-42278</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/WazeHell/sam-the-admin">https://github.com/WazeHell/sam-the-admin</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/cube0x0/noPac">https://github.com/cube0x0/noPac</a></p>
+<h3 id="CVE-2019-1040"><a href="#CVE-2019-1040" class="headerlink" title="CVE-2019-1040"></a>CVE-2019-1040</h3><p> Microsoft Windows NTLM认证漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2019-1040">https://nvd.nist.gov/vuln/detail/CVE-2019-1040</a></p>
+<p><a target="_blank" rel="noopener" href="https://paper.seebug.org/962/">https://paper.seebug.org/962/</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Ridter/CVE-2019-1040">https://github.com/Ridter/CVE-2019-1040</a></p>
+<h3 id="CVE-2018-8581"><a href="#CVE-2018-8581" class="headerlink" title="CVE-2018-8581"></a>CVE-2018-8581</h3><p>Microsoft Exchange任意用户伪造漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2018-8581">https://nvd.nist.gov/vuln/detail/CVE-2018-8581</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Ridter/Exchange2domain">https://github.com/Ridter/Exchange2domain</a></p>
+<h3 id="CVE-2020-0688"><a href="#CVE-2020-0688" class="headerlink" title="CVE-2020-0688"></a>CVE-2020-0688</h3><p>Microsoft Exchange 反序列化RCE</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2020-0688">https://nvd.nist.gov/vuln/detail/CVE-2020-0688</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/zcgonvh/CVE-2020-0688">https://github.com/zcgonvh/CVE-2020-0688</a></p>
+<h3 id="CVE-2021-1675"><a href="#CVE-2021-1675" class="headerlink" title="CVE-2021-1675"></a>CVE-2021-1675</h3><p>Windows Print Spooler权限提升漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2021-1675">https://nvd.nist.gov/vuln/detail/CVE-2021-1675</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/cube0x0/CVE-2021-1675">https://github.com/cube0x0/CVE-2021-1675</a></p>
+<h3 id="CVE-2021-26855-CVE-2021-27065"><a href="#CVE-2021-26855-CVE-2021-27065" class="headerlink" title="CVE-2021-26855/CVE-2021-27065"></a>CVE-2021-26855/CVE-2021-27065</h3><p>Exchange ProxyLogon远程代码执行漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2021-26855">https://nvd.nist.gov/vuln/detail/CVE-2021-26855</a></p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2021-27065">https://nvd.nist.gov/vuln/detail/CVE-2021-27065</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/hausec/ProxyLogon">https://github.com/hausec/ProxyLogon</a></p>
+<h3 id="CVE-2020-17144"><a href="#CVE-2020-17144" class="headerlink" title="CVE-2020-17144"></a>CVE-2020-17144</h3><p>Microsoft Exchange 远程代码执行漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2020-17144">https://nvd.nist.gov/vuln/detail/CVE-2020-17144</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Airboi/CVE-2020-17144-EXP">https://github.com/Airboi/CVE-2020-17144-EXP</a></p>
+<h3 id="CVE-2020-16875"><a href="#CVE-2020-16875" class="headerlink" title="CVE-2020-16875"></a>CVE-2020-16875</h3><p>Microsoft Exchange 远程代码执行漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2020-16875">https://nvd.nist.gov/vuln/detail/CVE-2020-16875</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://srcincite.io/pocs/cve-2020-16875.py.txt">https://srcincite.io/pocs/cve-2020-16875.py.txt</a></p>
+<h3 id="CVE-2021-34473"><a href="#CVE-2021-34473" class="headerlink" title="CVE-2021-34473"></a>CVE-2021-34473</h3><p>Exchange ProxyShell SSRF</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2021-34473">https://nvd.nist.gov/vuln/detail/CVE-2021-34473</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dmaasland/proxyshell-poc">https://github.com/dmaasland/proxyshell-poc</a></p>
+<h3 id="CVE-2021-33766"><a href="#CVE-2021-33766" class="headerlink" title="CVE-2021-33766"></a>CVE-2021-33766</h3><p>Exchange ProxyToken 信息泄露漏洞</p>
+<p><a target="_blank" rel="noopener" href="https://nvd.nist.gov/vuln/detail/CVE-2021-33766">https://nvd.nist.gov/vuln/detail/CVE-2021-33766</a></p>
+<p>EXP/POC:</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/bhdresh/CVE-2021-33766-ProxyToken">https://github.com/bhdresh/CVE-2021-33766-ProxyToken</a></p>
 
             </div>
             <hr>
@@ -284,7 +289,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E9%98%B2%E5%BE%A1%E8%A7%84%E9%81%BF/">防御规避</a>
+                      <a class="hover-with-bg" href="/categories/%E5%9F%9F%E6%B8%97%E9%80%8F/">域渗透</a>
                     
                   </div>
                 
@@ -292,7 +297,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E9%98%B2%E5%BE%A1%E8%A7%84%E9%81%BF/">防御规避</a>
+                      <a class="hover-with-bg" href="/tags/%E5%9F%9F%E6%B8%97%E9%80%8F/">域渗透</a>
                     
                   </div>
                 
@@ -309,9 +314,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/01/20/%E5%9F%9F%E6%B8%97%E9%80%8F%E5%8E%86%E5%8F%B2%E6%BC%8F%E6%B4%9E%E6%B1%87%E6%80%BB/">
+                      <a href="/2022/01/21/%E6%96%87%E4%BB%B6%E9%9A%90%E8%97%8F%E6%8A%80%E5%B7%A7/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">域渗透历史漏洞汇总</span>
+                        <span class="hidden-mobile">文件隐藏技巧</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -319,8 +324,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/01/01/webshell%E6%BA%AF%E6%BA%90%E6%8E%92%E6%9F%A5%E4%B8%8E%E5%8F%8D%E5%88%B6/">
-                        <span class="hidden-mobile">webshell溯源排查与反制</span>
+                      <a href="/2022/01/06/linux%E8%BF%9B%E7%A8%8B%E9%9A%90%E5%8C%BF/">
+                        <span class="hidden-mobile">linux进程隐匿</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
